@@ -25,14 +25,7 @@ To run the server, inside the server folder:
 Load the sketch of the server in the esp8266 using the arduino ide and the com port connected by usb
 
 --------
-
-*The server is required to act as a proxy and bypass cors restrictions.
- Allows you to build an api with third party urls.
-
-
-This example uses mocha to test node as Server  and joke to test react as client.
 In conf change the name and password of your wifi
-
 --------
 
 Full responsive design with sass
