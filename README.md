@@ -31,6 +31,7 @@ Load the sketch of the server in the esp8266 using the arduino ide and the com p
 
 
 This example uses mocha to test node as Server  and joke to test react as client.
+In conf change the name and password of your wifi
 
 --------
 
