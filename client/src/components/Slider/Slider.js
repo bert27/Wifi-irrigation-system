@@ -1,18 +1,12 @@
 import React, { useCallback } from "react";
 import Slider from "rc-slider";
-import classes from "./Slider.sass";
+import "./Slider.sass";
 import "rc-slider/assets/index.css";
 import PropTypes from "prop-types";
 
 export const SliderC = (props) => {
-  const {
-    value,
-    onChange,
-    enabled,
-    WarningMessage,
-    size,
-    ...parsedProps
-  } = props;
+  const { value, onChange, enabled, WarningMessage, size, ...parsedProps } =
+    props;
 
   const actionOnSliderChange = useCallback(
     (value) => {
@@ -27,8 +21,6 @@ export const SliderC = (props) => {
     [onChange, enabled, WarningMessage]
   );
 
-
-
   return (
     <>
       <div className={"rangeSliderWrap"}>
@@ -38,8 +30,8 @@ export const SliderC = (props) => {
               actionOnSliderChange(value);
             }}
             value={[value]}
-            style={enabled ? { } : { backgroundColor: "grey" }}
-            className={"type"+size}
+            style={enabled ? {} : { backgroundColor: "grey" }}
+            className={"type" + size}
             {...parsedProps}
           />
         </>

@@ -1,15 +1,13 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState } from "react";
 import { SliderC } from "../Slider/Slider";
 import "./style.sass";
 
 export const Clock = (props) => {
-  const title = "reloj";
   const { saveTimeSelect, hour, minutes } = props;
   const maxHours = 23;
-  const maxMinutes = 59;
+
   const minMinutes = 0;
   const WarningMessage = "Peligro";
-  const [activateDay, setactivateDay] = useState(false);
 
   const [hora, sethora] = useState(hour);
   const [minutos, setminutos] = useState(minutes);

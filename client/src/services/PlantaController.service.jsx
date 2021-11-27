@@ -2,15 +2,18 @@ import axios from "axios";
 
 export const plantaService = {
   getdata,
-  postTurnOff,
+  getList,
   getClock,
   getTemperature,
   postaddTaskEsp,
-  getList,
+  postTurnOff,
 };
+
+const directionWeb = process.env.REACT_APP_API_DIR;
+
 function getList(data) {
   return axios
-    .get(`http://192.168.1.200:80/getList`, data, getRequestOptions("GET"))
+    .get(`${directionWeb}/getList`, data, getRequestOptions("GET"))
     .then(handleResponse)
     .then((response) => {
       return response;
@@ -19,7 +22,7 @@ function getList(data) {
 function postaddTaskEsp(hour, minutes, days) {
   return axios
     .get(
-      `http://192.168.1.200:80/addTaskEsp?hour=${hour}&minutes=${minutes}&days=${days}`,
+      `${directionWeb}/addTaskEsp?hour=${hour}&minutes=${minutes}&days=${days}`,
 
       getRequestOptions("GET")
     )
@@ -30,11 +33,7 @@ function postaddTaskEsp(hour, minutes, days) {
 }
 function getTemperature(data) {
   return axios
-    .get(
-      `http://192.168.1.200:80/getTemperature`,
-      data,
-      getRequestOptions("GET")
-    )
+    .get(`${directionWeb}/getTemperature`, data, getRequestOptions("GET"))
     .then(handleResponse)
     .then((response) => {
       return response;
@@ -42,7 +41,7 @@ function getTemperature(data) {
 }
 function getClock(data) {
   return axios
-    .get(`http://192.168.1.200:80/getClock`, data, getRequestOptions("GET"))
+    .get(`${directionWeb}/getClock`, data, getRequestOptions("GET"))
     .then(handleResponse)
     .then((response) => {
       return response;
@@ -51,7 +50,7 @@ function getClock(data) {
 //agrega mensaje nuevo en hilo
 function postTurnOff(data) {
   return axios
-    .get(`http://192.168.1.200:80/turnOff`, data, getRequestOptions("GET"))
+    .get(`${directionWeb}/turnOff`, data, getRequestOptions("GET"))
     .then(handleResponse)
     .then((response) => {
       return response;
@@ -59,7 +58,7 @@ function postTurnOff(data) {
 }
 function getdata(data) {
   return axios
-    .get(`http://192.168.1.200:80/datos`, data, getRequestOptions("GET"))
+    .get(`${directionWeb}/datos`, data, getRequestOptions("GET"))
     .then(handleResponse)
     .then((response) => {
       return response;

@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
 import "./style.sass";
-import { ReactComponent as IcoCheck } from "./../icons/check.svg";
+
 import { DaySelector } from "./DaySelector";
 export const Days = (props) => {
   const { saveDays, days } = props;

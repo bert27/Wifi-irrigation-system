@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import { useState } from "react";
 import "./style.sass";
 import { ReactComponent as IcoCheck } from "./../icons/check.svg";
 
