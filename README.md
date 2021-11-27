@@ -8,7 +8,7 @@ Currently only tasks are created and loaded.
 It remains to add the possibility of deleting them and saving the esp8266 in eeprom memory.
 
 <div classname="center">
-<img src="https://i.ibb.co/5kMRDgg/planta.png" >
+<img src="https://camo.githubusercontent.com/37d5b283622606fb7fcee3d6767f9128871c6c2b44121b7abe308d85e443e917/68747470733a2f2f692e6962622e636f2f356b4d524467672f706c616e74612e706e67" >
 </div>
 
 
@@ -25,13 +25,7 @@ To run the server, inside the server folder:
 Load the sketch of the server in the esp8266 using the arduino ide and the com port connected by usb
 
 --------
-
-*The server is required to act as a proxy and bypass cors restrictions.
- Allows you to build an api with third party urls.
-
-
-This example uses mocha to test node as Server  and joke to test react as client.
-
+In conf change the name and password of your wifi
 --------
 
 Full responsive design with sass
