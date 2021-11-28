@@ -1,7 +1,7 @@
 import "./App.css";
-import { Planta } from "./Planta";
+import { Plant } from "./Plant";
 function App() {
-  return <Planta />;
+  return <Plant />;
 }
 
 export default App;
