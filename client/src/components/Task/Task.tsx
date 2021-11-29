@@ -27,17 +27,22 @@ export const Task = ({
   eliminateTask = () => {},
 }: IPropsTask) => {
   return (
-    <div className="cardTask_plant" onClick={() => eliminateTask(index)}>
+    <div
+      className="cardTask_plant"
+      key={index}
+      data-testid={"task"}
+      onClick={() => eliminateTask(index)}
+    >
       <div className="title_cardtask">
         A las {taskData?.hour}:{taskData?.minutes}
       </div>
       <div className="daysTask_plant">
         {taskData?.days.map((taskdatac, index) => (
-          <>
+          <div key={index}>
             {taskdatac?.state && (
               <div className="day_task">{taskdatac?.name}</div>
             )}
-          </>
+          </div>
         ))}
       </div>
     </div>

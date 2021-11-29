@@ -5,7 +5,7 @@ import { ReactComponent as IcoWaterOn } from "./icons/waterOn.svg";
 import { ReactComponent as IcoWaterOff } from "./icons/waterOff.svg";
 import { ReactComponent as IcoConf } from "./icons/conf.svg";
 import { Input } from "reactstrap";
-import { Days } from "./components/Days";
+import { Days } from "./components/Days/Days";
 import { Clock } from "./components/Clock/Clock";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { Task } from "./components/Task/Task";
@@ -296,7 +296,10 @@ export const Plant = (props: any) => {
                 </div>
               </div>
               {listTasks.length > 0 && <>Total {listTasks.length}</>}
-              <div className="cardPlantac2 tasksList_plant">
+              <div
+                className="cardPlantac2 tasksList_plant"
+                data-testid={"listsTasks"}
+              >
                 {listTasks.length > 0 ? (
                   <>
                     {listTasks?.map((taskData: any, index: number) => (

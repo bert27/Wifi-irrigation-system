@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SliderC } from "../Slider/Slider";
+import { SliderC } from "./Slider/Slider";
 import "./style.sass";
 
 export const Clock = (props) => {
@@ -15,6 +15,7 @@ export const Clock = (props) => {
   useEffect(() => {
     saveTimeSelect(hora, minutos);
   }, [hora, minutos]);
+
   function SliderMinutes(value) {
     let minutes = value;
 
