@@ -1,14 +1,9 @@
-import {
-  fireEvent,
-  getByTestId,
-  render,
-  screen,
-  userEvent,
-} from "@testing-library/react";
+import { getByTestId, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import { Plant } from "../Plant";
 import axios from "axios";
-
+import Slider from "rc-slider";
 jest.mock("axios");
 
 test("renders texts ok", () => {
@@ -29,7 +24,7 @@ test("mock Axios Get List Tasks", async () => {
 });
 test("Create Task and not selected Day", async () => {
   const { container, getByText } = render(<Plant />);
-  fireEvent.click(container.querySelector(".button_plant"));
+  userEvent.click(container.querySelector(".button_plant"));
   expect(getByText("Selecciona un día o varios")).toBeInTheDocument();
 });
 
@@ -37,10 +32,11 @@ test("Create Task by defect and delete task", async () => {
   const { container, getByText, getByTestId, getAllByTestId } = render(
     <Plant />
   );
-  fireEvent.click(container.querySelector(".checkBox_plant_child"));
+  userEvent.click(container.querySelector(".checkBox_plant_child"));
+  //fireEvent.click(container.querySelector(".checkBox_plant_child"));
   expect(getByText("No tienes ninguna tarea todavía")).toBeInTheDocument();
   //select day in checkbox
-  fireEvent.click(container.querySelector(".button_plant"));
+  userEvent.click(container.querySelector(".button_plant"));
   //check create task by defect
   expect(getByText("A las 17:30")).toBeInTheDocument();
   expect(getByTestId("listsTasks")).toBeInTheDocument();
@@ -48,6 +44,25 @@ test("Create Task by defect and delete task", async () => {
   const listItems = getAllByTestId("task");
   expect(listItems).toHaveLength(1);
   //delete task
-  fireEvent.click(container.querySelector(".cardTask_plant"));
+  userEvent.click(container.querySelector(".cardTask_plant"));
   expect(getByText("No tienes ninguna tarea todavía")).toBeInTheDocument();
+});
+
+test("Slider change Hour", async () => {
+  const { container, getByTestId, getByDisplayValue, debug, getByText } =
+    render(<Plant />);
+  //Check visibility hour display
+  expect(getByTestId("hour")).toBeInTheDocument();
+  expect(getByTestId("minute")).toBeInTheDocument();
+
+  const firstSlider = container.getElementsByClassName("rc-slider-track")[0];
+  //Total sliders view
+  expect(container.getElementsByClassName("rc-slider-track").length).toBe(2);
+  //debug();
+  //Check position slider in hour
+  expect(getByText("17")).toBeInTheDocument();
+  expect(firstSlider).toHaveStyle({
+    right: "auto",
+    width: "73.91304347826086%",
+  });
 });

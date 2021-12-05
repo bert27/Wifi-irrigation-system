@@ -46,11 +46,15 @@ export const Clock = (props) => {
       <div className="HourDisplayFather">
         <div className="HoursDisplay">
           <div className="hourpicker">
-            <div className="fixheightHour">{hora}</div>
+            <div className="fixheightHour" data-testid={"hour"}>
+              {hora}
+            </div>
           </div>
           <div className="Title_Descripction separatorClock">:</div>
           <div className="hourpicker">
-            <div className="fixheightHour">{minutos}</div>
+            <div className="fixheightHour" data-testid={"minute"}>
+              {minutos}
+            </div>
           </div>
         </div>
       </div>
