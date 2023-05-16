@@ -1,3 +1,4 @@
+#include <ESP8266WiFi.h>
 #include <AsyncPrinter.h>
 #include <async_config.h>
 #include <DebugPrintMacros.h>
@@ -6,7 +7,7 @@
 #include <SyncClient.h>
 #include <tcp_axtls.h>
 
-#include <ESP8266WiFi.h>
+
 #include <ESPAsyncWebServer.h>
 #include <FS.h>
 #include <ArduinoJson.h>
