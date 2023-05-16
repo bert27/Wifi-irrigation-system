@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { plantaService } from "../services/PlantaController.service";
+import { plantaService } from "../../services/PlantaController.service";
 import "./style.sass";
-import { ReactComponent as IcoWaterOn } from "./../icons/waterOn.svg";
-import { ReactComponent as IcoWaterOff } from "./../icons/waterOff.svg";
-import { ReactComponent as IcoConf } from "./../icons/conf.svg";
-import { ReactComponent as IcoClock } from "./../icons/clock.svg";
+import { ReactComponent as IcoWaterOn } from "./../../icons/waterOn.svg";
+import { ReactComponent as IcoWaterOff } from "./../../icons/waterOff.svg";
+import { ReactComponent as IcoConf } from "./../../icons/conf.svg";
+import { ReactComponent as IcoClock } from "./../../icons/clock.svg";
 
-import { Days } from "../components/Days/Days";
-import { Clock } from "../components/Clock/Clock";
+import { Days } from "../../components/Days/Days";
+import { Clock } from "../../components/Clock/Clock";
 
-import { Task } from "../components/Task/Task";
+import { Task } from "../../components/Task/Task";
 
 import cloneDeep from "lodash/cloneDeep";
 
