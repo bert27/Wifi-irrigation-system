@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { plantaService } from "./services/PlantaController.service";
+import { plantaService } from "../services/PlantaController.service";
 import "./style.sass";
-import { ReactComponent as IcoWaterOn } from "./icons/waterOn.svg";
-import { ReactComponent as IcoWaterOff } from "./icons/waterOff.svg";
-import { ReactComponent as IcoConf } from "./icons/conf.svg";
-import { Input } from "reactstrap";
-import { Days } from "./components/Days/Days";
-import { Clock } from "./components/Clock/Clock";
-import SweetAlert from "react-bootstrap-sweetalert";
-import { Task } from "./components/Task/Task";
-import { ReactComponent as IcoClock } from "./icons/clock.svg";
+import { ReactComponent as IcoWaterOn } from "./../icons/waterOn.svg";
+import { ReactComponent as IcoWaterOff } from "./../icons/waterOff.svg";
+import { ReactComponent as IcoConf } from "./../icons/conf.svg";
+import { ReactComponent as IcoClock } from "./../icons/clock.svg";
+
+import { Days } from "../components/Days/Days";
+import { Clock } from "../components/Clock/Clock";
+
+import { Task } from "../components/Task/Task";
+
 import cloneDeep from "lodash/cloneDeep";
-import { SweetAlertRenderProps } from "react-bootstrap-sweetalert/dist/types";
+
 
 export const Plant = (props: any) => {
   const [stateWaterPump, setstateWaterPump] = useState(undefined);
-  const [timeRiego, settimeRiego] = useState(undefined as any);
   const [showConfg, setshowConfg] = useState(false);
   const [clock, setclock] = useState(undefined);
   const [temperature, settemperature] = useState(undefined);
