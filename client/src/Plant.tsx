@@ -11,6 +11,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import { Task } from "./components/Task/Task";
 import { ReactComponent as IcoClock } from "./icons/clock.svg";
 import cloneDeep from "lodash/cloneDeep";
+import { SweetAlertRenderProps } from "react-bootstrap-sweetalert/dist/types";
 
 export const Plant = (props: any) => {
   const [stateWaterPump, setstateWaterPump] = useState(undefined);
@@ -345,7 +346,7 @@ export const Plant = (props: any) => {
         </div>
       </div>
 
-      <SweetAlert
+     {/* <SweetAlert
         show={showConfg}
         title={"Configuración de la planta"}
         onConfirm={closePopUp}
@@ -354,6 +355,7 @@ export const Plant = (props: any) => {
         onCancel={closePopUp}
         showConfirm={false}
       >
+          {(renderProps: SweetAlertRenderProps) => (
         <div className="optionsPlanta">
           <div className="cardPlanta_option">
             <div className="optionsPlantac">Cantidad de agua por segundo</div>
@@ -414,7 +416,8 @@ export const Plant = (props: any) => {
             </div>
           </div>
         </div>
-      </SweetAlert>
+          )}
+      </SweetAlert>*/}
     </>
   );
 };
