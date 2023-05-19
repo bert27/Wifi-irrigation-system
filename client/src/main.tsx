@@ -14,6 +14,7 @@ export const RoutingWeb = () => {
         <Routes>
           <Route path="/" element={<Plant />} />
           <Route path="/drinks" element={<DrinksPage/>} />
+          <Route path="/drinks/:tabRouter" element={<DrinksPage/>} />
           <Route path="*" element={<Plant />} />
         </Routes>
         </Box>
