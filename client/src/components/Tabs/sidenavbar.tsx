@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import TabContext from "@mui/lab/TabContext";
 import TabPanel from "@mui/lab/TabPanel";
+import { ConfigTabDrinks } from "../../pages/drinks/tabs/config-tab-drinks";
 const tabsUrl = {
   config: {
     url: "/drinks/config",
@@ -37,7 +38,6 @@ export const ComponentTabs = (): React.ReactElement => {
       setValueTab(tabsUrl.drinks.value);
     }
   }, [tabRouter]);
-  console.log("tabRouter", tabRouter);
   return (
     <>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -62,12 +62,9 @@ export const ComponentTabs = (): React.ReactElement => {
             value={tabsUrl.config.value}
             id={tabsUrl.config.value}
             aria-labelledby={tabsUrl.config.value}
+            sx={{ padding: "0px", marginTop: "10px" }}
           >
-            <Paper elevation={2}>
-              <Typography variant="h6" gutterBottom>
-                Config:
-              </Typography>
-            </Paper>
+            <ConfigTabDrinks />
           </TabPanel>
           <TabPanel
             value={tabsUrl.drinks.value}
