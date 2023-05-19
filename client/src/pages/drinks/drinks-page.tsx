@@ -9,7 +9,7 @@ export const DrinksPage = (props: any) => {
       <Box
         sx={{
           backgroundColor: "#0B2447",
-          height: "100vh",
+          minHeight: "100vh",
           padding: "2em",
           color: "white",
         }}
