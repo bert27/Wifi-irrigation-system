@@ -12,15 +12,34 @@ import { Clock } from "../../components/Clock/Clock";
 import { Task } from "../../components/Task/Task";
 
 import cloneDeep from "lodash/cloneDeep";
+import { Alert, Box, Modal, Typography } from "@mui/material";
+import { Input } from "reactstrap";
 
+const styleModal = {
+  width: "80%",
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  webkitTransform: "translate(-50%, -50%)",
+
+  bgcolor: "#282828",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  overflowY: "auto",
+  maxHeight: "80vh",
+};
 
 export const Plant = (props: any) => {
   const [stateWaterPump, setstateWaterPump] = useState(undefined);
   const [showConfg, setshowConfg] = useState(false);
   const [clock, setclock] = useState(undefined);
   const [temperature, settemperature] = useState(undefined);
-  const [error, seterror] = useState((<></>) as any);
+  const [errorCreateTask, setErrorCreateTask] = useState((<></>) as any);
 
+  const [errorGet, setErrorGet] = useState(undefined as string | undefined);
+  const [timeRiego, settimeRiego] = useState("1");
   const [days, setdays] = useState([
     { name: "L", state: false },
     { name: "Ma", state: false },
@@ -43,122 +62,140 @@ export const Plant = (props: any) => {
 
   useEffect(() => {
     (async () => {
-      const data = await plantaService.getdata();
-      console.log(data);
-      //apagado
-      setstateWaterPump(data);
-
-      const listData = await plantaService.getList();
-
-      console.log(listData);
-      /*
-      
-      Miercoles-17-30/Miercoles-17-30/Jueves-17-30/Miercoles-17-30/Jueves-17-30/Miercoles-17-21/Jueves-17-21/Lunes-10-34/Martes-10-34/--/--/--/--/--/--/--/--/--/--/--/
-      */
-      const listDataSplit = listData.split("/");
-      const clockData = await plantaService.getClock();
-      const temperatureData = await plantaService.getTemperature();
-      settemperature(temperatureData);
-      setclock(clockData);
-
-      let ListFilteredEmpty: any = [];
-      let ListEqualsDays: any = [];
-
-      listDataSplit.forEach((element: any) => {
-        const listDataSplitChild = element.split("-");
-
-        const data = {
-          day: listDataSplitChild[0],
-          hour: listDataSplitChild[1],
-          minutes: listDataSplitChild[2],
-        };
-        if (data?.day !== "") {
-          ListFilteredEmpty.push(data);
+      try {
+        const listData = await plantaService.getList();
+        if (!listData.ok) {
+          throw new Error("error getting list from server");
         }
-      });
-      let ListFilteredEmptyOrdened = ListFilteredEmpty.sort((a: any, b: any) =>
-        a.day.localeCompare(b.day)
-      );
+        const listDataSplit = listData.split("/");
+        const clockData = await plantaService.getClock();
 
-      for (let i = 0; i < ListFilteredEmptyOrdened.length; i++) {
-        if (
-          ListFilteredEmptyOrdened[i]?.day !==
-            ListFilteredEmptyOrdened[i + 1]?.day ||
-          ListFilteredEmptyOrdened[i]?.hour +
-            ListFilteredEmptyOrdened[i]?.minutes !==
-            ListFilteredEmptyOrdened[i + 1]?.hour +
-              ListFilteredEmptyOrdened[i + 1]?.minutes
-        ) {
-          ListEqualsDays.push(ListFilteredEmpty[i]);
+        if (!clockData.ok) {
+          throw new Error("error getting clock from server");
         }
-      }
+        const temperatureData = await plantaService.getTemperature();
+        settemperature(temperatureData);
 
-      let dataHelp = [];
+        if (!temperatureData.ok) {
+          throw new Error("error getting temp from server");
+        }
+        setclock(clockData);
 
-      for (let i = 0; i < ListEqualsDays.length; i++) {
-        for (let j = 0; j < ListEqualsDays.length; j++) {
-          const hourCompare =
-            ListEqualsDays[j].hour + ListEqualsDays[j].minutes;
+        let ListFilteredEmpty: any = [];
+        let ListEqualsDays: any = [];
+
+        listDataSplit.forEach((element: any) => {
+          const listDataSplitChild = element.split("-");
+
+          const data = {
+            day: listDataSplitChild[0],
+            hour: listDataSplitChild[1],
+            minutes: listDataSplitChild[2],
+          };
+          if (data?.day !== "") {
+            ListFilteredEmpty.push(data);
+          }
+        });
+        let ListFilteredEmptyOrdened = ListFilteredEmpty.sort(
+          (a: any, b: any) => a.day.localeCompare(b.day)
+        );
+
+        for (let i = 0; i < ListFilteredEmptyOrdened.length; i++) {
           if (
-            hourCompare !==
-            ListEqualsDays[i].hour + ListEqualsDays[i].minutes
+            ListFilteredEmptyOrdened[i]?.day !==
+              ListFilteredEmptyOrdened[i + 1]?.day ||
+            ListFilteredEmptyOrdened[i]?.hour +
+              ListFilteredEmptyOrdened[i]?.minutes !==
+              ListFilteredEmptyOrdened[i + 1]?.hour +
+                ListFilteredEmptyOrdened[i + 1]?.minutes
           ) {
-            let exist = false;
-            dataHelp.forEach((element) => {
-              if (
-                element.hour + element.minutes ===
-                ListEqualsDays[i].hour + ListEqualsDays[i].minutes
-              ) {
-                exist = true;
-              }
-            });
-
-            if (!exist) {
-              const n = {
-                days: [
-                  {
-                    name: getDayLetterWeek(ListEqualsDays[i].day),
-                    state: true,
-                  },
-                ],
-                hour: ListEqualsDays[i].hour,
-                minutes: ListEqualsDays[i].minutes,
-              };
-              dataHelp.push(n);
-            }
-          } else {
-            dataHelp.forEach((element) => {
-              if (
-                element.hour + element.minutes ===
-                ListEqualsDays[i].hour + ListEqualsDays[i].minutes
-              ) {
-                let exist = false;
-                element.days.forEach((element) => {
-                  if (
-                    element.name === getDayLetterWeek(ListEqualsDays[i].day)
-                  ) {
-                    exist = true;
-                  }
-                });
-
-                if (!exist) {
-                  let newadd = {
-                    name: getDayLetterWeek(ListEqualsDays[i].day),
-                    state: true,
-                  };
-
-                  element.days = [...element.days, newadd];
-                }
-              }
-            });
+            ListEqualsDays.push(ListFilteredEmpty[i]);
           }
         }
-      }
 
-      if (dataHelp.length > 0) {
-        setlistTasks(dataHelp);
+        let dataHelp = [];
+
+        for (let i = 0; i < ListEqualsDays.length; i++) {
+          for (let j = 0; j < ListEqualsDays.length; j++) {
+            const hourCompare =
+              ListEqualsDays[j].hour + ListEqualsDays[j].minutes;
+            if (
+              hourCompare !==
+              ListEqualsDays[i].hour + ListEqualsDays[i].minutes
+            ) {
+              let exist = false;
+              dataHelp.forEach((element) => {
+                if (
+                  element.hour + element.minutes ===
+                  ListEqualsDays[i].hour + ListEqualsDays[i].minutes
+                ) {
+                  exist = true;
+                }
+              });
+
+              if (!exist) {
+                const n = {
+                  days: [
+                    {
+                      name: getDayLetterWeek(ListEqualsDays[i].day),
+                      state: true,
+                    },
+                  ],
+                  hour: ListEqualsDays[i].hour,
+                  minutes: ListEqualsDays[i].minutes,
+                };
+                dataHelp.push(n);
+              }
+            } else {
+              dataHelp.forEach((element) => {
+                if (
+                  element.hour + element.minutes ===
+                  ListEqualsDays[i].hour + ListEqualsDays[i].minutes
+                ) {
+                  let exist = false;
+                  element.days.forEach((element) => {
+                    if (
+                      element.name === getDayLetterWeek(ListEqualsDays[i].day)
+                    ) {
+                      exist = true;
+                    }
+                  });
+
+                  if (!exist) {
+                    let newadd = {
+                      name: getDayLetterWeek(ListEqualsDays[i].day),
+                      state: true,
+                    };
+
+                    element.days = [...element.days, newadd];
+                  }
+                }
+              });
+            }
+          }
+        }
+
+        if (dataHelp.length > 0) {
+          setlistTasks(dataHelp);
+        }
+      } catch (error) {
+        setErrorGet(`Error: ${error}`);
       }
     })();
+    async function getStatePump() {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_DIR}/datos`);
+        if (!response.ok) {
+          throw new Error("error getting pump status from server");
+        }
+        const json = await response.json();
+        setstateWaterPump(json);
+      } catch (error) {
+        setErrorGet(`Error: ${error}`);
+      }
+    }
+
+    getStatePump();
   }, []);
 
   function getDayLetterWeek(dayTmp: any) {
@@ -213,7 +250,7 @@ export const Plant = (props: any) => {
     });
     if (exist) {
       setlistTasks([...listTasks, cloneDeep(dataforNewTask)]);
-      seterror(undefined);
+      setErrorCreateTask(undefined);
 
       (async () => {
         try {
@@ -225,7 +262,9 @@ export const Plant = (props: any) => {
         } catch (error) {}
       })();
     } else {
-      seterror(<div className="error_plant">Selecciona un día o varios</div>);
+      setErrorCreateTask(
+        <div className="error_plant">Selecciona un día o varios</div>
+      );
     }
   }
 
@@ -242,9 +281,11 @@ export const Plant = (props: any) => {
 
     setlistTasks(dataCopy);
   }
+
   return (
     <>
       <div className="pagePlant">
+        {errorGet && <Alert severity="error">{errorGet}</Alert>}
         <div className="principalCards_plant">
           <div className="cardPlantaf">
             <div className="cardPlanta" onClick={changeStateEsp}>
@@ -339,85 +380,81 @@ export const Plant = (props: any) => {
                     Añade este riego
                   </div>
                 </div>
-                {error}
+                {errorCreateTask}
               </div>
             </div>
           </div>
         </div>
       </div>
-
-     {/* <SweetAlert
-        show={showConfg}
-        title={"Configuración de la planta"}
-        onConfirm={closePopUp}
-        closeOnClickOutside
-        allowEscape
-        onCancel={closePopUp}
-        showConfirm={false}
+      <Modal
+        open={showConfg}
+        onClose={closePopUp}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
       >
-          {(renderProps: SweetAlertRenderProps) => (
-        <div className="optionsPlanta">
-          <div className="cardPlanta_option">
-            <div className="optionsPlantac">Cantidad de agua por segundo</div>
-            <div className="input_clothesf">
-              <Input
-                value={timeRiego}
-                placeholder={"Agua"}
-                onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                  settimeRiego(e.currentTarget.value)
-                }
-                type="text"
-                className="input_clothes"
-              />
-            </div>
+        <Box sx={styleModal}>
+          <Typography variant="h6" gutterBottom sx={{color: "white"}}>
+            Configura las bombas:
+          </Typography>
+          <div className="optionsPlanta">
+            <div className="cardPlanta_option">
+              <div className="optionsPlantac">Cantidad de agua por segundo</div>
+              <div className="inputf">
+                <Input
+                  value={timeRiego}
+                  placeholder={"Agua"}
+                  onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                    settimeRiego(e.currentTarget.value)
+                  }
+                  type="text"
+                />
+              </div>
 
-            <div className="button_clothesf">
-              <div className="button_plant" onClick={changeStateEsp}>
-                Guardar
+              <div className="button_clothesf">
+                <div className="button_plant" onClick={changeStateEsp}>
+                  Guardar
+                </div>
+              </div>
+            </div>
+            <div className="cardPlanta_option">
+              <div className="optionsPlantac">Tiempo por riego</div>
+              <div className="inputf">
+                <Input
+                  value={timeRiego}
+                  placeholder={"Agua"}
+                  onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                    settimeRiego(e.currentTarget.value)
+                  }
+                  type="text"
+                />
+              </div>
+
+              <div className="button_clothesf">
+                <div className="button_plant" onClick={changeStateEsp}>
+                  Guardar
+                </div>
+              </div>
+            </div>
+            <div className="cardPlanta_option">
+              <div className="optionsPlantac">Cuando quieres regar?</div>
+              <div className="inputf">
+                <Input
+                  value={timeRiego}
+                  placeholder={"Agua"}
+                  onChange={(e) => settimeRiego(e.target.value)}
+                  type="text"
+                />
+              </div>
+
+              <div className="button_clothesf">
+                <div className="button_plant" onClick={changeStateEsp}>
+                  Guardar
+                </div>
               </div>
             </div>
           </div>
-          <div className="cardPlanta_option">
-            <div className="optionsPlantac">Tiempo por riego</div>
-            <div className="input_clothesf">
-              <Input
-                value={timeRiego}
-                placeholder={"Agua"}
-                onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                  settimeRiego(e.currentTarget.value)
-                }
-                type="text"
-                className="input_clothes"
-              />
-            </div>
-
-            <div className="button_clothesf">
-              <div className="button_plant" onClick={changeStateEsp}>
-                Guardar
-              </div>
-            </div>
-          </div>
-          <div className="cardPlanta_option">
-            <div className="optionsPlantac">Cuando quieres regar?</div>
-            <div className="input_clothesf">
-              <Input
-                value={timeRiego}
-                placeholder={"Agua"}
-                onChange={(e) => settimeRiego(e.target.value)}
-                type="text"
-                className="input_clothes"
-              />
-            </div>
-
-            <div className="button_clothesf">
-              <div className="button_plant" onClick={changeStateEsp}>
-                Guardar
-              </div>
-            </div>
-          </div>
-        </div>
-          )}
-      </SweetAlert>*/}
+        </Box>
+      </Modal>
     </>
   );
 };
