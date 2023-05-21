@@ -1,6 +1,25 @@
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
+import { useState } from "react";
 
 export const ConfigTabDrinks = (props: any) => {
+  const [formData, setformData] = useState({
+    pwm: 0,
+    statePump: "OFF",
+  });
+
+  const onChangePWM = (pwmTmp: string) => {
+    setformData({ ...formData, pwm: parseInt(pwmTmp) });
+  };
+
+  const onChangeStatePumpButton = () => {
+    if (formData.statePump === "OFF") {
+      setformData({ ...formData, statePump: "ON" });
+    } else {
+      setformData({ ...formData, statePump: "OFF" });
+    }
+  };
+
+  const sendFormData = () => {};
   return (
     <>
       <Paper elevation={2} sx={{ padding: "1em" }}>
@@ -15,17 +34,15 @@ export const ConfigTabDrinks = (props: any) => {
             width: "40%",
           }}
         >
-          <TextField
-            fullWidth={false}
-            label={"Water pump ON/OFF"}
-            value={"ON"}
-            type={"string"}
-            placeholder={"Nombre"}
-            variant={"standard"}
-            //onChange={onChangeName}
-          />
-          <Button sx={{ backgroundColor: "#009688" }} variant="contained">
-            {"PAUSE"}
+          <Typography variant="h6" gutterBottom>
+            {formData.statePump}
+          </Typography>
+          <Button
+            sx={{ backgroundColor: "#009688" }}
+            variant="contained"
+            onClick={onChangeStatePumpButton}
+          >
+            {formData.statePump === "ON" ? "PAUSE" : "ON"}
           </Button>
         </Box>
         <Box
@@ -39,13 +56,21 @@ export const ConfigTabDrinks = (props: any) => {
           <TextField
             fullWidth={false}
             label={"Water pump pwm"}
-            value={255}
+            value={formData.pwm}
             type={"number"}
             placeholder={"Nombre"}
             variant={"standard"}
-            //onChange={onChangeName}
+            onChange={(
+              e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+            ) => {
+              onChangePWM(e.currentTarget.value);
+            }}
           />
-          <Button sx={{ backgroundColor: "#009688" }} variant="contained">
+          <Button
+            sx={{ backgroundColor: "#009688" }}
+            variant="contained"
+            onClick={sendFormData}
+          >
             {"set"}
           </Button>
         </Box>
