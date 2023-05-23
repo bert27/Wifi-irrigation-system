@@ -1,15 +1,15 @@
 #include <RTClib.h>
 #include <ArduinoJson.h>
-#include "AsyncJson.h" 
+#include "AsyncJson.h"
 RTC_DS3231 rtc;
 
-//char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
- const char* DiasSemana[] = {"Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"};
-#define pinD5  14
-#define pinD6  12
+// char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+const char *DiasSemana[] = {"Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"};
+#define pinD5 14
+#define pinD6 12
 AsyncWebServer server(80);
-int positionInList=0;
-int MaxpositionInList=20;
+int positionInList = 0;
+int MaxpositionInList = 20;
 String ArrayList[3][20];
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html>
@@ -38,93 +38,95 @@ const char index_html[] PROGMEM = R"rawliteral(
 </html>
 )rawliteral";
 
-#define led  0
-void homeRequest(AsyncWebServerRequest *request) {
+#define waterPump1 0
+void homeRequest(AsyncWebServerRequest *request)
+{
   request->send(200, "text/plain", "Servidor robot");
 }
 
-void notFound(AsyncWebServerRequest *request) {
-	request->send(404, "text/plain", "Not found");
+void notFound(AsyncWebServerRequest *request)
+{
+  request->send(404, "text/plain", "Not found");
 }
 
-
-void AddTask(String day,String hours,String minutes){
-      Serial.println("Estableciendo riego para el día: " +  day );
-      Serial.println("A las " + hours +":" + minutes);
-/*
-      class alarm { //creating a class
-char day[20];
-char hours[20];
-char minutes[20];
-}
-alarm s1;
-s1.day = day; //assigning values to class members
-s1.hours = hours;
-s1.minutes = minutes;*/
-Serial.println("check");
-if(positionInList>MaxpositionInList){
-  Serial.println("check4");
+void AddTask(String day, String hours, String minutes)
+{
+  Serial.println("Estableciendo riego para el día: " + day);
+  Serial.println("A las " + hours + ":" + minutes);
+  /*
+        class alarm { //creating a class
+  char day[20];
+  char hours[20];
+  char minutes[20];
   }
-if(positionInList<MaxpositionInList){
-  Serial.println("check2");
-//String ArrayList[3][positionInList]={{day}, {hours}, {minutes}};
+  alarm s1;
+  s1.day = day; //assigning values to class members
+  s1.hours = hours;
+  s1.minutes = minutes;*/
+  Serial.println("check");
+  if (positionInList > MaxpositionInList)
+  {
+    Serial.println("check4");
+  }
+  if (positionInList < MaxpositionInList)
+  {
+    Serial.println("check2");
+    // String ArrayList[3][positionInList]={{day}, {hours}, {minutes}};
 
-ArrayList[0][positionInList]=day;
-ArrayList[1][positionInList]=hours;
-ArrayList[2][positionInList]=minutes;
-      Serial.println("posicion: " + String(positionInList));
-positionInList++;
-   Serial.println("Añadiendo elemento en la lista");
+    ArrayList[0][positionInList] = day;
+    ArrayList[1][positionInList] = hours;
+    ArrayList[2][positionInList] = minutes;
+    Serial.println("posicion: " + String(positionInList));
+    positionInList++;
+    Serial.println("Añadiendo elemento en la lista");
 
-
-//Show elements list
- Serial.println("////////");
-  for (int i = 0; i < MaxpositionInList; i++){
-       Serial.println(ArrayList[0][i]);
+    // Show elements list
+    Serial.println("////////");
+    for (int i = 0; i < MaxpositionInList; i++)
+    {
+      Serial.println(ArrayList[0][i]);
       Serial.println(ArrayList[1][i]);
-      Serial.println(ArrayList[2][i]);}
-   Serial.println("////////");
+      Serial.println(ArrayList[2][i]);
+    }
+    Serial.println("////////");
+  }
 
-            
-
+  /*
+                            String newiInList[] = {day, hours, minutes};
+                             list.Add(newiInList);
+                              Serial.println("Elementos de la lista:");
+                                      for (int i = 0; i < list.Count(); i++){
+                                                            Serial.println(list[i]);
+                                                          }
+  */
 }
+String getClock()
+{
+  DateTime now;
+  now = rtc.now();
+  char buffer[25] = "";
+  sprintf(buffer, "%02d:%02d:%02d %02d/%02d/%04d", now.hour(), now.minute(), now.second(), now.day(), now.month(), now.year());
 
-
-
-/*
-                          String newiInList[] = {day, hours, minutes};
-                           list.Add(newiInList);
-                            Serial.println("Elementos de la lista:");
-                                    for (int i = 0; i < list.Count(); i++){
-                                                          Serial.println(list[i]);
-                                                        }
-*/
-                                                        
-}
-String getClock(){
-   DateTime now;
-     now = rtc.now();
-    char buffer [25] = "";
-  sprintf(buffer, "%02d:%02d:%02d %02d/%02d/%04d", now.hour(), now.minute(), now.second(),now.day(), now.month(), now.year());
-
-   return buffer;
+  return buffer;
 }
 
 void InitServer()
 {
 
-
 #ifndef ESP8266
-  while (!Serial); // wait for serial port to connect. Needed for native USB
+  while (!Serial)
+    ; // wait for serial port to connect. Needed for native USB
 #endif
-if (! rtc.begin()) {
+  if (!rtc.begin())
+  {
     Serial.println("Couldn't find RTC");
     Serial.flush();
-   // while (1) delay(10);
-      rtc.adjust(DateTime((__DATE__), (__TIME__)));
+    // while (1) delay(10);
+    rtc.adjust(DateTime((__DATE__), (__TIME__)));
   }
 
-  if (rtc.lostPower()) {
+  if (rtc.lostPower())
+  {
     Serial.println("RTC lost power, let's set the time!");
     // When time needs to be set on a new device, or after a power loss, the
     // following line sets the RTC to the date & time this sketch was compiled
@@ -133,17 +135,20 @@ if (! rtc.begin()) {
     // January 21, 2014 at 3am you would call:
     // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
   }
-	server.on("/", HTTP_GET, homeRequest);
-	server.on("/item", HTTP_GET, getRequest);
-	server.on("/item", HTTP_POST, [](AsyncWebServerRequest * request){}, NULL, postRequest);
-	server.on("/item", HTTP_PUT, [](AsyncWebServerRequest * request){}, NULL, putRequest);
-	server.on("/item", HTTP_PATCH, [](AsyncWebServerRequest * request){}, NULL, patchRequest);
-	server.on("/item", HTTP_DELETE, deleteRequest);
-server.on("/getClock", HTTP_GET, [] (AsyncWebServerRequest *request) {
-  request->send(200, "text/plain", getClock());    
-  });
+  server.on("/", HTTP_GET, homeRequest);
+  server.on("/item", HTTP_GET, getRequest);
+  server.on(
+      "/item", HTTP_POST, [](AsyncWebServerRequest *request) {}, NULL, postRequest);
+  server.on(
+      "/item", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, putRequest);
+  server.on(
+      "/item", HTTP_PATCH, [](AsyncWebServerRequest *request) {}, NULL, patchRequest);
+  server.on("/item", HTTP_DELETE, deleteRequest);
+  server.on("/getClock", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(200, "text/plain", getClock()); });
 
-server.on("/getList", HTTP_GET, [] (AsyncWebServerRequest *request) {
+  server.on("/getList", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
 
  // request->send(200, "application/json", "{\"message\":\"Welcome\"}");  
 
@@ -155,42 +160,31 @@ String alldata;
 alldata=alldata + (ArrayList[0][i] + "-"+ ArrayList[1][i] + "-" +  ArrayList[2][i]) + "/";
  };
 
- request->send(200,"text/plain", alldata); 
-  });
- server.on("/getTemperature", HTTP_GET, [] (AsyncWebServerRequest *request) {
+ request->send(200,"text/plain", alldata); });
+  server.on("/getTemperature", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
  char str [32] = "";
  dtostrf(rtc.getTemperature(), 8, 2, str);
-  request->send(200, "text/plain", str);    
-  });
-  
-  server.on("/turnOff", HTTP_GET, [] (AsyncWebServerRequest *request) {
-   
-  pinMode(led, OUTPUT);
-  if(digitalRead(led)){
-  digitalWrite(led,0);
-  request->send(200, "text/plain", "encendido");
-  }else{
-     digitalWrite(led,1);
- 
-     request->send(200, "text/plain", "apagado");
-  }
-    
-    
-  });
-	 server.on("/datos", HTTP_GET, [] (AsyncWebServerRequest *request) {
-  pinMode(led, OUTPUT);
-  if(digitalRead(led)){
-  digitalWrite(led,0);
-  request->send(200, "text/plain", "encendido");
-  }else{
-     digitalWrite(led,1);
-     request->send(200, "text/plain", "apagado");
-  }
-    
-    
-  });
+  request->send(200, "text/plain", str); });
 
-     server.on("/addTaskEsp", HTTP_GET, [] (AsyncWebServerRequest *request) {
+  server.on("/waterPump1OnOFF", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
+              pinMode(waterPump1, OUTPUT);
+              if (digitalRead(waterPump1))
+              {
+                digitalWrite(waterPump1, 0);
+                request->send(200, "text/plain", "ON");
+              }
+              else
+              {
+                digitalWrite(waterPump1, 1);
+
+                request->send(200, "text/plain", "OFF");
+              } })
+;
+
+  server.on("/addTaskEsp", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
    
     int paramsNr = request->params();
    // Serial.println(paramsNr);
@@ -252,20 +246,9 @@ alldata=alldata + (ArrayList[0][i] + "-"+ ArrayList[1][i] + "-" +  ArrayList[2][
                                 
                                   }
 
-
-                         
-
-                                       
-                                      
- 
-
                                      daysArray = strtok(NULL, ",");
                                       i++;
-
-                              
-                                   
-                                  
-                                      }
+        }
 
 
 
@@ -277,12 +260,11 @@ alldata=alldata + (ArrayList[0][i] + "-"+ ArrayList[1][i] + "-" +  ArrayList[2][
       
   
 
-     request->send(200, "text/plain", "apagado");
- });
-	server.onNotFound(notFound);
+     request->send(200, "text/plain", "apagado"); });
+  server.onNotFound(notFound);
 
-DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
 
-	server.begin();
-    Serial.println("HTTP server started");
+  server.begin();
+  Serial.println("HTTP server started");
 }

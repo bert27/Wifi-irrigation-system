@@ -1,15 +1,26 @@
 import axios from "axios";
 
 export const plantaService = {
-  getdata,
   getList,
   getClock,
   getTemperature,
   postaddTaskEsp,
-  postTurnOff,
+  postWaterPump1OnOFF,
 };
 
 const directionWeb = process.env.REACT_APP_API_DIR;
+
+
+
+function postWaterPump1OnOFF(data) {
+  return axios
+    .get(`${directionWeb}/waterPump1OnOFF`, data, getRequestOptions("GET"))
+    .then(handleResponse)
+    .then((response) => {
+      return response;
+    });
+}
+
 
 function getList(data) {
   return axios
@@ -47,23 +58,7 @@ function getClock(data) {
       return response;
     });
 }
-//agrega mensaje nuevo en hilo
-function postTurnOff(data) {
-  return axios
-    .get(`${directionWeb}/turnOff`, data, getRequestOptions("GET"))
-    .then(handleResponse)
-    .then((response) => {
-      return response;
-    });
-}
-function getdata(data) {
-  return axios
-    .get(`${directionWeb}/datos`, data, getRequestOptions("GET"))
-    .then(handleResponse)
-    .then((response) => {
-      return response;
-    });
-}
+
 
 //---------------------AUX---
 function getRequestOptions(method) {

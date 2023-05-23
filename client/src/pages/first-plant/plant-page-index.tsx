@@ -32,7 +32,7 @@ const styleModal = {
 };
 
 export const Plant = (props: any) => {
-  const [stateWaterPump, setstateWaterPump] = useState(undefined);
+  const [stateWaterPump, setstateWaterPump] = useState("OFF");
   const [showConfg, setshowConfg] = useState(false);
   const [clock, setclock] = useState(undefined);
   const [temperature, settemperature] = useState(undefined);
@@ -182,20 +182,22 @@ export const Plant = (props: any) => {
         setErrorGet(`Error: ${error}`);
       }
     })();
-    async function getStatePump() {
+    async function getTestStatePump() {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_DIR}/datos`);
+        const response = await fetch(
+          `${process.env.REACT_APP_API_DIR}/waterPump1OnOFF`
+        );
         if (!response.ok) {
           throw new Error("error getting pump status from server");
         }
-        const json = await response.json();
-        setstateWaterPump(json);
+        const responseStateServer = await response.json();
+        setstateWaterPump(responseStateServer);
       } catch (error) {
         setErrorGet(`Error: ${error}`);
       }
     }
 
-    getStatePump();
+    //   getTestStatePump();
   }, []);
 
   function getDayLetterWeek(dayTmp: any) {
@@ -224,8 +226,8 @@ export const Plant = (props: any) => {
     return letter;
   }
   async function changeStateEsp() {
-    const data = await plantaService.postTurnOff();
-    setstateWaterPump(data);
+    const responseStateServer = await plantaService.postWaterPump1OnOFF();
+    setstateWaterPump(responseStateServer);
   }
 
   function showConf() {
@@ -306,25 +308,18 @@ export const Plant = (props: any) => {
                   </>
                 )}
               </div>
-              {clock && (
+       
                 <div className="cardPlantac22">
-                  {stateWaterPump === "encendido" ? (
-                    <>
-                      <div>{stateWaterPump}</div>
-                      <div>
-                        <IcoWaterOn className="buttonsvg" />
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div>{stateWaterPump}</div>
-                      <div>
-                        <IcoWaterOff className="buttonsvg" />
-                      </div>
-                    </>
-                  )}
+                  <div>{stateWaterPump}</div>
+                  <div>
+                    {stateWaterPump === "ON" ? (
+                      <IcoWaterOn className="buttonsvg" />
+                    ) : (
+                      <IcoWaterOff className="buttonsvg" />
+                    )}
+                  </div>
                 </div>
-              )}
+        
             </div>
           </div>
           <div className="cardPlantaf">
@@ -393,7 +388,7 @@ export const Plant = (props: any) => {
         aria-describedby="parent-modal-description"
       >
         <Box sx={styleModal}>
-          <Typography variant="h6" gutterBottom sx={{color: "white"}}>
+          <Typography variant="h6" gutterBottom sx={{ color: "white" }}>
             Configura las bombas:
           </Typography>
           <div className="optionsPlanta">
