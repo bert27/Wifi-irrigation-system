@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { plantaService } from "../../services/PlantaController.service";
 import "./style.sass";
 import { ReactComponent as IcoWaterOn } from "./../../icons/waterOn.svg";
@@ -13,33 +13,18 @@ import { Task } from "../../components/Task/Task";
 
 import cloneDeep from "lodash/cloneDeep";
 import { Alert, Box, Modal, Typography } from "@mui/material";
-import { Input } from "reactstrap";
 
-const styleModal = {
-  width: "80%",
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  webkitTransform: "translate(-50%, -50%)",
-
-  bgcolor: "#282828",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-  overflowY: "auto",
-  maxHeight: "80vh",
-};
+import { ModalConfig } from "./modal-config";
 
 export const Plant = (props: any) => {
   const [stateWaterPump, setstateWaterPump] = useState("OFF");
-  const [showConfg, setshowConfg] = useState(false);
+  const [isOpenModalConfig, setIsOpenModalConfig] = useState(false);
   const [clock, setclock] = useState(undefined);
   const [temperature, settemperature] = useState(undefined);
   const [errorCreateTask, setErrorCreateTask] = useState((<></>) as any);
 
   const [errorGet, setErrorGet] = useState(undefined as string | undefined);
-  const [timeRiego, settimeRiego] = useState("1");
+
   const [days, setdays] = useState([
     { name: "L", state: false },
     { name: "Ma", state: false },
@@ -182,22 +167,6 @@ export const Plant = (props: any) => {
         setErrorGet(`Error: ${error}`);
       }
     })();
-    async function getTestStatePump() {
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_DIR}/waterPump1OnOFF`
-        );
-        if (!response.ok) {
-          throw new Error("error getting pump status from server");
-        }
-        const responseStateServer = await response.json();
-        setstateWaterPump(responseStateServer);
-      } catch (error) {
-        setErrorGet(`Error: ${error}`);
-      }
-    }
-
-    //   getTestStatePump();
   }, []);
 
   function getDayLetterWeek(dayTmp: any) {
@@ -224,17 +193,6 @@ export const Plant = (props: any) => {
       letter = "D";
     }
     return letter;
-  }
-  async function changeStateEsp() {
-    const responseStateServer = await plantaService.postWaterPump1OnOFF();
-    setstateWaterPump(responseStateServer);
-  }
-
-  function showConf() {
-    setshowConfg(true);
-  }
-  function closePopUp() {
-    setshowConfg(false);
   }
 
   function saveDays(value: any, index: any) {
@@ -290,7 +248,7 @@ export const Plant = (props: any) => {
         {errorGet && <Alert severity="error">{errorGet}</Alert>}
         <div className="principalCards_plant">
           <div className="cardPlantaf">
-            <div className="cardPlanta" onClick={changeStateEsp}>
+            <div className="cardPlanta">
               <div className="cardPlantac">
                 <div className="title_plant">Planta</div>
                 {clock ? (
@@ -308,18 +266,17 @@ export const Plant = (props: any) => {
                   </>
                 )}
               </div>
-       
-                <div className="cardPlantac22">
-                  <div>{stateWaterPump}</div>
-                  <div>
-                    {stateWaterPump === "ON" ? (
-                      <IcoWaterOn className="buttonsvg" />
-                    ) : (
-                      <IcoWaterOff className="buttonsvg" />
-                    )}
-                  </div>
+
+              <div className="cardPlantac22">
+                <div>{stateWaterPump}</div>
+                <div>
+                  {stateWaterPump === "ON" ? (
+                    <IcoWaterOn className="buttonsvg" />
+                  ) : (
+                    <IcoWaterOff className="buttonsvg" />
+                  )}
                 </div>
-        
+              </div>
             </div>
           </div>
           <div className="cardPlantaf">
@@ -368,7 +325,10 @@ export const Plant = (props: any) => {
               <div className="button_plantf">
                 <div className="button_plantf2">
                   Nuevo Riego a las 17:30 los Lunes y Martes
-                  <IcoConf className="buttonsvg" onClick={showConf} />
+                  <IcoConf
+                    className="buttonsvg"
+                    onClick={() => setIsOpenModalConfig(!isOpenModalConfig)}
+                  />
                 </div>
                 <div className="button_plantf2">
                   <div className="button_plant" onClick={(e) => createTask()}>
@@ -381,75 +341,12 @@ export const Plant = (props: any) => {
           </div>
         </div>
       </div>
-      <Modal
-        open={showConfg}
-        onClose={closePopUp}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <Box sx={styleModal}>
-          <Typography variant="h6" gutterBottom sx={{ color: "white" }}>
-            Configura las bombas:
-          </Typography>
-          <div className="optionsPlanta">
-            <div className="cardPlanta_option">
-              <div className="optionsPlantac">Cantidad de agua por segundo</div>
-              <div className="inputf">
-                <Input
-                  value={timeRiego}
-                  placeholder={"Agua"}
-                  onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                    settimeRiego(e.currentTarget.value)
-                  }
-                  type="text"
-                />
-              </div>
-
-              <div className="button_clothesf">
-                <div className="button_plant" onClick={changeStateEsp}>
-                  Guardar
-                </div>
-              </div>
-            </div>
-            <div className="cardPlanta_option">
-              <div className="optionsPlantac">Tiempo por riego</div>
-              <div className="inputf">
-                <Input
-                  value={timeRiego}
-                  placeholder={"Agua"}
-                  onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                    settimeRiego(e.currentTarget.value)
-                  }
-                  type="text"
-                />
-              </div>
-
-              <div className="button_clothesf">
-                <div className="button_plant" onClick={changeStateEsp}>
-                  Guardar
-                </div>
-              </div>
-            </div>
-            <div className="cardPlanta_option">
-              <div className="optionsPlantac">Cuando quieres regar?</div>
-              <div className="inputf">
-                <Input
-                  value={timeRiego}
-                  placeholder={"Agua"}
-                  onChange={(e) => settimeRiego(e.target.value)}
-                  type="text"
-                />
-              </div>
-
-              <div className="button_clothesf">
-                <div className="button_plant" onClick={changeStateEsp}>
-                  Guardar
-                </div>
-              </div>
-            </div>
-          </div>
-        </Box>
-      </Modal>
+      <ModalConfig
+        isOpenModalConfig={isOpenModalConfig}
+        setIsOpenModalConfig={setIsOpenModalConfig}
+        stateWaterPump={stateWaterPump}
+        setstateWaterPump={setstateWaterPump}
+      />
     </>
   );
 };

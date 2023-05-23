@@ -1,5 +1,6 @@
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import { plantaService } from "../../../services/PlantaController.service";
 
 export const ConfigTabDrinks = (props: any) => {
   const [formData, setformData] = useState({
@@ -11,11 +12,12 @@ export const ConfigTabDrinks = (props: any) => {
     setformData({ ...formData, pwm: parseInt(pwmTmp) });
   };
 
-  const onChangeStatePumpButton = () => {
-    if (formData.statePump === "OFF") {
-      setformData({ ...formData, statePump: "ON" });
+  const onChangeStatePumpButton = async () => {
+    const responseStateServer = await plantaService.postWaterPump1OnOFF();
+    if (formData.statePump === "OFF" && responseStateServer=== "OFF") {
+      setformData({ ...formData, statePump: "ON",pwm: 255 });
     } else {
-      setformData({ ...formData, statePump: "OFF" });
+      setformData({ ...formData, statePump: "OFF",pwm: 0 });
     }
   };
 
