@@ -18,7 +18,10 @@ Ideas or questions are accepted, have a good day :)
 <img src="https://camo.githubusercontent.com/37d5b283622606fb7fcee3d6767f9128871c6c2b44121b7abe308d85e443e917/68747470733a2f2f692e6962622e636f2f356b4d524467672f706c616e74612e706e67" >
 </div>
 
+In progress: 
 
+Currently, it only turns a pump on and off via Wi-Fi or what you connect to the relay.
+use the physical pin d3.
 
 --------
 
