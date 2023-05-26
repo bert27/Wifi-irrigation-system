@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { plantaService } from "../../services/PlantaController.service";
 import "./style.sass";
 import { ReactComponent as IcoWaterOn } from "./../../icons/waterOn.svg";

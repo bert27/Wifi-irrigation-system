@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import TabContext from "@mui/lab/TabContext";
 import TabPanel from "@mui/lab/TabPanel";
-import { ConfigTabDrinks } from "../../pages/drinks/tabs/config-tab-drinks";
+import { ConfigTabDrinks } from "../../pages/drinks/tabs/config-tab-drinks/config-tab-drinks";
 const tabsUrl = {
   config: {
     url: "/drinks/config",

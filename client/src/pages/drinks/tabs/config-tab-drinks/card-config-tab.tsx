@@ -1,39 +1,46 @@
-import { Box, Button, Paper, TextField, Typography } from "@mui/material";
-import { useState } from "react";
-import { plantaService } from "../../../services/PlantaController.service";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { ReactComponent as IcoWaterOn } from "../../../../icons/waterOn.svg";
+import { ReactComponent as IcoWaterOff } from "../../../../icons/waterOff.svg";
 
-export const ConfigTabDrinks = (props: any) => {
-  const [formData, setformData] = useState({
-    pwm: 0,
-    statePump: "OFF",
-  });
-
-  const onChangePWM = (pwmTmp: string) => {
-    setformData({ ...formData, pwm: parseInt(pwmTmp) });
+interface CardConfigTabProps {
+  title: string;
+  formData: {
+    pwm: number;
+    statePump: string;
   };
-
-  const onChangeStatePumpButton = async () => {
-    const responseStateServer = await plantaService.postWaterPump1OnOFF();
-    if (formData.statePump === "OFF" && responseStateServer=== "OFF") {
-      setformData({ ...formData, statePump: "ON",pwm: 255 });
-    } else {
-      setformData({ ...formData, statePump: "OFF",pwm: 0 });
-    }
-  };
+  onChangeStatePumpButton: () => Promise<void>;
+  onChangePWM: (pwmTmp: string) => void;
+}
+export const CardConfigTab = (props: CardConfigTabProps) => {
+  const { formData, onChangePWM, onChangeStatePumpButton, title } = props;
 
   const sendFormData = () => {};
   return (
-    <>
-      <Paper elevation={2} sx={{ padding: "1em" }}>
-        <Typography variant="h6" gutterBottom>
-          Config:
-        </Typography>
+    <Card>
+      <CardContent>
+        <Box sx={{ display: "flex", alignItems: "baseline" }}>
+          {formData.statePump === "ON" ? (
+            <IcoWaterOn className="buttonsvg" style={{ fill: "black" }} />
+          ) : (
+            <IcoWaterOff className="buttonsvg " style={{ fill: "black" }} />
+          )}
+          <Typography variant="h6" gutterBottom>
+            {title}
+          </Typography>
+        </Box>
         <Box
           sx={{
             display: "flex",
-            alignItems: "baseline",
+            width: "100%",
             justifyContent: "space-between",
-            width: "40%",
+            marginBottom: "1em",
           }}
         >
           <Typography variant="h6" gutterBottom>
@@ -50,9 +57,9 @@ export const ConfigTabDrinks = (props: any) => {
         <Box
           sx={{
             display: "flex",
-            alignItems: "baseline",
+            width: "100%",
             justifyContent: "space-between",
-            width: "40%",
+            marginBottom: "1em",
           }}
         >
           <TextField
@@ -76,7 +83,7 @@ export const ConfigTabDrinks = (props: any) => {
             {"set"}
           </Button>
         </Box>
-      </Paper>
-    </>
+      </CardContent>
+    </Card>
   );
 };
