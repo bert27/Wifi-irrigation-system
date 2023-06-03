@@ -8,14 +8,12 @@ import {
 } from "@mui/material";
 import { ReactComponent as IcoWaterOn } from "../../../../icons/waterOn.svg";
 import { ReactComponent as IcoWaterOff } from "../../../../icons/waterOff.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { WaterPumpInterface } from "./config-tab-drinks";
 const color = "#009688";
 
 interface CardConfigTabProps {
-  card: {
-    id: number;
-    title: string;
-  };
+  card: WaterPumpInterface;
 
   sendFormDataServer: (
     data: {
@@ -28,21 +26,29 @@ interface CardConfigTabProps {
 
 interface SliderComponentProps {
   onChangeValue: (pwmTmp: number) => void;
+  isTime?: boolean;
+  valueSlider: number;
 }
 
 export const SliderComponent = (props: SliderComponentProps) => {
-  const [value, setValue] = useState(30 as number | number[]);
-  const { onChangeValue } = props;
+  const secondsToTime = 20;
+  const { onChangeValue, isTime, valueSlider } = props;
+  const [value, setValue] = useState(valueSlider as number | number[]);
+
   const marks = [
     {
       value: 0,
-      label: "OFF",
+      label: isTime ? "0" : "OFF",
     },
     {
-      value: 255,
-      label: "On",
+      value: isTime ? secondsToTime : 255,
+      label: isTime ? `${secondsToTime}s` : "ON",
     },
   ];
+
+  useEffect(() => {
+    setValue(valueSlider as number);
+  }, [valueSlider]);
 
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
     setValue(newValue);
@@ -55,7 +61,7 @@ export const SliderComponent = (props: SliderComponentProps) => {
         onChange={handleSliderChange}
         valueLabelDisplay="on"
         marks={marks}
-        max={255}
+        max={isTime ? secondsToTime : 255}
         sx={{
           "& .MuiSlider-thumb": {
             color: color,
@@ -79,11 +85,15 @@ export const SliderComponent = (props: SliderComponentProps) => {
 
 export const CardConfigTab = (props: CardConfigTabProps) => {
   const { sendFormDataServer, card } = props;
-  const [cardForm, setCarForm] = useState({ pwm: 0, timeCalibration: 0 });
-
+  const [cardForm, setCarForm] = useState({
+    pwm: card.pwm,
+    timeCalibration: card.timeCalibration,
+  });
 
   const onChangeBinaryValue = () => {
     if (cardForm.pwm > 0) {
+      console.log("here")
+
       setCarForm({ ...cardForm, pwm: 0 });
       sendFormDataServer(
         {
@@ -114,20 +124,29 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
   const sendFormData = () => {
     sendFormDataServer(cardForm, card.id);
   };
-
+console.log(cardForm)
   return (
     <Card>
       <CardContent>
         <Box
           sx={{
             display: "flex",
-            alignItems: "baseline",
+            alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          <Typography variant="h6" gutterBottom>
-            {card.title}
-          </Typography>
+          <Box>
+            <Typography
+              variant="h6"
+              gutterBottom={false}
+              sx={{ fontWeight: "bold", color: color }}
+            >
+              {card.title}
+            </Typography>
+            <Typography variant="subtitle1" gutterBottom>
+              {card.liquid}
+            </Typography>
+          </Box>
           <Button
             sx={{ backgroundColor: color }}
             variant="contained"
@@ -148,6 +167,7 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
             )}
           </Button>
         </Box>
+
         <Typography
           variant="subtitle2"
           gutterBottom={false}
@@ -163,7 +183,10 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
             alignItems: "center",
           }}
         >
-          <SliderComponent onChangeValue={onChangePwmValue} />
+          <SliderComponent
+            onChangeValue={onChangePwmValue}
+            valueSlider={cardForm.pwm}
+          />
         </Box>
         <Typography
           variant="subtitle2"
@@ -181,7 +204,11 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
             alignItems: "center",
           }}
         >
-          <SliderComponent onChangeValue={onChangeTimeCalibrationValue} />
+          <SliderComponent
+            onChangeValue={onChangeTimeCalibrationValue}
+            isTime={true}
+            valueSlider={cardForm.timeCalibration}
+          />
         </Box>
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Button
