@@ -3,10 +3,17 @@
 #include "AsyncJson.h"
 RTC_DS3231 rtc;
 
-// char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+;
 const char *DiasSemana[] = {"Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"};
-#define pinD5 14
-#define pinD6 12
+// PINOUTS - GPIOS:
+#define waterPump1 16 // waterpump in PIN D0
+#define waterPump2 5  // waterpump in PIN D1
+#define waterPump3 4  // waterpump in PIN D2
+#define waterPump4 0  // waterpump in PIN D3
+
+#define pinClock1 14 // OPTIONAL CLOCK PIN 1 IN D5
+#define pinClock2 12 // OPTIONAL CLOCK PIN 2 IN D6
+
 AsyncWebServer server(80);
 int positionInList = 0;
 int MaxpositionInList = 20;
@@ -24,7 +31,7 @@ const char index_html[] PROGMEM = R"rawliteral(
     body {max-width: 600px; margin:0px auto; padding-bottom: 25px;}
     .switch {position: relative; display: inline-block; width: 120px; height: 68px} 
     .switch input {display: none}
-    .slider {position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border-radius: 6px}
+    .slider {position: absolute; top: 0; left: 0; right: 0; bottom: 0; ba<ckground-color: #ccc; border-radius: 6px}
     .slider:before {position: absolute; content: ""; height: 52px; width: 52px; left: 8px; bottom: 8px; background-color: #fff; -webkit-transition: .4s; transition: .4s; border-radius: 3px}
     input:checked+.slider {background-color: #b30000}
     input:checked+.slider:before {-webkit-transform: translateX(52px); -ms-transform: translateX(52px); transform: translateX(52px)}
@@ -38,7 +45,6 @@ const char index_html[] PROGMEM = R"rawliteral(
 </html>
 )rawliteral";
 
-#define waterPump1 0
 void homeRequest(AsyncWebServerRequest *request)
 {
   request->send(200, "text/plain", "Servidor robot");
@@ -113,6 +119,21 @@ String getClock()
 void InitServer()
 {
 
+  server.on("/waterPump1OnOFF", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
+              pinMode(waterPump1, OUTPUT);
+              if (digitalRead(waterPump1))
+              {
+                digitalWrite(waterPump1, 0);
+                request->send(200, "text/plain", "ON");
+              }
+              else
+              {
+                digitalWrite(waterPump1, 1);
+
+                request->send(200, "text/plain", "OFF");
+              } });
+
 #ifndef ESP8266
   while (!Serial)
     ; // wait for serial port to connect. Needed for native USB
@@ -128,12 +149,7 @@ void InitServer()
   if (rtc.lostPower())
   {
     Serial.println("RTC lost power, let's set the time!");
-    // When time needs to be set on a new device, or after a power loss, the
-    // following line sets the RTC to the date & time this sketch was compiled
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    // This line sets the RTC with an explicit date & time, for example to set
-    // January 21, 2014 at 3am you would call:
-    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
   }
   server.on("/", HTTP_GET, homeRequest);
   server.on("/item", HTTP_GET, getRequest);
@@ -150,11 +166,6 @@ void InitServer()
   server.on("/getList", HTTP_GET, [](AsyncWebServerRequest *request)
             {
 
- // request->send(200, "application/json", "{\"message\":\"Welcome\"}");  
-
- 
-
-// request->send(200,"text/plain", ArrayList[0][20]);  
 String alldata;
  for(int i=0;i<MaxpositionInList;i++){
 alldata=alldata + (ArrayList[0][i] + "-"+ ArrayList[1][i] + "-" +  ArrayList[2][i]) + "/";
@@ -166,22 +177,6 @@ alldata=alldata + (ArrayList[0][i] + "-"+ ArrayList[1][i] + "-" +  ArrayList[2][
  char str [32] = "";
  dtostrf(rtc.getTemperature(), 8, 2, str);
   request->send(200, "text/plain", str); });
-
-  server.on("/waterPump1OnOFF", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
-              pinMode(waterPump1, OUTPUT);
-              if (digitalRead(waterPump1))
-              {
-                digitalWrite(waterPump1, 0);
-                request->send(200, "text/plain", "ON");
-              }
-              else
-              {
-                digitalWrite(waterPump1, 1);
-
-                request->send(200, "text/plain", "OFF");
-              } })
-;
 
   server.on("/addTaskEsp", HTTP_GET, [](AsyncWebServerRequest *request)
             {
