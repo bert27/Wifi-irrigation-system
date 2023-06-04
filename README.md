@@ -20,8 +20,13 @@ Ideas or questions are accepted, have a good day :)
 
 In progress: 
 
-Currently, it only turns a pump on and off via Wi-Fi or what you connect to the relay.
-use the physical pin d3.
+#define waterPump1 16 // waterpump in PIN D0
+#define waterPump2 5  // waterpump in PIN D1
+#define waterPump3 4  // waterpump in PIN D2
+#define waterPump4 0  // waterpump in PIN D3
+
+#define pinClock1 14 // OPTIONAL CLOCK PIN 1 IN D5
+#define pinClock2 12 // OPTIONAL CLOCK PIN 2 IN D6
 
 --------
 
