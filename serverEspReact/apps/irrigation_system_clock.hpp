@@ -121,32 +121,43 @@ void InitServer()
 {
   // https://techtutorialsx.com/2017/12/17/esp32-arduino-http-server-getting-query-parameters/
   // https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266WebServer/README.rst
-  server.on("/waterPump1OnOFF", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
-              String nParams;
-           nParams = request->params();
-           
-   AsyncWebParameter* param1 = request->getParam(0);
-    String idValue = param1->value();
-    AsyncWebParameter* param2 = request->getParam(1);
-    String pwmValue = param2->value();
-    AsyncWebParameter* param3 = request->getParam(2);
-    String timeCalibrationValue = param3->value();
+server.on("/waterPump1OnOFF", HTTP_GET, [](AsyncWebServerRequest *request)
+{
+  String nParams;
+  nParams = request->params();
 
+  AsyncWebParameter* param1 = request->getParam(0);
+  String idValue = param1->value();
+  AsyncWebParameter* param2 = request->getParam(1);
+  int pwmValue = param2->value().toInt();
+  AsyncWebParameter* param3 = request->getParam(2);
+  String timeCalibrationValue = param3->value();
 
-              pinMode(waterPump1, OUTPUT);
-              if (digitalRead(waterPump1))
-              {
-                digitalWrite(waterPump1, 0);
-                
-    request->send(200, "text/plain", "ON");
-              }
-              else
-              {
-                digitalWrite(waterPump1, 1);
+  switch (idValue.toInt()) {
+    case 1:
+      pinMode(waterPump1, OUTPUT);
+      analogWrite(waterPump1, pwmValue);
+      break;
+    case 2:
+      pinMode(waterPump2, OUTPUT);
+      analogWrite(waterPump2, pwmValue);
+      break;
+    case 3:
+      pinMode(waterPump3, OUTPUT);
+      analogWrite(waterPump3, pwmValue);
+      break;
+    case 4:
+      pinMode(waterPump4, OUTPUT);
+      analogWrite(waterPump4, pwmValue);
+      break;
+    default:
+      // Invalid idValue
+      break;
+  }
 
-                request->send(200, "text/plain", "OFF");
-              } });
+  request->send(200, "text/plain", "OK");
+});
+
 
 #ifndef ESP8266
   while (!Serial)

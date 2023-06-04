@@ -1,4 +1,4 @@
-import { Grid, Paper, Typography } from "@mui/material";
+import { Alert, Grid, Paper, Snackbar, Typography } from "@mui/material";
 import { plantaService } from "../../../../services/PlantaController.service";
 
 import { CardConfigTab } from "./card-config-tab";
@@ -45,6 +45,8 @@ const waterPumps = [
 
 export const ConfigTabDrinks = () => {
   const [cardsResponse, setCardsResponse] = useState(waterPumps);
+  const [messageUi, setMessageUi] = useState(undefined as undefined | string);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const sendFormDataServer = async (
     data: { pwm: number; timeCalibration: number },
     id: number
@@ -54,7 +56,14 @@ export const ConfigTabDrinks = () => {
       pwm: data.pwm,
       timeCalibration: data.timeCalibration,
     });
-    console.log("responseStateServer", responseStateServer);
+    if (responseStateServer === "OK") {
+      setMessageUi("Status changed on server successfully");
+      setOpenSnackbar(true);
+      setTimeout(() => {
+        setOpenSnackbar(false);
+        setMessageUi(undefined);
+      }, 2000);
+    }
 
     const cardsResponseCopy = [...cardsResponse];
 
@@ -69,6 +78,16 @@ export const ConfigTabDrinks = () => {
 
   return (
     <>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert onClose={() => setOpenSnackbar(false)} severity="info">
+          {messageUi}
+        </Alert>
+      </Snackbar>
+   
       <Paper elevation={2} sx={{ padding: "1em", background: "#C0C999" }}>
         <Typography variant="h6" gutterBottom>
           Config:
@@ -86,4 +105,4 @@ export const ConfigTabDrinks = () => {
       </Paper>
     </>
   );
-};
+}
