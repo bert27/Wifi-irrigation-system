@@ -18,15 +18,15 @@ Ideas or questions are accepted, have a good day :)
 <img src="https://camo.githubusercontent.com/37d5b283622606fb7fcee3d6767f9128871c6c2b44121b7abe308d85e443e917/68747470733a2f2f692e6962622e636f2f356b4d524467672f706c616e74612e706e67" >
 </div>
 
-In progress: 
+*In progress: *
 
-#define waterPump1 16 // waterpump in PIN D0
-#define waterPump2 5  // waterpump in PIN D1
-#define waterPump3 4  // waterpump in PIN D2
-#define waterPump4 0  // waterpump in PIN D3
+ **WATERPUMP1 16 IN PIN D0
+ WATERPUMP2  IN PIN D1
+ WATERPUMP3  IN PIN D2
+ WATERPUMP4  IN PIN D3**
 
-#define pinClock1 14 // OPTIONAL CLOCK PIN 1 IN D5
-#define pinClock2 12 // OPTIONAL CLOCK PIN 2 IN D6
+**PINCLOCK1 // OPTIONAL CLOCK PIN 1 IN D5
+ PINCLOCK2 // OPTIONAL CLOCK PIN 2 IN D6**
 
 --------
 
