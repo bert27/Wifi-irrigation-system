@@ -1,16 +1,11 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Slider,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { ReactComponent as IcoWaterOn } from "../../../../icons/waterOn.svg";
 import { ReactComponent as IcoWaterOff } from "../../../../icons/waterOff.svg";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { WaterPumpInterface } from "./config-tab-drinks";
-const color = "#009688";
+import { SliderComponent } from "./components/slider-material";
+
+export const color = "#009688";
 
 interface CardConfigTabProps {
   card: WaterPumpInterface;
@@ -24,65 +19,6 @@ interface CardConfigTabProps {
   ) => void;
 }
 
-interface SliderComponentProps {
-  onChangeValue: (pwmTmp: number) => void;
-  isTime?: boolean;
-  valueSlider: number;
-}
-
-export const SliderComponent = (props: SliderComponentProps) => {
-  const secondsToTime = 20;
-  const { onChangeValue, isTime, valueSlider } = props;
-  const [value, setValue] = useState(valueSlider as number | number[]);
-
-  const marks = [
-    {
-      value: 0,
-      label: isTime ? "0" : "OFF",
-    },
-    {
-      value: isTime ? secondsToTime : 255,
-      label: isTime ? `${secondsToTime}s` : "ON",
-    },
-  ];
-
-  useEffect(() => {
-    setValue(valueSlider as number);
-  }, [valueSlider]);
-
-  const handleSliderChange = (event: Event, newValue: number | number[]) => {
-    setValue(newValue);
-    onChangeValue(newValue as number);
-  };
-
-  return (
-    <Box sx={{ padding: "1em", marginTop: "1em", width: "100%" }}>
-      <Slider
-        onChange={handleSliderChange}
-        valueLabelDisplay="on"
-        marks={marks}
-        max={isTime ? secondsToTime : 255}
-        sx={{
-          "& .MuiSlider-thumb": {
-            color: color,
-          },
-          "& .MuiSlider-track": {
-            color: color,
-          },
-          "& .MuiSlider-rail": {
-            color: "#acc4e4",
-          },
-          "& .MuiSlider-active": {
-            color: "green",
-          },
-        }}
-        value={typeof value === "number" ? value : 0}
-        aria-label="Disabled slider"
-      />
-    </Box>
-  );
-};
-
 export const CardConfigTab = (props: CardConfigTabProps) => {
   const { sendFormDataServer, card } = props;
   const [cardForm, setCarForm] = useState({
@@ -92,8 +28,6 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
 
   const onChangeBinaryValue = () => {
     if (cardForm.pwm > 0) {
-      console.log("here")
-
       setCarForm({ ...cardForm, pwm: 0 });
       sendFormDataServer(
         {
@@ -121,10 +55,6 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
     setCarForm({ ...cardForm, timeCalibration: timeCalibrationTmp });
   };
 
-  const sendFormData = () => {
-    sendFormDataServer(cardForm, card.id);
-  };
-console.log(cardForm)
   return (
     <Card>
       <CardContent>
@@ -154,14 +84,12 @@ console.log(cardForm)
           >
             {cardForm.pwm === 0 ? (
               <>
-                {" "}
-                PAUSE{" "}
+                PAUSE
                 <IcoWaterOff className="buttonsvg" style={{ fill: "black" }} />
               </>
             ) : (
               <>
-                {" "}
-                ON{" "}
+                ON
                 <IcoWaterOn className="buttonsvg" style={{ fill: "black" }} />
               </>
             )}
@@ -173,7 +101,7 @@ console.log(cardForm)
           gutterBottom={false}
           sx={{ fontWeight: "bold", color: color }}
         >
-          {"PWM:"}
+          PWM:
         </Typography>
         <Box
           sx={{
@@ -214,9 +142,9 @@ console.log(cardForm)
           <Button
             sx={{ backgroundColor: "#009688" }}
             variant="contained"
-            onClick={sendFormData}
+            onClick={() => sendFormDataServer(cardForm, card.id)}
           >
-            {"set"}
+            SET
           </Button>
         </Box>
       </CardContent>

@@ -26,7 +26,7 @@ export const ModalConfig = (props: ModalConfigProps) => {
 
 
   async function changeStateWatterPump1() {
-    const responseStateServer = await plantaService.postWaterPump1OnOFF();
+    const responseStateServer = await plantaService.getWaterPump1OnOFF();
     setstateWaterPump(responseStateServer);
   }
 

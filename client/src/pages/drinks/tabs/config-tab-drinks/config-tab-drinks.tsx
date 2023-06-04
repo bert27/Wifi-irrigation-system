@@ -44,14 +44,27 @@ const waterPumps = [
 ] as WaterPumpInterface[];
 
 export const ConfigTabDrinks = () => {
-
   const [cardsResponse, setCardsResponse] = useState(waterPumps);
   const sendFormDataServer = async (
     data: { pwm: number; timeCalibration: number },
     id: number
   ) => {
-    console.log(data, id);
-    const responseStateServer = await plantaService.postWaterPump1OnOFF();
+    const responseStateServer = await plantaService.getWaterPump1OnOFF({
+      id,
+      pwm: data.pwm,
+      timeCalibration: data.timeCalibration,
+    });
+    console.log("responseStateServer", responseStateServer);
+
+    const cardsResponseCopy = [...cardsResponse];
+
+    cardsResponseCopy.forEach((element) => {
+      if (element.id === id) {
+        element.pwm = data.pwm;
+        element.timeCalibration = data.timeCalibration;
+        setCardsResponse(cardsResponseCopy);
+      }
+    });
   };
 
   return (

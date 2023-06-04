@@ -1,26 +1,24 @@
 import axios from "axios";
-
+import qs from "qs";
 export const plantaService = {
   getList,
   getClock,
   getTemperature,
   postaddTaskEsp,
-  postWaterPump1OnOFF,
+  getWaterPump1OnOFF,
 };
 
 const directionWeb = process.env.REACT_APP_API_DIR;
 
-
-
-function postWaterPump1OnOFF(data) {
+function getWaterPump1OnOFF(data) {
+  const params = qs.stringify(data);
   return axios
-    .get(`${directionWeb}/waterPump1OnOFF`, data, getRequestOptions("GET"))
+    .get(`${directionWeb}/waterPump1OnOFF?${params}`)
     .then(handleResponse)
     .then((response) => {
       return response;
     });
 }
-
 
 function getList(data) {
   return axios
@@ -58,7 +56,6 @@ function getClock(data) {
       return response;
     });
 }
-
 
 //---------------------AUX---
 function getRequestOptions(method) {
