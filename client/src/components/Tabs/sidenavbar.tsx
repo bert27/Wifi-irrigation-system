@@ -6,6 +6,7 @@ import { Link, useParams } from "react-router-dom";
 import TabContext from "@mui/lab/TabContext";
 import TabPanel from "@mui/lab/TabPanel";
 import { ConfigTabDrinks } from "../../pages/drinks/tabs/config-tab-drinks/config-tab-drinks";
+import { Controls } from "../../pages/drinks/controls";
 const tabsUrl = {
   config: {
     url: "/drinks/config",
@@ -16,6 +17,12 @@ const tabsUrl = {
     url: "/drinks",
     tab: "drinks",
     value: "drinks",
+  },
+
+  controls: {
+    url: "/drinks/controls",
+    tab: "controls",
+    value: "controls",
   },
 };
 
@@ -34,7 +41,9 @@ export const ComponentTabs = (): React.ReactElement => {
   useEffect(() => {
     if (tabRouter === tabsUrl.config.tab) {
       setValueTab(tabsUrl.config.value);
-    } else {
+    }    else if (tabRouter === tabsUrl.controls.tab) {
+      setValueTab(tabsUrl.controls.value);
+    }else {
       setValueTab(tabsUrl.drinks.value);
     }
   }, [tabRouter]);
@@ -54,6 +63,12 @@ export const ComponentTabs = (): React.ReactElement => {
                 label="Config"
                 value={tabsUrl.config.value}
                 to={tabsUrl.config.url}
+                component={Link}
+              />
+              <Tab
+                label="Controls"
+                value={tabsUrl.controls.value}
+                to={tabsUrl.controls.url}
                 component={Link}
               />
             </Tabs>
@@ -85,7 +100,7 @@ export const ComponentTabs = (): React.ReactElement => {
               }}
             >
               {drinks.map((drink) => (
-                <Box sx={{ padding: "1em" }}>
+                <Box sx={{ padding: "1em" }} key={drink}>
                   <Button
                     sx={{ backgroundColor: "#576CBC" }}
                     variant="contained"
@@ -94,6 +109,23 @@ export const ComponentTabs = (): React.ReactElement => {
                   </Button>
                 </Box>
               ))}
+            </Box>
+          </TabPanel>
+          <TabPanel
+            value={tabsUrl.controls.value}
+            id={tabsUrl.controls.value}
+            aria-labelledby={tabsUrl.controls.value}
+          >
+            <Box
+              sx={{
+                marginTop: "10px",
+                width: "60%",
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <Controls/>
             </Box>
           </TabPanel>
         </TabContext>

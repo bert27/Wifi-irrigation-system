@@ -2,18 +2,18 @@
 #include <RTClib.h>
 #include <ArduinoJson.h>
 #include "AsyncJson.h"
+
 RTC_DS3231 rtc;
 
-;
 const char *DiasSemana[] = {"Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"};
 // PINOUTS - GPIOS:
-#define waterPump1 16 // waterpump in PIN D0
-#define waterPump2 5  // waterpump in PIN D1
-#define waterPump3 4  // waterpump in PIN D2
-#define waterPump4 0  // waterpump in PIN D3
+#define waterPump1 0 // waterpump in PIN D3
+#define waterPump2 2 // waterpump in PIN D4
+#define waterPump3 4 // waterpump in PIN D5
+#define waterPump4 0 // waterpump in PIN D6
 
-#define pinClock1 14 // OPTIONAL CLOCK PIN 1 IN D5
-#define pinClock2 12 // OPTIONAL CLOCK PIN 2 IN D6
+#define pinClock1 13 // OPTIONAL CLOCK PIN 1 IN D7
+#define pinClock2 15 // OPTIONAL CLOCK PIN 2 IN D8
 
 AsyncWebServer server(80);
 int positionInList = 0;
@@ -121,8 +121,8 @@ void InitServer()
 {
   // https://techtutorialsx.com/2017/12/17/esp32-arduino-http-server-getting-query-parameters/
   // https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266WebServer/README.rst
-server.on("/waterPump1OnOFF", HTTP_GET, [](AsyncWebServerRequest *request)
-{
+  server.on("/waterPump1OnOFF", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
   String nParams;
   nParams = request->params();
 
@@ -155,9 +155,7 @@ server.on("/waterPump1OnOFF", HTTP_GET, [](AsyncWebServerRequest *request)
       break;
   }
 
-  request->send(200, "text/plain", "OK");
-});
-
+  request->send(200, "text/plain", "OK"); });
 
 #ifndef ESP8266
   while (!Serial)
