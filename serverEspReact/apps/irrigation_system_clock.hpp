@@ -5,15 +5,15 @@
 
 RTC_DS3231 rtc;
 
-const char *DiasSemana[] = {"Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"};
+const char *DiasSemana[] = { "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo" };
 // PINOUTS - GPIOS:
-#define waterPump1 0 // waterpump in PIN D3
-#define waterPump2 2 // waterpump in PIN D4
-#define waterPump3 4 // waterpump in PIN D5
-#define waterPump4 0 // waterpump in PIN D6
+#define waterPump1 0  // waterpump in PIN D3
+#define waterPump2 2  // waterpump in PIN D4
+#define waterPump3 4  // waterpump in PIN D5
+#define waterPump4 0  // waterpump in PIN D6
 
-#define pinClock1 13 // OPTIONAL CLOCK PIN 1 IN D7
-#define pinClock2 15 // OPTIONAL CLOCK PIN 2 IN D8
+#define pinClock1 13  // OPTIONAL CLOCK PIN 1 IN D7
+#define pinClock2 15  // OPTIONAL CLOCK PIN 2 IN D8
 
 AsyncWebServer server(80);
 int positionInList = 0;
@@ -46,18 +46,15 @@ const char index_html[] PROGMEM = R"rawliteral(
 </html>
 )rawliteral";
 
-void homeRequest(AsyncWebServerRequest *request)
-{
+void homeRequest(AsyncWebServerRequest *request) {
   request->send(200, "text/plain", "Servidor robot");
 }
 
-void notFound(AsyncWebServerRequest *request)
-{
+void notFound(AsyncWebServerRequest *request) {
   request->send(404, "text/plain", "Not found");
 }
 
-void AddTask(String day, String hours, String minutes)
-{
+void AddTask(String day, String hours, String minutes) {
   Serial.println("Estableciendo riego para el día: " + day);
   Serial.println("A las " + hours + ":" + minutes);
   /*
@@ -71,12 +68,10 @@ void AddTask(String day, String hours, String minutes)
   s1.hours = hours;
   s1.minutes = minutes;*/
   Serial.println("check");
-  if (positionInList > MaxpositionInList)
-  {
+  if (positionInList > MaxpositionInList) {
     Serial.println("check4");
   }
-  if (positionInList < MaxpositionInList)
-  {
+  if (positionInList < MaxpositionInList) {
     Serial.println("check2");
     // String ArrayList[3][positionInList]={{day}, {hours}, {minutes}};
 
@@ -89,8 +84,7 @@ void AddTask(String day, String hours, String minutes)
 
     // Show elements list
     Serial.println("////////");
-    for (int i = 0; i < MaxpositionInList; i++)
-    {
+    for (int i = 0; i < MaxpositionInList; i++) {
       Serial.println(ArrayList[0][i]);
       Serial.println(ArrayList[1][i]);
       Serial.println(ArrayList[2][i]);
@@ -107,8 +101,7 @@ void AddTask(String day, String hours, String minutes)
                                                           }
   */
 }
-String getClock()
-{
+String getClock() {
   DateTime now;
   now = rtc.now();
   char buffer[25] = "";
@@ -117,168 +110,164 @@ String getClock()
   return buffer;
 }
 
-void InitServer()
-{
+
+
+void InitServer() {
+
+
   // https://techtutorialsx.com/2017/12/17/esp32-arduino-http-server-getting-query-parameters/
   // https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266WebServer/README.rst
-  server.on("/waterPump1OnOFF", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
-  String nParams;
-  nParams = request->params();
+  server.on("/waterPump1OnOFF", HTTP_GET, [](AsyncWebServerRequest *request) {
+    Serial.println("Mensaje GET RECIBIDO");
+    String nParams;
+    nParams = request->params();
 
-  AsyncWebParameter* param1 = request->getParam(0);
-  String idValue = param1->value();
-  AsyncWebParameter* param2 = request->getParam(1);
-  int pwmValue = param2->value().toInt();
-  AsyncWebParameter* param3 = request->getParam(2);
-  String timeCalibrationValue = param3->value();
+    AsyncWebParameter *param1 = request->getParam(0);
+    String idValue = param1->value();
+    AsyncWebParameter *param2 = request->getParam(1);
+    int pwmValue = param2->value().toInt();
+    AsyncWebParameter *param3 = request->getParam(2);
+    String timeCalibrationValue = param3->value();
 
-  switch (idValue.toInt()) {
-    case 1:
-      pinMode(waterPump1, OUTPUT);
-      analogWrite(waterPump1, pwmValue);
-      break;
-    case 2:
-      pinMode(waterPump2, OUTPUT);
-      analogWrite(waterPump2, pwmValue);
-      break;
-    case 3:
-      pinMode(waterPump3, OUTPUT);
-      analogWrite(waterPump3, pwmValue);
-      break;
-    case 4:
-      pinMode(waterPump4, OUTPUT);
-      analogWrite(waterPump4, pwmValue);
-      break;
-    default:
-      // Invalid idValue
-      break;
-  }
+    switch (idValue.toInt()) {
+      case 1:
+        pinMode(waterPump1, OUTPUT);
+        analogWrite(waterPump1, pwmValue);
+        break;
+      case 2:
+        pinMode(waterPump2, OUTPUT);
+        analogWrite(waterPump2, pwmValue);
+        break;
+      case 3:
+        pinMode(waterPump3, OUTPUT);
+        analogWrite(waterPump3, pwmValue);
+        break;
+      case 4:
+        pinMode(waterPump4, OUTPUT);
+        analogWrite(waterPump4, pwmValue);
+        break;
+      default:
+        // Invalid idValue
+        break;
+    }
 
-  request->send(200, "text/plain", "OK"); });
+    request->send(200, "text/plain", "OK");
+  });
 
 #ifndef ESP8266
   while (!Serial)
-    ; // wait for serial port to connect. Needed for native USB
+    ;  // wait for serial port to connect. Needed for native USB
 #endif
-  if (!rtc.begin())
-  {
+  if (!rtc.begin()) {
     Serial.println("Couldn't find RTC");
     Serial.flush();
     // while (1) delay(10);
     rtc.adjust(DateTime((__DATE__), (__TIME__)));
   }
 
-  if (rtc.lostPower())
-  {
+  if (rtc.lostPower()) {
     Serial.println("RTC lost power, let's set the time!");
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
   server.on("/", HTTP_GET, homeRequest);
   server.on("/item", HTTP_GET, getRequest);
+
   server.on(
-      "/item", HTTP_POST, [](AsyncWebServerRequest *request) {}, NULL, postRequest);
+    "/control", HTTP_POST, [](AsyncWebServerRequest *request) {}, NULL, postRequest);
   server.on(
-      "/item", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, putRequest);
+    "/item", HTTP_POST, [](AsyncWebServerRequest *request) {}, NULL, postRequest);
   server.on(
-      "/item", HTTP_PATCH, [](AsyncWebServerRequest *request) {}, NULL, patchRequest);
+    "/item", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, putRequest);
+  server.on(
+    "/item", HTTP_PATCH, [](AsyncWebServerRequest *request) {}, NULL, patchRequest);
   server.on("/item", HTTP_DELETE, deleteRequest);
-  server.on("/getClock", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send(200, "text/plain", getClock()); });
+  server.on("/getClock", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(200, "text/plain", getClock());
+  });
 
-  server.on("/getList", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
+  server.on("/getList", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String alldata;
+    for (int i = 0; i < MaxpositionInList; i++) {
+      alldata = alldata + (ArrayList[0][i] + "-" + ArrayList[1][i] + "-" + ArrayList[2][i]) + "/";
+    };
 
-String alldata;
- for(int i=0;i<MaxpositionInList;i++){
-alldata=alldata + (ArrayList[0][i] + "-"+ ArrayList[1][i] + "-" +  ArrayList[2][i]) + "/";
- };
+    request->send(200, "text/plain", alldata);
+  });
+  server.on("/getTemperature", HTTP_GET, [](AsyncWebServerRequest *request) {
+    char str[32] = "";
+    dtostrf(rtc.getTemperature(), 8, 2, str);
+    request->send(200, "text/plain", str);
+  });
 
- request->send(200,"text/plain", alldata); });
-  server.on("/getTemperature", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
- char str [32] = "";
- dtostrf(rtc.getTemperature(), 8, 2, str);
-  request->send(200, "text/plain", str); });
-
-  server.on("/addTaskEsp", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
-   
+  server.on("/addTaskEsp", HTTP_GET, [](AsyncWebServerRequest *request) {
     int paramsNr = request->params();
-   // Serial.println(paramsNr);
-  String minutesRecibed="";
-  String hourRecibed="";
-    for(int i=0;i<paramsNr;i++){
-       AsyncWebParameter* p = request->getParam(i);
-       String nameParametre= p->name();
-       String valueParametre= p->value();
+    // Serial.println(paramsNr);
+    String minutesRecibed = "";
+    String hourRecibed = "";
+    for (int i = 0; i < paramsNr; i++) {
+      AsyncWebParameter *p = request->getParam(i);
+      String nameParametre = p->name();
+      String valueParametre = p->value();
 
-       // Serial.print("Param name: ");
-       // Serial.println(nameParametre);
+      // Serial.print("Param name: ");
+      // Serial.println(nameParametre);
       //  Serial.print("Param value: ");
       //  Serial.println(valueParametre);
-        Serial.println("//////////////////////");
-                             if(nameParametre=="minutes"){
-                             // Serial.print("Establenciendo minutos ");
-                              minutesRecibed=valueParametre;
-                              }
-                                if(nameParametre=="hour"){
-                                //   Serial.print("Establenciendo hora ");
-                                   hourRecibed=valueParametre;
-                                  }
-                  if(nameParametre=="days"){
-                       Serial.println("Establenciendo nuevos Riegos:");
       Serial.println("//////////////////////");
-    
-                               int str_len = valueParametre.length() + 1; 
-                              char char_array[str_len];
-                              valueParametre.toCharArray(char_array, str_len);
-                                                     
-                         
-                              char* daysArray = strtok(char_array, ",");
-                                  byte i = 0;
-                                    byte m = 0;
-                                  while (daysArray!=NULL) {
+      if (nameParametre == "minutes") {
+        // Serial.print("Establenciendo minutos ");
+        minutesRecibed = valueParametre;
+      }
+      if (nameParametre == "hour") {
+        //   Serial.print("Establenciendo hora ");
+        hourRecibed = valueParametre;
+      }
+      if (nameParametre == "days") {
+        Serial.println("Establenciendo nuevos Riegos:");
+        Serial.println("//////////////////////");
 
-                                    
-                                 String newdata=String(daysArray).substring(0, 1);    
-                                   String newdataValue=String(daysArray).substring(1, 2);  
+        int str_len = valueParametre.length() + 1;
+        char char_array[str_len];
+        valueParametre.toCharArray(char_array, str_len);
 
-                                      //Solo se ejecutara la tarea añadir riego cuando el día sea recibido en true
-                                     if(newdataValue=="s"){
 
-                                      String result=String(daysArray);
-                                      int result_leng=result.length();
- 
-                                      String trueOrFalse=result.substring(8, 9);
-                                      if(trueOrFalse=="t"){      
-                                     // Serial.println("Estableciendo riego para el día: " +  String(DiasSemana[m]) );
-                                     // Serial.println("A las " + hourRecibed +":" + minutesRecibed);
+        char *daysArray = strtok(char_array, ",");
+        byte i = 0;
+        byte m = 0;
+        while (daysArray != NULL) {
 
-                                      AddTask(String(DiasSemana[m]),hourRecibed,minutesRecibed);
 
-  
-                                      }
-                                       
-                                       m++;
-                                
-                                  }
+          String newdata = String(daysArray).substring(0, 1);
+          String newdataValue = String(daysArray).substring(1, 2);
 
-                                     daysArray = strtok(NULL, ",");
-                                      i++;
+          //Solo se ejecutara la tarea añadir riego cuando el día sea recibido en true
+          if (newdataValue == "s") {
+
+            String result = String(daysArray);
+            int result_leng = result.length();
+
+            String trueOrFalse = result.substring(8, 9);
+            if (trueOrFalse == "t") {
+              // Serial.println("Estableciendo riego para el día: " +  String(DiasSemana[m]) );
+              // Serial.println("A las " + hourRecibed +":" + minutesRecibed);
+
+              AddTask(String(DiasSemana[m]), hourRecibed, minutesRecibed);
+            }
+
+            m++;
+          }
+
+          daysArray = strtok(NULL, ",");
+          i++;
         }
-
-
-
-                       
-                   }
-
+      }
     }
 
-      
-  
 
-     request->send(200, "text/plain", "apagado"); });
+
+
+    request->send(200, "text/plain", "apagado");
+  });
   server.onNotFound(notFound);
 
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");

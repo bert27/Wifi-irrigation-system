@@ -22,34 +22,33 @@
 #include <SPI.h>
 
 // PINOUTS - GPIOS:
-#define waterPump1 0 // waterpump in PIN D3
-#define waterPump2 2 // waterpump in PIN D4
-#define waterPump3 4 // waterpump in PIN D5
-#define waterPump4 0 // waterpump in PIN D6
+#define waterPump1 0  // waterpump in PIN D3
+#define waterPump2 2  // waterpump in PIN D4
+#define waterPump3 4  // waterpump in PIN D5
+#define waterPump4 0  // waterpump in PIN D6
 
-#define pinClock1 13 // OPTIONAL CLOCK PIN 1 IN D7
-#define pinClock2 15 // OPTIONAL CLOCK PIN 2 IN D8
+#define pinClock1 13  // OPTIONAL CLOCK PIN 1 IN D7
+#define pinClock2 15  // OPTIONAL CLOCK PIN 2 IN D8
 
-void setup()
-{
+void setup() {
 
-	Serial.begin(9600);
-	Serial.println("Arrancando");
-	pinMode(waterPump1, OUTPUT);
-	pinMode(waterPump2, OUTPUT);
-	pinMode(waterPump3, OUTPUT);
-	pinMode(waterPump4, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("Arrancando");
+  pinMode(waterPump1, OUTPUT);
+  pinMode(waterPump2, OUTPUT);
+  pinMode(waterPump3, OUTPUT);
+  pinMode(waterPump4, OUTPUT);
 
-	digitalWrite(waterPump1, 0);
-	digitalWrite(waterPump2, 0);
-	digitalWrite(waterPump3, 0);
-	digitalWrite(waterPump4, 0);
-	//
-	ControllerDisplay();
-	ConnectWiFi_STA();
-	InitServer();
+  digitalWrite(waterPump1, 0);
+  digitalWrite(waterPump2, 0);
+  digitalWrite(waterPump3, 0);
+  digitalWrite(waterPump4, 0);
+  //
+
+  ConnectWiFi_STA();
+  InitServer();
+  StartDisplay();
+  ListenDisplay();
 }
 
-void loop()
-{
-}
+

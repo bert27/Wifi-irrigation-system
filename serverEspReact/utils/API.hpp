@@ -2,22 +2,19 @@
 
 const char *PARAM_FILTER = "filter";
 
-void getAll(AsyncWebServerRequest *request)
-{
+void getAll(AsyncWebServerRequest *request) {
   String message = "Get All";
   Serial.println(message);
   request->send(200, "text/plain", message);
 }
 
-void getFiltered(AsyncWebServerRequest *request)
-{
+void getFiltered(AsyncWebServerRequest *request) {
   String message = "Get filtered by " + request->getParam(PARAM_FILTER)->value();
   Serial.println(message);
   request->send(200, "text/plain", message);
 }
 
-void getById(AsyncWebServerRequest *request)
-{
+void getById(AsyncWebServerRequest *request) {
   int id = GetIdFromURL(request, "/item/");
 
   String message = String("Get by Id ") + id;
@@ -25,31 +22,39 @@ void getById(AsyncWebServerRequest *request)
   request->send(200, "text/plain", message);
 }
 
-void getRequest(AsyncWebServerRequest *request)
-{
+void getRequest(AsyncWebServerRequest *request) {
 
-  if (request->hasParam(PARAM_FILTER))
-  {
+  if (request->hasParam(PARAM_FILTER)) {
     getFiltered(request);
-  }
-  else if (request->url().indexOf("/item/") != -1)
-  {
+  } else if (request->url().indexOf("/item/") != -1) {
     getById(request);
-  }
-  else
-  {
+  } else {
     getAll(request);
   }
 }
+void postControl(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
 
-void postRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
-{
+
   String bodyContent = GetBodyContent(data, len);
 
   StaticJsonDocument<200> doc;
   DeserializationError error = deserializeJson(doc, bodyContent);
-  if (error)
-  {
+  if (error) {
+    request->send(400);
+    return;
+  }
+
+  String string_data = doc["data"];
+  String message = "Create " + string_data;
+  Serial.println(message);
+  request->send(200, "text/plain", message);
+}
+void postRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+  String bodyContent = GetBodyContent(data, len);
+
+  StaticJsonDocument<200> doc;
+  DeserializationError error = deserializeJson(doc, bodyContent);
+  if (error) {
     request->send(400);
     return;
   }
@@ -60,15 +65,13 @@ void postRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size
   request->send(200, "text/plain", message);
 }
 
-void patchRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
-{
+void patchRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
   int id = GetIdFromURL(request, "/item/");
   String bodyContent = GetBodyContent(data, len);
 
   StaticJsonDocument<200> doc;
   DeserializationError error = deserializeJson(doc, bodyContent);
-  if (error)
-  {
+  if (error) {
     request->send(400);
     return;
   }
@@ -79,15 +82,13 @@ void patchRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, siz
   request->send(200, "text/plain", message);
 }
 
-void putRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
-{
+void putRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
   int id = GetIdFromURL(request, "/item/");
   String bodyContent = GetBodyContent(data, len);
 
   StaticJsonDocument<200> doc;
   DeserializationError error = deserializeJson(doc, bodyContent);
-  if (error)
-  {
+  if (error) {
     request->send(400);
     return;
   }
@@ -98,8 +99,7 @@ void putRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_
   request->send(200, "text/plain", message);
 }
 
-void deleteRequest(AsyncWebServerRequest *request)
-{
+void deleteRequest(AsyncWebServerRequest *request) {
   int id = GetIdFromURL(request, "/item/");
 
   String message = String("Delete ") + id;

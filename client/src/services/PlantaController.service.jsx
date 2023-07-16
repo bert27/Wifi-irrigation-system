@@ -8,7 +8,10 @@ export const plantaService = {
   getWaterPump1OnOFF,
 };
 
-const directionWeb = process.env.REACT_APP_API_DIR;
+export const directionWeb = process.env.REACT_APP_API_DIR;
+
+
+
 
 function getWaterPump1OnOFF(data) {
   const params = qs.stringify(data);
@@ -58,7 +61,7 @@ function getClock(data) {
 }
 
 //---------------------AUX---
-function getRequestOptions(method) {
+export function getRequestOptions(method) {
   return {
     method: method,
     headers: {
@@ -67,7 +70,7 @@ function getRequestOptions(method) {
   };
 }
 
-function handleResponse(response) {
+export function handleResponse(response) {
   var p = new Promise((resolve, reject) => {
     const data = response.data;
     if (response.status >= 400) {

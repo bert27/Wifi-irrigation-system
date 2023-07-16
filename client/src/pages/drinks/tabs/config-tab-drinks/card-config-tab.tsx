@@ -34,6 +34,7 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
           ...cardForm,
           pwm: 0,
         },
+        
         card.id
       );
     } else {
@@ -47,6 +48,7 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
       );
     }
   };
+
 
   const onChangePwmValue = (pwmTmp: number) => {
     setCarForm({ ...cardForm, pwm: pwmTmp });
