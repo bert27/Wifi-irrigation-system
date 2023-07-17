@@ -14,16 +14,16 @@ int stop = 500;
 
 void SetScreen(String first, String second, int size) {
   display.clearDisplay();
-  display.setRotation(2);
+  display.setRotation(0);
 
   display.setTextSize(size);            // Normal 1:1 pixel scale
   display.setTextColor(SSD1306_WHITE);  // Draw white text
-  display.setCursor(10, 0);             // Start at top-left corner
+  display.setCursor(10, 10);            // Start at top-left corner
   display.println(first);
   display.setCursor(10, 40);
-  display.println(second);
+  display.println(second.c_str());
   display.display();
-  delay(200);
+  delay(50);
 }
 
 void StartDisplay() {
@@ -63,8 +63,8 @@ void Control(String direction) {
   }
 }
 
-void loop() {
-  Serial.println(positionTmp);
+void loopDisplay() {
+
   /*
   if (positionTmp == 0) {
     SetScreen("Elije", "Cocktail", 2);

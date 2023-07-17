@@ -18,6 +18,7 @@
 #include "apps\irrigation_system_clock.hpp"
 
 #include "apps\display.hpp"
+#include "apps\encoder.hpp"
 #include <Wire.h>
 #include <SPI.h>
 
@@ -49,6 +50,11 @@ void setup() {
   InitServer();
   StartDisplay();
   ListenDisplay();
+  setupEncoder();
 }
 
 
+void loop() {
+  loopDisplay();
+  loopEncoder();
+}
