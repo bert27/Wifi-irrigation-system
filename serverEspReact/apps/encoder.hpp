@@ -107,7 +107,8 @@ void loopEncoder()
         {
         case 0:
             Serial.println("Pantalla 0");
-            SetScreen("Elije", "Cocktail", 2);
+            setImage();
+           // SetScreen("Elije", "Cocktail", 2);
             break;
 
         case 1:
