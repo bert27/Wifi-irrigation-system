@@ -25,11 +25,11 @@
 // PINOUTS - GPIOS:
 #define waterPump1 0  // waterpump in PIN D3
 #define waterPump2 2  // waterpump in PIN D4
-#define waterPump3 4  // waterpump in PIN D5
-#define waterPump4 0  // waterpump in PIN D6
+#define waterPump3 16  // waterpump in PIN D5
+#define waterPump4 15  // waterpump in PIN D6
 
-#define pinClock1 13  // OPTIONAL CLOCK PIN 1 IN D7
-#define pinClock2 15  // OPTIONAL CLOCK PIN 2 IN D8
+#define pinClock1 1  // OPTIONAL CLOCK PIN 1 IN D7
+#define pinClock2 3  // OPTIONAL CLOCK PIN 2 IN D8
 
 void setup() {
 
