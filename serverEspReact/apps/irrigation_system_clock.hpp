@@ -6,14 +6,12 @@
 RTC_DS3231 rtc;
 
 const char *DiasSemana[] = { "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo" };
-// PINOUTS - GPIOS:
+
 #define waterPump1 0  // waterpump in PIN D3
 #define waterPump2 2  // waterpump in PIN D4
 #define waterPump3 16  // waterpump in PIN D5
 #define waterPump4 15  // waterpump in PIN D6
 
-#define pinClock1 1  // OPTIONAL CLOCK PIN 1 IN D7
-#define pinClock2 3  // OPTIONAL CLOCK PIN 2 IN D8
 
 AsyncWebServer server(80);
 int positionInList = 0;
@@ -131,19 +129,19 @@ void InitServer() {
 
     switch (idValue.toInt()) {
       case 1:
-        pinMode(waterPump1, OUTPUT);
+      pinMode(waterPump1, OUTPUT);
         analogWrite(waterPump1, pwmValue);
         break;
       case 2:
-        pinMode(waterPump2, OUTPUT);
+      pinMode(waterPump2, OUTPUT);
         analogWrite(waterPump2, pwmValue);
         break;
       case 3:
-        pinMode(waterPump3, OUTPUT);
+         pinMode(waterPump3, OUTPUT);
         analogWrite(waterPump3, pwmValue);
         break;
       case 4:
-        pinMode(waterPump4, OUTPUT);
+          pinMode(waterPump4, OUTPUT);
         analogWrite(waterPump4, pwmValue);
         break;
       default:

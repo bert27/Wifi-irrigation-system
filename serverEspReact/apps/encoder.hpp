@@ -9,119 +9,168 @@ int DT = 12;     // GPIO #4-DT on encoder (Output B)
 int CLK = 13;    // GPIO #5-CLK on encoder (Output A)
 BfButton btn(BfButton::STANDALONE_DIGITAL, btnPin, true, LOW);
 
-String MyDrinks[] = {("Agua"), ("Cocacola")};
-
 int counter = 0;
 int angle = 0;
 int aState;
 int aLastState;
-int MAX_VALUE = 2;
-String chooseDrink = "";
-void getDrinkName(int counter)
+
+bool insideMenuDrink = false;
+
+String Screens[] = {("Initial"), ("Aceptar?"), ("Sirviendo")};
+
+int actualScreen = 0;
+
+class ObjectData
 {
-    chooseDrink = String(MyDrinks[counter - 1]);
+public:
+  String nameLiquid;
+  const char *waterpumpOutput;
+  int gpio;
+};
+
+ObjectData MyDrinks[4] = {
+    {"Cocacola", "waterPump1", 0},
+    {"Agua", "waterPump2", 2},
+    {"Vodka", "waterPump3", 16},
+    {"Naranja", "waterPump4", 15},
+};
+int MAX_VALUE = sizeof(MyDrinks) / sizeof(MyDrinks[0]);
+
+void OffAllwaterpumps()
+{
+  pinMode(0, OUTPUT);
+  pinMode(2, OUTPUT);
+  pinMode(16, OUTPUT);
+  pinMode(15, OUTPUT);
+  digitalWrite(0, 0);
+  digitalWrite(2, 0);
+  digitalWrite(16, 0);
+  digitalWrite(15, 0);
+}
+
+
+void ClickButton()
+{
+  if (actualScreen == 1)
+  {
+    insideMenuDrink = true;
+    actualScreen = 2;
+  }
+  if (actualScreen == 0 & counter != 0)
+  {
+    SetScreen("Aceptar?", MyDrinks[counter - 1].nameLiquid, 2);
+    actualScreen = 1;
+  }
 }
 
 // Button press hanlding function
 void pressHandler(BfButton *btn, BfButton::press_pattern_t pattern)
 {
-    switch (pattern)
-    {
-    case BfButton::SINGLE_PRESS:
-        Serial.println("Single push");
-        getDrinkName(counter);
-        SetScreen("Aceptar?", chooseDrink, 2);
-        break;
+  switch (pattern)
+  {
+  case BfButton::SINGLE_PRESS:
+    Serial.println("Click nornmal");
+    ClickButton();
+    break;
 
-    case BfButton::DOUBLE_PRESS:
-        Serial.println("Double push");
-        break;
+  case BfButton::DOUBLE_PRESS:
+    Serial.println("Doble click");
+    insideMenuDrink = false;
+    counter = 0;
+    actualScreen = 0;
+    SetScreen("Elige", "bebida", 2);
+          OffAllwaterpumps();
+    break;
 
-    case BfButton::LONG_PRESS:
-        Serial.println("Long push");
-        break;
-    }
+  case BfButton::LONG_PRESS:
+    Serial.println("Click largo");
+    insideMenuDrink = false;
+    counter = 0;
+    actualScreen = 0;
+    SetScreen("Elige", "bebida", 2);
+          OffAllwaterpumps();
+    break;
+  }
 }
 
 void setupEncoder()
 {
-    pinMode(CLK, INPUT_PULLUP);
-    pinMode(DT, INPUT_PULLUP);
-    aLastState = digitalRead(CLK);
-    // Button settings
-    btn.onPress(pressHandler)
-        .onDoublePress(pressHandler)     // default timeout
-        .onPressFor(pressHandler, 1000); // custom timeout for 1 second
+  pinMode(CLK, INPUT_PULLUP);
+  pinMode(DT, INPUT_PULLUP);
+  aLastState = digitalRead(CLK);
+  // Button settings
+  btn.onPress(pressHandler)
+      .onDoublePress(pressHandler)     // default timeout
+      .onPressFor(pressHandler, 1000); // custom timeout for 1 second
 }
+
+
 
 void loopEncoder()
 {
-
-    // put your main code here, to run repeatedly:
-
-    // Wait for button press to execute commands
-    btn.read();
-
-    // Mientras se pulsa
-    if (digitalRead(btnPin) == HIGH)
-    { // Si el botón está pulsado
-      // Serial.println("Saliendo Liquido");
-    }
-    else
-    {   // Si el botón no está pulsado
-        // Serial.println("Deteniendo Liquido");
-    }
-    //
-    aState = digitalRead(CLK);
-
-    // Encoder rotation tracking
-    if (aState != aLastState)
+  Serial.println(MAX_VALUE);
+  // put your main code here, to run repeatedly:
+  // Wait for button press to execute commands
+  btn.read();
+  const char *waterpumpOutput = MyDrinks[counter - 1].waterpumpOutput;
+  String nameLiquid = MyDrinks[counter - 1].nameLiquid;
+  int gpio = MyDrinks[counter - 1].gpio;
+  if (digitalRead(btnPin) == HIGH)
+  { // Si el botón no está pulsado
+    if (insideMenuDrink == true)
     {
-
-        if (digitalRead(DT) != aState)
-        {
-            counter++;
-
-            // derecha
-        }
-        else
-        {
-            if (counter > 0)
-            {
-                counter--;
-            }
-
-            /// izquierda
-        }
-        if (counter >= MAX_VALUE)
-        {
-            counter = MAX_VALUE;
-        }
-        if (counter <= -MAX_VALUE)
-        {
-            counter = -MAX_VALUE;
-        }
-        //    SetScreen("counter", String(counter), 2);
-        // Serial.println(counter);
-        switch (counter)
-        {
-        case 0:
-            Serial.println("Pantalla 0");
-            setImage();
-           // SetScreen("Elije", "Cocktail", 2);
-            break;
-
-        case 1:
-            Serial.println("Pantalla 1");
-            SetScreen("Agua", "", 2);
-            break;
-
-        case 2:
-            Serial.println("Pantalla 2");
-            SetScreen("Cocacola", "", 2);
-            break;
-        }
+      pinMode(gpio, OUTPUT);
+      SetScreen("Sirvete", nameLiquid, 2);
+      OffAllwaterpumps();
     }
+  }
+  else
+  {
+    // Si el botón está pulsado
+    if (insideMenuDrink == true)
+    {
+      pinMode(gpio, OUTPUT);
+      SetScreen("Sirviendo", nameLiquid, 2);
+      digitalWrite(gpio, 1);
+    }
+  }
+  //
+  aState = digitalRead(CLK);
 
-    aLastState = aState;
+  // Encoder rotation tracking
+  if (aState != aLastState)
+  {
+    if (insideMenuDrink == false)
+    {
+      actualScreen = 0;
+      if (digitalRead(DT) != aState)
+      {
+        // derecha
+        counter++;
+      }
+      else
+      {
+        if (counter > 0)
+        {
+          /// izquierda
+          counter--;
+        }
+      }
+      if (counter >= MAX_VALUE)
+      {
+        counter = MAX_VALUE;
+      }
+      if (counter <= -MAX_VALUE)
+      {
+        counter = -MAX_VALUE;
+      }
+
+      if (counter != 0)
+      {
+        SetScreen(MyDrinks[counter - 1].nameLiquid, "", 2);
+      }
+    }
+  }
+
+  aLastState = aState;
 }
