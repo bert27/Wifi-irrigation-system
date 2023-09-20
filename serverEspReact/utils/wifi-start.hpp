@@ -2,7 +2,7 @@ void ConnectWiFi_STA()
 {
   Serial.println("");
   WiFi.mode(WIFI_STA);
-  WiFi.begin("MIWIFI_2G_tEDA", "tppjxymms3ns");
+  WiFi.begin("Micasa", "Pussybroken69");
   WiFi.config(ip, gateway, subnet);
   while (WiFi.status() != WL_CONNECTED)
   {

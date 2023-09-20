@@ -1,5 +1,5 @@
-const char* ssid     = "MIWIFI_2G_tEDA";
-const char* password = "tppjxymms3ns";
+const char* ssid     = "Micasa";
+const char* password = "Pussybroken69";
 const char* hostname = "ServerRobot";
 
 IPAddress ip(192, 168, 1, 200);

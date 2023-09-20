@@ -1,7 +1,8 @@
-import { Box, Link, Paper, Tooltip, Typography } from "@mui/material";
+import { Box, Link, Tooltip, Typography } from "@mui/material";
 import { Link as LinkDom } from "react-router-dom";
 import WaterDrop from "@mui/icons-material/WaterDrop";
 import LocalBarIcon from '@mui/icons-material/LocalBar';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 
 interface IconSideNavBarInterface {
   name: string;
@@ -10,8 +11,9 @@ interface IconSideNavBarInterface {
 }
 
 const iconsPages = [
-  { name: "Riego", linkTo: "/", icon: <WaterDrop /> },
+  { name: "Robot", linkTo: "/", icon: <SmartToyIcon /> },
   { name: "Drinks", linkTo: "/drinks", icon: <LocalBarIcon /> },
+  { name: "Riego", linkTo: "/water", icon: <WaterDrop /> },
 ];
 export const SideNavBar = (): React.ReactElement => {
   return (
