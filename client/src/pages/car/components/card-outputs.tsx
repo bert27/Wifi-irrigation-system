@@ -8,35 +8,41 @@ export const CardOutputs = (props: any) => {
   const circlesInitialize = [
     {
       color: "red",
-      name: "Círculo 1",
+      name: "Motor A1",
+      colorLabel: "blue",
     },
     {
       color: "red",
-      name: "Círculo 2",
+      name: "Motor A2",
+      colorLabel: "yellow",
     },
     {
       color: "red",
-      name: "Círculo 3",
+      name: "Motor B1",
+      colorLabel: "black",
     },
     {
       color: "red",
-      name: "Círculo 4",
+      name: "Motor B2",
+      colorLabel: "#969696",
     },
     {
       color: "red",
-      name: "Círculo 5",
+      name: "Motor C1",
+      colorLabel: "purple",
     },
     {
       color: "red",
-      name: "Círculo 6",
+      name: "Motor C2",
+      colorLabel: "green",
     },
   ];
   const [circles, setCircles] = useState(circlesInitialize);
 
-  const sendDataToServer = async (outputSelected: number,value: boolean) => {
+  const sendDataToServer = async (outputSelected: number, value: boolean) => {
     const response = await robotService.sendDataOutputSelectedToServer({
       output: outputSelected,
-      value: value
+      value: value,
     });
     console.log("response", response);
   };
@@ -45,34 +51,35 @@ export const CardOutputs = (props: any) => {
     const circlesCopy = [...circles];
     const circleActual = circlesCopy[index];
 
-    circleActual.color = circleActual.color === "red" ? "green" : "red";
+    circleActual.color = circleActual.color === "green" ? "red" : "green";
     setCircles([...circles.map((c, i) => (i === index ? circleActual : c))]);
 
-    sendDataToServer(index + 1,circleActual.color ==="green" ? true : false);
+    sendDataToServer(index + 1, circleActual.color === "green" ? true : false);
   };
 
   return (
-    <Grid container width={"8em"} spacing={1}>
+    <Grid container width={"26em"} spacing={1}>
       {circles.map((circle, index) => (
         <Grid item xs={6} key={index}>
           <Box
-            sx={
-              {
-                //    display: "flex",
-                //     alignItems: "center",
-                //   justifyContent: "center",
-              }
-            }
+            display={"flex"}
+            alignItems="center"
+            sx={{
+              flexFlow:
+                index === 1 || index === 3 || index === 5 ? "row-reverse" : "",
+            }}
           >
-            {/*          <Box>
-            <Typography
-              variant="body2"
-              color="black"
-              sx={{ textAlign: "center", fontSize: "1em" }}
-            >
-              {circle.name}
-            </Typography>
-      </Box>*/}
+            <Box>
+              <Typography
+                variant="body2"
+                color="black"
+                sx={{ textAlign: "center", fontSize: "1em" }}
+              >
+                {circle.name}
+              </Typography>
+              <Box sx={{ background: circle.colorLabel, width: "100%",height: "1em" }}></Box>
+            </Box>
+
             <Box
               sx={{
                 backgroundColor: circle.color,
