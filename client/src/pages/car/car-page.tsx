@@ -4,6 +4,7 @@ import { HexColorPicker } from "react-colorful";
 import "./styles.css";
 import { robotService } from "../../services/robot-service";
 import { CardOutputs } from "./components/card-outputs";
+import { TableOutputs } from "./components/table-outputs";
 export const CarPage = (props: any) => {
   const [colourSelected, setcolourSelected] = useState("#aabbcc");
   console.log("colourSelected", colourSelected);
@@ -54,6 +55,7 @@ export const CarPage = (props: any) => {
             </Box>
             <CardOutputs />
           </Box>
+          <TableOutputs/>
         </CardContent>
       </Card>
     </Box>

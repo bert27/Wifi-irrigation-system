@@ -11,6 +11,7 @@
     "@mui/styled-engine-sc": "^5.10.16",
     "@mui/styles": "^5.11.13",
     "@mui/system": "*",
+    "@mui/x-data-grid": "^6.15.0",
     "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^11.2.7",
     "@types/node": "^18.11.18",

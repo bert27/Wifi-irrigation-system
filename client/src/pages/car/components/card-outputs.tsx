@@ -1,9 +1,9 @@
-import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import { Box, Grid, Typography } from "@mui/material";
+import { useState } from "react";
+import { robotService } from "../../../services/robot-service";
 
 export const CardOutputs = (props: any) => {
   const size = "3em";
-  const numCircles = 6;
 
   const circlesInitialize = [
     {
@@ -31,8 +31,15 @@ export const CardOutputs = (props: any) => {
       name: "Círculo 6",
     },
   ];
-  const [selectedCircle, setSelectedCircle] = useState(null);
   const [circles, setCircles] = useState(circlesInitialize);
+
+  const sendDataToServer = async (outputSelected: number,value: boolean) => {
+    const response = await robotService.sendDataOutputSelectedToServer({
+      output: outputSelected,
+      value: value
+    });
+    console.log("response", response);
+  };
 
   const handleClick = (index: number) => {
     const circlesCopy = [...circles];
@@ -40,6 +47,8 @@ export const CardOutputs = (props: any) => {
 
     circleActual.color = circleActual.color === "red" ? "green" : "red";
     setCircles([...circles.map((c, i) => (i === index ? circleActual : c))]);
+
+    sendDataToServer(index + 1,circleActual.color ==="green" ? true : false);
   };
 
   return (
@@ -47,11 +56,13 @@ export const CardOutputs = (props: any) => {
       {circles.map((circle, index) => (
         <Grid item xs={6} key={index}>
           <Box
-            sx={{
-          //    display: "flex",
-         //     alignItems: "center",
-           //   justifyContent: "center",
-            }}
+            sx={
+              {
+                //    display: "flex",
+                //     alignItems: "center",
+                //   justifyContent: "center",
+              }
+            }
           >
             {/*          <Box>
             <Typography
