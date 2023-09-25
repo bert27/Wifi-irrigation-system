@@ -2,59 +2,68 @@ import { Box, Grid, Typography } from "@mui/material";
 import { useState } from "react";
 import { robotService } from "../../../services/robot-service";
 
-export const CardOutputs = (props: any) => {
+export interface OutputDataInterface {
+  name: string;
+  colorLabel: string;
+  pin: number;
+  state: boolean;
+}
+
+export const CardOutputs = () => {
   const size = "3em";
 
-  const circlesInitialize = [
+  const outputsData = [
     {
-      color: "red",
       name: "Motor A1",
       colorLabel: "blue",
+      pin: 25,
+      state: false,
     },
     {
-      color: "red",
       name: "Motor A2",
       colorLabel: "yellow",
+      pin: 14,
+      state: false,
     },
     {
-      color: "red",
       name: "Motor B1",
       colorLabel: "black",
+      pin: 27,
+      state: false,
     },
     {
-      color: "red",
       name: "Motor B2",
       colorLabel: "#969696",
+      pin: 32,
+      state: false,
     },
     {
-      color: "red",
       name: "Motor C1",
       colorLabel: "purple",
+      pin: 40,
+      state: false,
     },
     {
-      color: "red",
       name: "Motor C2",
       colorLabel: "green",
+      pin: 50,
+      state: false,
     },
-  ];
-  const [circles, setCircles] = useState(circlesInitialize);
+  ] as OutputDataInterface[];
+  const [circles, setCircles] = useState(outputsData);
 
-  const sendDataToServer = async (outputSelected: number, value: boolean) => {
-    const response = await robotService.sendDataOutputSelectedToServer({
-      output: outputSelected,
-      value: value,
-    });
+  const sendDataToServer = async (outputSelected: OutputDataInterface) => {
+    const response = await robotService.sendDataOutputSelectedToServer(outputSelected);
     console.log("response", response);
   };
 
-  const handleClick = (index: number) => {
-    const circlesCopy = [...circles];
-    const circleActual = circlesCopy[index];
+  const handleClick = (index: number, outputSelect: OutputDataInterface) => {
+    const circleActual = outputSelect;
 
-    circleActual.color = circleActual.color === "green" ? "red" : "green";
+    circleActual.state = !circleActual.state;
     setCircles([...circles.map((c, i) => (i === index ? circleActual : c))]);
 
-    sendDataToServer(index + 1, circleActual.color === "green" ? true : false);
+    sendDataToServer(circleActual);
   };
 
   return (
@@ -77,12 +86,18 @@ export const CardOutputs = (props: any) => {
               >
                 {circle.name}
               </Typography>
-              <Box sx={{ background: circle.colorLabel, width: "100%",height: "1em" }}></Box>
+              <Box
+                sx={{
+                  background: circle.colorLabel,
+                  width: "100%",
+                  height: "1em",
+                }}
+              ></Box>
             </Box>
 
             <Box
               sx={{
-                backgroundColor: circle.color,
+                backgroundColor: circle.state ? "green" : "red",
                 borderRadius: "50%",
                 width: size,
                 height: size,
@@ -92,7 +107,7 @@ export const CardOutputs = (props: any) => {
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onClick={() => handleClick(index)}
+              onClick={() => handleClick(index, circle)}
             >
               <Typography
                 variant="body2"

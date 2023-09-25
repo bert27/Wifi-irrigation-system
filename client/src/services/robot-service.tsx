@@ -1,6 +1,7 @@
 import axios from "axios";
 import qs from "qs";
 import { directionWeb, getRequestOptions } from "./PlantaController.service";
+import { OutputDataInterface } from "../pages/car/components/card-outputs";
 export const robotService = {
   sendDataColorToServer,sendDataOutputSelectedToServer
 };
@@ -26,15 +27,11 @@ async function sendDataColorToServer(
   }
 }
 
-export interface sendDataOutputToServerInterface {
-  output: number;
-  value: boolean
-}
 
 async function sendDataOutputSelectedToServer(
-  data: sendDataOutputToServerInterface
+  outputSelected: OutputDataInterface
 ) {
-  const params = qs.stringify(data);
+  const params = qs.stringify(outputSelected);
   try {
     const response = await axios.get(
       `${directionWeb}/outputRobot?${params}`,
