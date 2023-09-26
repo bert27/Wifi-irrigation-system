@@ -3,6 +3,7 @@ import { plantaService } from "../../../../services/PlantaController.service";
 
 import { CardConfigTab } from "./card-config-tab";
 import { useState } from "react";
+import { AlertComponent } from "../../../../components/Alert/alert-component";
 
 export interface WaterPumpInterface {
   id: number;
@@ -78,16 +79,12 @@ export const ConfigTabDrinks = () => {
 
   return (
     <>
-      <Snackbar
+      <AlertComponent
         open={openSnackbar}
-        autoHideDuration={2000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert onClose={() => setOpenSnackbar(false)} severity="info">
-          {messageUi}
-        </Alert>
-      </Snackbar>
-   
+        message={messageUi}
+        setOpenSnackbar={setOpenSnackbar}
+      />
+
       <Paper elevation={2} sx={{ padding: "1em", background: "#C0C999" }}>
         <Typography variant="h6" gutterBottom>
           Config:
@@ -105,4 +102,4 @@ export const ConfigTabDrinks = () => {
       </Paper>
     </>
   );
-}
+};

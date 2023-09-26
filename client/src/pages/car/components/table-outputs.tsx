@@ -1,6 +1,10 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import { robotService } from "../../../services/robot-service";
+import { AlertComponent } from "../../../components/Alert/alert-component";
+import { error } from "console";
+import ErrorMessage from "../../../components/Alert/error-message";
 
 interface CustomHeaderProps {
   color: string;
@@ -52,30 +56,51 @@ const CustomCell = () => {
   return <Box onClick={handleClick} sx={{color: "black"}}>Increment: {count}</Box>;
 };*/
 
-interface columnInterface {
+export interface ColumnInterface {
   id: string;
   motorA1: number;
   motorA2: number;
   motorB1: number;
   motorB2: number;
 }
-function CellButton(props: { row: columnInterface }): React.ReactElement {
+function CellButton(props: { row: ColumnInterface }): React.ReactElement {
   const { row } = props;
   const [isActivate, setIsActivate] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+  const sendDataToServer = async () => {
+    setIsLoading(true);
+    setErrorMessage(undefined);
+    const response = await robotService.sendRowTableOutputsMotors(row);
+
+    if (response?.type === "error") {
+      console.log("response", response);
+      setErrorMessage(response.message);
+    }
+    setIsLoading(false);
+  };
 
   const activateMotors = () => {
     console.log("params", row);
     setIsActivate(!isActivate);
+    sendDataToServer();
   };
   return (
     <>
-      <Button
-        sx={{ backgroundColor: "#009688" }}
-        variant="contained"
-        onClick={activateMotors}
-      >
-        {isActivate ? "Desactivar" : "Activar"}
-      </Button>
+      <ErrorMessage errors={[errorMessage]} />
+      <Box sx={{ width: "100%", justifyContent: "center", display: "flex" }}>
+        {isLoading ? (
+          <CircularProgress size={30} />
+        ) : (
+          <Button
+            sx={{ backgroundColor: "#009688" }}
+            variant="contained"
+            onClick={activateMotors}
+          >
+            {isActivate ? "Desactivar" : "Activar"}
+          </Button>
+        )}
+      </Box>
     </>
   );
 }
@@ -115,7 +140,7 @@ export const TableOutputs = (props: any) => {
       field: "buttons",
       headerName: "Activate",
       minWidth: width,
-      renderCell: (params: { row: columnInterface }) => {
+      renderCell: (params: { row: ColumnInterface }) => {
         return <CellButton row={params.row} />;
       },
     },
