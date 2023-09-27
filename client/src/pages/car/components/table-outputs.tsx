@@ -2,8 +2,6 @@ import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { robotService } from "../../../services/robot-service";
-import { AlertComponent } from "../../../components/Alert/alert-component";
-import { error } from "console";
 import ErrorMessage from "../../../components/Alert/error-message";
 
 interface CustomHeaderProps {
@@ -74,15 +72,16 @@ function CellButton(props: { row: ColumnInterface }): React.ReactElement {
     const response = await robotService.sendRowTableOutputsMotors(row);
 
     if (response?.type === "error") {
-      console.log("response", response);
+      console.log("error", response);
       setErrorMessage(response.message);
+    } else {
+      console.log("response", response);
+      setIsActivate(!isActivate);
     }
     setIsLoading(false);
   };
 
   const activateMotors = () => {
-    console.log("params", row);
-    setIsActivate(!isActivate);
     sendDataToServer();
   };
   return (

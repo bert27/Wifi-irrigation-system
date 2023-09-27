@@ -16,13 +16,13 @@ export const CardOutputs = () => {
     {
       name: "Motor A1",
       colorLabel: "blue",
-      pin: 25,
+      pin: 14,
       state: false,
     },
     {
       name: "Motor A2",
       colorLabel: "yellow",
-      pin: 14,
+      pin: 25,
       state: false,
     },
     {
@@ -34,7 +34,7 @@ export const CardOutputs = () => {
     {
       name: "Motor B2",
       colorLabel: "#969696",
-      pin: 32,
+      pin: 26,
       state: false,
     },
     {
