@@ -9,11 +9,6 @@ export const robotService = {
   sendRowTableOutputsMotors,
 };
 
-interface ErrorResponseInterface {
-  status: number;
-  data?: any;
-  message: string;
-}
 
 //https://www.luisllamas.es/esp8266-servidor-parametros/
 export interface sendDataColorToServerInterface {
