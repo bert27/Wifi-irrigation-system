@@ -10,7 +10,7 @@ export const RoutingWeb = () => {
   return (
     <>
       <Router>
-        <Box style={{display: "flex"}}>
+        <Box style={{display: "flex"}} component="div">
         <SideNavBar/>
         <Routes>
           <Route path="/" element={<CarPage />} />

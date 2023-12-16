@@ -7,6 +7,7 @@ export const robotService = {
   sendDataColorToServer,
   sendDataOutputSelectedToServer,
   sendRowTableOutputsMotors,
+  sendOutputRobotUI
 };
 
 
@@ -27,10 +28,15 @@ async function sendDataOutputSelectedToServer(
   return await axiosGet(params, "outputRobot");
 }
 
+async function sendOutputRobotUI(outputsSelecteds: {name: string}) {
+  const params = qs.stringify(outputsSelecteds);
+  return await axiosGet(params, "outputRobotUI");
+}
 async function sendRowTableOutputsMotors(rowSelected: ColumnInterface) {
   const params = qs.stringify(rowSelected);
   return await axiosGet(params, "outputsRowTableRobot");
 }
+
 
 const axiosGet = async (params: string, direction: string) => {
   try {

@@ -13,8 +13,9 @@ export interface OutputDataInterface {
 
 export const SliderLineComponent = (props: {
   onChangePwmValue: (pwmTmp: number) => void;
+  valuePwm: number;
 }) => {
-  const { onChangePwmValue } = props;
+  const { onChangePwmValue, valuePwm } = props;
 
   return (
     <>
@@ -33,7 +34,10 @@ export const SliderLineComponent = (props: {
           alignItems: "center",
         }}
       >
-        <SliderComponent onChangeValue={onChangePwmValue} valueSlider={255} />
+        <SliderComponent
+          onChangeValue={onChangePwmValue}
+          valueSlider={valuePwm}
+        />
       </Box>
     </>
   );
@@ -44,44 +48,58 @@ export const CardOutputs = () => {
 
   const outputsData = [
     {
-      name: "Motor A1",
-      colorLabel: "blue",
-      pin: 14,
-      state: 0,
-    },
-    {
-      name: "Motor A2",
-      colorLabel: "yellow",
+      name: "Rueda Izquierda delante",
+      colorLabel: "black",
       pin: 25,
       state: 0,
     },
     {
-      name: "Motor B1",
+      name: "Rueda Derecha delante",
       colorLabel: "black",
-      pin: 27,
+      pin: 4,
       state: 0,
     },
     {
-      name: "Motor B2",
-      colorLabel: "#969696",
+      name: "Rueda Izquierda atras",
+      colorLabel: "yellow",
+      pin: 14,
+      state: 0,
+    },
+    {
+      name: "Rueda Derecha detras",
+      colorLabel: "yellow",
+      pin: 19,
+      state: 0,
+    },
+    {
+      name: "Rueda Izquierda delante inverso",
+      colorLabel: "blue",
       pin: 26,
       state: 0,
     },
     {
-      name: "Motor C1",
-      colorLabel: "purple",
-      pin: 40,
+      name: "Rueda Derecha delante   inverso",
+      colorLabel: "blue",
+      pin: 17,
       state: 0,
     },
+
     {
-      name: "Motor C2",
-      colorLabel: "green",
-      pin: 50,
+      name: "Rueda Izquierda atras inverso",
+      colorLabel: "white",
+      pin: 27,
+      state: 0,
+    },
+
+    {
+      name: "Rueda Derecha detras inverso",
+      colorLabel: "white",
+      pin: 21,
       state: 0,
     },
   ] as OutputDataInterface[];
   const [circles, setCircles] = useState(outputsData);
-  const [valuePwm, setValuePwm] = useState(255);
+  const [valuePwm, setValuePwm] = useState(140);
   const sendDataToServer = async (outputSelected: OutputDataInterface) => {
     const response = await robotService.sendDataOutputSelectedToServer(
       outputSelected
@@ -100,7 +118,7 @@ export const CardOutputs = () => {
     setValuePwm(pwmTmp);
   };
   return (
-    <Grid container width={"26em"} spacing={1}>
+    <Grid container width={"26em"} height={"100%"} spacing={1}>
       {circles.map((circle, index) => (
         <Grid item xs={6} key={index}>
           <Box
@@ -149,13 +167,17 @@ export const CardOutputs = () => {
                   textAlign: "center",
                   fontWeight: "bold",
                   fontSize: "2em",
+                  padding: "0.5em",
                 }}
               >
-                {index + 1}
+                {circle.pin}
               </Typography>
             </Box>
           </Box>
-          <SliderLineComponent onChangePwmValue={onChangePwmValue} />
+          <SliderLineComponent
+            onChangePwmValue={onChangePwmValue}
+            valuePwm={valuePwm}
+          />
         </Grid>
       ))}
     </Grid>

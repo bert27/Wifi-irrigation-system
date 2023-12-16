@@ -66,19 +66,21 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
             alignItems: "center",
             justifyContent: "space-between",
           }}
+          component="div"
         >
-          <Box>
+          <div>
             <Typography
               variant="h6"
               gutterBottom={false}
               sx={{ fontWeight: "bold", color: color }}
+              
             >
               {card.title}
             </Typography>
             <Typography variant="subtitle1" gutterBottom>
               {card.liquid}
             </Typography>
-          </Box>
+          </div>
           <Button
             sx={{ backgroundColor: color }}
             variant="contained"
@@ -112,6 +114,7 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
             justifyContent: "space-between",
             alignItems: "center",
           }}
+          component="div"
         >
           <SliderComponent
             onChangeValue={onChangePwmValue}
@@ -133,6 +136,7 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
 
             alignItems: "center",
           }}
+          component="div"
         >
           <SliderComponent
             onChangeValue={onChangeTimeCalibrationValue}
@@ -140,7 +144,7 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
             valueSlider={cardForm.timeCalibration}
           />
         </Box>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Box sx={{ display: "flex", justifyContent: "center" }} component="div">
           <Button
             sx={{ backgroundColor: "#009688" }}
             variant="contained"

@@ -5,6 +5,9 @@ import "./styles.css";
 import { robotService } from "../../services/robot-service";
 import { CardOutputs } from "./components/card-outputs";
 import { TableOutputs } from "./components/table-outputs";
+import { CardImage } from "./components/card-image/car-image";
+import { MpuGraphic } from "./components/giroscope/mpu-graphic";
+import { ValuesEchart } from "./components/giroscope/values-echart";
 export const CarPage = (props: any) => {
   const [colourSelected, setcolourSelected] = useState("#aabbcc");
   console.log("colourSelected", colourSelected);
@@ -30,13 +33,46 @@ export const CarPage = (props: any) => {
         color: "white",
         width: "100%",
       }}
+      component="div"
     >
       <Card>
         <CardContent>
-          <Box sx={{ display: "flex",justifyContent: "space-around",alignItems: "center" }}>
-            <Box>
+          <Box
+            component="div"
+            sx={{
+              display: "flex",
+            }}
+          >
+            <ValuesEchart data={{ title: "Grados Eje X", value: 70 }} />
+            <ValuesEchart data={{ title: "Grados Eje Y", value: 50 }} />
+            <MpuGraphic />
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "2%",
+            }}
+            component="div"
+          >
+            <CardImage />
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-around",
+              alignItems: "center",
+            }}
+            component="div"
+          >
+            <div>
               <Box
                 style={{ display: "flex", width: "50%", marginBottom: "10px" }}
+                component="div"
               >
                 <Typography fontSize={20}>Color Seleccionado:</Typography>
                 <Typography
@@ -46,16 +82,17 @@ export const CarPage = (props: any) => {
                   {colourSelected}
                 </Typography>
               </Box>
-              <Box>
+              <div>
                 <HexColorPicker
                   color={colourSelected}
                   onChange={changeHexColorPicker}
                 />
-              </Box>
-            </Box>
+              </div>
+            </div>
+
             <CardOutputs />
           </Box>
-          <TableOutputs/>
+          <TableOutputs />
         </CardContent>
       </Card>
     </Box>

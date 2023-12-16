@@ -36,7 +36,7 @@ export const SliderComponent = (props: SliderComponentProps) => {
   };
 
   return (
-    <Box sx={{ padding: "1em", marginTop: "1em", width: "100%" }}>
+    <Box sx={{ padding: "1em", marginTop: "1em", width: "100%" }} component="div">
       <Slider
         onChange={handleSliderChange}
         valueLabelDisplay="on"
