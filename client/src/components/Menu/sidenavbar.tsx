@@ -17,10 +17,10 @@ const iconsPages = [
 ];
 export const SideNavBar = (): React.ReactElement => {
   return (
-    <Box className="side-nav-bar" style={{background: "#282828",height: "auto"}}>
+    <div className="side-nav-bar" style={{background: "#282828",height: "auto"}}>
 
         {iconsPages.map((iconPage: IconSideNavBarInterface) => (
-          <Box style={{ padding: "1vw" }}>
+          <div style={{ padding: "1vw" }}>
             <Link
               arioa-label={iconPage.name}
               component={LinkDom}
@@ -30,9 +30,9 @@ export const SideNavBar = (): React.ReactElement => {
                 <Typography color="#009688">{iconPage.icon}</Typography>
               </Tooltip>
             </Link>
-          </Box>
+          </div>
         ))}
 
-    </Box>
+    </div>
   );
 };

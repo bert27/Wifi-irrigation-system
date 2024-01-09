@@ -8,9 +8,11 @@ import { TableOutputs } from "./components/table-outputs";
 import { CardImage } from "./components/card-image/car-image";
 import { MpuGraphic } from "./components/giroscope/mpu-graphic";
 import { ValuesEchart } from "./components/giroscope/values-echart";
+import { ReadWebSocket } from "./components/console/read-web-socket";
+import { ReadWebSocket2 } from "./components/console/read-web-socket2";
 export const CarPage = (props: any) => {
   const [colourSelected, setcolourSelected] = useState("#aabbcc");
-  console.log("colourSelected", colourSelected);
+ // console.log("colourSelected", colourSelected);
 
   const sendDataToServer = async (newColor: string) => {
     const response = await robotService.sendDataColorToServer({
@@ -37,29 +39,38 @@ export const CarPage = (props: any) => {
     >
       <Card>
         <CardContent>
-          <Box
-            component="div"
-            sx={{
-              display: "flex",
-            }}
-          >
-            <ValuesEchart data={{ title: "Grados Eje X", value: 70 }} />
-            <ValuesEchart data={{ title: "Grados Eje Y", value: 50 }} />
-            <MpuGraphic />
-          </Box>
+          <ReadWebSocket2 />
+          <div style={{ display: "flex", width: "100%" }}>
+            <Box
+              component="div"
+              id="giroscope"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                background: "#100c2a",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "50%",
+                padding: "1em",
+              }}
+            >
+              <MpuGraphic data={{ height: "200px", width: "50%" }} />
+              <Box
+                component="div"
+                sx={{
+                  display: "flex",
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <ValuesEchart data={{ title: "Grados Eje X", value: 70 }} />
+                <ValuesEchart data={{ title: "Grados Eje Y", value: 50 }} />
+              </Box>
+            </Box>
 
-          <Box
-            sx={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "2%",
-            }}
-            component="div"
-          >
             <CardImage />
-          </Box>
+          </div>
 
           <Box
             sx={{

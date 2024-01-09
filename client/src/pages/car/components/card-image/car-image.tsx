@@ -27,22 +27,22 @@ const outputs = {
 };
 export const CardImage = () => {
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         display: "flex",
-        width: "30%",
+        width: "50%",
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
       }}
     >
-      <Box id="row1">
+      <div id="row1">
         <ButtonImage data={outputs.Up} />
-      </Box>
+      </div>
 
-      <Box
+      <div
         id="row2"
-        sx={{
+        style={{
           display: "flex",
           width: "30%",
           justifyContent: "center",
@@ -51,24 +51,24 @@ export const CardImage = () => {
         }}
       >
         <ButtonImage data={outputs.Right} />
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <ButtonImage data={outputs.wheel1} />
           <ButtonImage data={outputs.wheel3} />
-        </Box>
-        <Box sx={{ display: "flex", flexDirection: "column", width: "33%" }}>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", width: "33%" }}>
           <img src={ChasisCar} alt="icon info traveler" />
-        </Box>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <ButtonImage data={outputs.wheel2} />
           <ButtonImage data={outputs.wheel4} />
-        </Box>
-        <Box>
+        </div>
+        <div>
           <ButtonImage data={outputs.Left} />
-        </Box>
-      </Box>
-      <Box id="row3">
+        </div>
+      </div>
+      <div id="row3">
         <ButtonImage data={outputs.Down} />
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };

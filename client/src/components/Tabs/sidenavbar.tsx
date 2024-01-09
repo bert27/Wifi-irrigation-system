@@ -49,7 +49,7 @@ export const ComponentTabs = (): React.ReactElement => {
   }, [tabRouter]);
   return (
     <>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      <div style={{ borderBottom: 1, borderColor: "divider" }}>
         <TabContext value={valueTab}>
           <Paper elevation={2}>
             <Tabs value={valueTab} aria-label="tabs routing">
@@ -90,8 +90,8 @@ export const ComponentTabs = (): React.ReactElement => {
               Elige una bebida:
             </Typography>
 
-            <Box
-              sx={{
+            <div
+              style={{
                 marginTop: "10px",
                 width: "60%",
                 display: "flex",
@@ -100,24 +100,24 @@ export const ComponentTabs = (): React.ReactElement => {
               }}
             >
               {drinks.map((drink) => (
-                <Box sx={{ padding: "1em" }} key={drink}>
+                <div style={{ padding: "1em" }} key={drink}>
                   <Button
                     sx={{ backgroundColor: "#576CBC" }}
                     variant="contained"
                   >
                     {drink}
                   </Button>
-                </Box>
+                </div>
               ))}
-            </Box>
+            </div>
           </TabPanel>
           <TabPanel
             value={tabsUrl.controls.value}
             id={tabsUrl.controls.value}
             aria-labelledby={tabsUrl.controls.value}
           >
-            <Box
-              sx={{
+            <div
+              style={{
                 marginTop: "10px",
                 width: "60%",
                 display: "flex",
@@ -126,10 +126,10 @@ export const ComponentTabs = (): React.ReactElement => {
               }}
             >
               <Controls/>
-            </Box>
+            </div>
           </TabPanel>
         </TabContext>
-      </Box>
+      </div>
     </>
   );
 };

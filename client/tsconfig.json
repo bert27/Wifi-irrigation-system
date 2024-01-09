@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "target": "es2022",
-
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -9,7 +8,6 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -19,7 +17,6 @@
       "dom.iterable",
       "esnext"
     ],
-
     "module": "esnext",
     "moduleResolution": "node",
   },

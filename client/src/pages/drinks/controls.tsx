@@ -35,13 +35,13 @@ export const Controls = (props: any) => {
   };
   return (
     <Card variant="outlined">
-      <Box sx={{ justifyContent: "center", display: "flex" }}>
+      <div style={{ justifyContent: "center", display: "flex" }}>
         <IconButton aria-label="KeyboardArrowUpIcon" onClick={() => moveUp()}>
           <KeyboardArrowUpIcon />
         </IconButton>
-      </Box>
+      </div>
 
-      <Box>
+      <div>
         <IconButton aria-label="ArrowForwardIosIcon" onClick={() => moveBack()}>
           <ArrowBackIosIcon />
         </IconButton>
@@ -51,15 +51,15 @@ export const Controls = (props: any) => {
         <IconButton aria-label="ArrowForwardIosIcon" onClick={() => moveNext()}>
           <ArrowForwardIosIcon />
         </IconButton>
-      </Box>
-      <Box sx={{ justifyContent: "center", display: "flex" }}>
+      </div>
+      <div style={{ justifyContent: "center", display: "flex" }}>
         <IconButton
           aria-label="KeyboardArrowDownIcon"
           onClick={() => moveDown()}
         >
           <KeyboardArrowDownIcon />
         </IconButton>
-      </Box>
+      </div>
     </Card>
   );
 };

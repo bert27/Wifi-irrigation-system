@@ -61,7 +61,7 @@ export const ValuesEchart = (props: ValuesEchartProps) => {
           distance: -60,
           rotate: "tangential",
           formatter: function (value: number) {
-            console.log("value",value)
+           // console.log("value",value)
             if (value > 0 && value < 40) {
               return "Izquierda";
             }
@@ -80,7 +80,7 @@ export const ValuesEchart = (props: ValuesEchartProps) => {
           offsetCenter: [0, "-35%"],
           valueAnimation: true,
           formatter: function (value: number) {
-            console.log("value33",value)
+           // console.log("value33",value)
             return value;
           },
           color: "inherit",
