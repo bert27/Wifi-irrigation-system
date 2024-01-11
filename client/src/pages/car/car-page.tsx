@@ -10,9 +10,25 @@ import { MpuGraphic } from "./components/giroscope/mpu-graphic";
 import { ValuesEchart } from "./components/giroscope/values-echart";
 import { ReadWebSocket } from "./components/console/read-web-socket";
 import { ReadWebSocket2 } from "./components/console/read-web-socket2";
+
+export interface ResponseWebSocketInterface {
+  ledState: boolean | undefined;
+  jostickDirection: string | undefined;
+  giroscope: string | undefined;
+  giroscopeValues: number[];
+}
+
 export const CarPage = (props: any) => {
+  const [recibedMessage, setRecibedMessage] = useState({
+    ledState: undefined,
+    jostickDirection: undefined,
+    giroscope: undefined,
+    giroscopeValues: [0, 0],
+  } as ResponseWebSocketInterface);
+
   const [colourSelected, setcolourSelected] = useState("#aabbcc");
- // console.log("colourSelected", colourSelected);
+
+  // console.log("colourSelected", colourSelected);
 
   const sendDataToServer = async (newColor: string) => {
     const response = await robotService.sendDataColorToServer({
@@ -39,7 +55,10 @@ export const CarPage = (props: any) => {
     >
       <Card>
         <CardContent>
-          <ReadWebSocket2 />
+          <ReadWebSocket2
+            recibedMessage={recibedMessage}
+            setRecibedMessage={setRecibedMessage}
+          />
           <div style={{ display: "flex", width: "100%" }}>
             <Box
               component="div"
@@ -54,7 +73,7 @@ export const CarPage = (props: any) => {
                 padding: "1em",
               }}
             >
-              <MpuGraphic data={{ height: "200px", width: "50%" }} />
+              <MpuGraphic data={{ height: "200px", width: "50%" }} recibedMessage={recibedMessage} />
               <Box
                 component="div"
                 sx={{

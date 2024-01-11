@@ -1,21 +1,31 @@
 import { useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
+import { ResponseWebSocketInterface } from "../../car-page";
+import { BoxGeometry } from "three";
 
 interface MpuGraphicProps {
   data: {
     height: string;
     width: string;
   };
+  recibedMessage: ResponseWebSocketInterface;
 }
 
 export const MpuGraphic = (props: MpuGraphicProps) => {
-  const { data } = props;
+  const { data, recibedMessage } = props;
   const { width, height } = data;
   return (
-    <Canvas style={{ width, height}}>
+    <Canvas style={{ width, height }}>
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
-      <Box position={[0, 0.2, 2.2]} />
+      <Box
+        position={[0, 0.2, 2.2]}
+        geometry={
+          new BoxGeometry()
+            .rotateX(recibedMessage.giroscopeValues[0]) // 180 degrees in the x-axis
+            .rotateY(recibedMessage.giroscopeValues[1]) // 90 degrees in the y-axis
+        }
+      />
     </Canvas>
   );
 };

@@ -1,24 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { ConsoleComponent } from "./console-component";
 import { Button } from "@mui/material";
-
-export interface ResponseWebSocketInterface {
-  ledState: boolean | undefined;
-  jostickDirection: string | undefined;
-  giroscope: string | undefined;
-}
+import { ResponseWebSocketInterface } from "../../car-page";
 
 //192.168.1.230
 const urlEsp8266 = "ws://192.168.1.230/ws";
 
-export const ReadWebSocket2 = () => {
+interface ReadWebSocket2Props {
+  recibedMessage: ResponseWebSocketInterface;
+  setRecibedMessage: React.Dispatch<
+    React.SetStateAction<ResponseWebSocketInterface>
+  >;
+}
+
+export const ReadWebSocket2 = (props: ReadWebSocket2Props) => {
+  const { recibedMessage, setRecibedMessage } = props;
   const [ws, setWs] = useState(null as WebSocket | null);
   const [connectedMessage, setConnectedMessage] = useState("No conectasdo");
-  const [recibedMessage, setRecibedMessage] = useState({
-    ledState: undefined,
-    jostickDirection: undefined,
-    giroscope: undefined,
-  } as ResponseWebSocketInterface);
 
   useEffect(() => {
     const url = urlEsp8266;
