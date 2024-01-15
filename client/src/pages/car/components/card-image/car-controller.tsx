@@ -18,10 +18,10 @@ export interface OutputDataInterface {
 }
 
 const outputs = {
-  Up: { name: "up", image: IconArrowArriba },
-  Down: { name: "down", image: IconArrowAbajo },
-  Left: { name: "left", image: IconArrowDerecha },
-  Right: { name: "right", image: IconArrowIzquierda },
+  Up: { name: "Arriba", image: IconArrowArriba },
+  Down: { name: "Abajo", image: IconArrowAbajo },
+  Left: { name: "Izquierda", image: IconArrowDerecha },
+  Right: { name: "Derecha", image: IconArrowIzquierda },
   wheel1: { name: "wheel1", image: IconRueda },
   wheel2: { name: "wheel2", image: IconRueda },
   wheel3: { name: "wheel3", image: IconRueda },
