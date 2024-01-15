@@ -12,6 +12,7 @@ export const ConsoleComponent = (props: ConsoleComponentProps) => {
         color: "white",
         padding: "1em",
         marginBottom: "0.4em",
+        width: "50%"
       }}
     >
       Message from ESP8266: 

@@ -55,10 +55,6 @@ export const CarPage = (props: any) => {
     >
       <Card>
         <CardContent>
-          <ReadWebSocket2
-            recibedMessage={recibedMessage}
-            setRecibedMessage={setRecibedMessage}
-          />
           <div style={{ display: "flex", width: "100%" }}>
             <Box
               component="div"
@@ -69,22 +65,43 @@ export const CarPage = (props: any) => {
                 background: "#100c2a",
                 justifyContent: "center",
                 alignItems: "center",
-                width: "50%",
-                padding: "1em",
+                width: "100%",
+                //     padding: "1em",
               }}
             >
-              <MpuGraphic data={{ height: "200px", width: "50%" }} recibedMessage={recibedMessage} />
+              <ReadWebSocket2
+                recibedMessage={recibedMessage}
+                setRecibedMessage={setRecibedMessage}
+              />
+              <MpuGraphic
+                data={{ height: "250px", width: "100%" }}
+                recibedMessage={recibedMessage}
+              />
               <Box
                 component="div"
                 sx={{
                   display: "flex",
                   width: "100%",
-                  justifyContent: "center",
+                  justifyContent: "space-evenly",
                   alignItems: "center",
                 }}
               >
-                <ValuesEchart data={{ title: "Grados Eje X", value: 70 }} />
-                <ValuesEchart data={{ title: "Grados Eje Y", value: 50 }} />
+                <ValuesEchart
+                  data={{
+                    title: "Grados Eje X",
+                    value: parseFloat(
+                      recibedMessage.giroscopeValues[0].toFixed(2)
+                    ),
+                  }}
+                />
+                <ValuesEchart
+                  data={{
+                    title: "Grados Eje Y",
+                    value: parseFloat(
+                      recibedMessage.giroscopeValues[1].toFixed(2)
+                    ),
+                  }}
+                />
               </Box>
             </Box>
 

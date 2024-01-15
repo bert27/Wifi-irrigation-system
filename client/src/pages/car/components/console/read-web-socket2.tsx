@@ -38,20 +38,27 @@ export const ReadWebSocket2 = (props: ReadWebSocket2Props) => {
   console.log(recibedMessage);
   return (
     <>
-      <div>
-        <div>{connectedMessage}</div>
-
-        <div style={{ marginTop: "1em", marginBottom: "1em" }}>
-          <Button
-            data-testid="button-send-websocket"
-            variant="contained"
-            sx={{ backgroundColor: "#576CBC" }}
-            onClick={() => {
-              ws?.send("toggle");
-            }}
-          >
-            Enviar mensaje
-          </Button>
+      <div
+        style={{
+          display: "flex",
+          width: "80%",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>
+          <div>{connectedMessage}</div>
+          <div style={{ marginTop: "1em", marginBottom: "1em" }}>
+            <Button
+              data-testid="button-send-websocket"
+              variant="contained"
+              sx={{ backgroundColor: "#576CBC" }}
+              onClick={() => {
+                ws?.send("toggle");
+              }}
+            >
+              Enviar mensaje
+            </Button>
+          </div>
         </div>
 
         <ConsoleComponent message={recibedMessage} />

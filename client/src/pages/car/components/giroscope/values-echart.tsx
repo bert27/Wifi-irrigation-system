@@ -165,5 +165,5 @@ export const ValuesEchart = (props: ValuesEchartProps) => {
     },
   };
 
-  return <Chart option={option2} theme={"dark"} style={{ height: "300px",width: "30%",marginLeft: "30px" }} />;
+  return <Chart option={option2} theme={"dark"} style={{ height: "300px",width: "40%"}} />;
 };
