@@ -7,7 +7,9 @@ import IconArrowArriba from "./images/arriba.png";
 import IconArrowAbajo from "./images/abajo.png";
 import IconArrowIzquierda from "./images/izquierda.png";
 import IconArrowDerecha from "./images/derecha.png";
-import { ButtonImage } from "./button-image";
+import { ButtonImage } from "./components/button-image";
+import { ResponseWebSocketInterface } from "../../car-page";
+import { ArrowControl } from "./components/arrow-control";
 export interface OutputDataInterface {
   name: string;
   colorLabel: string;
@@ -25,7 +27,13 @@ const outputs = {
   wheel3: { name: "wheel3", image: IconRueda },
   wheel4: { name: "wheel4", image: IconRueda },
 };
-export const CardImage = () => {
+interface CardControllerProps {
+  recibedMessage: ResponseWebSocketInterface;
+}
+
+export const CardController = (props: CardControllerProps) => {
+  const { recibedMessage } = props;
+
   return (
     <div
       style={{
@@ -37,7 +45,11 @@ export const CardImage = () => {
       }}
     >
       <div id="row1">
-        <ButtonImage data={outputs.Up} />
+        <ArrowControl
+          data={outputs.Up}
+          recibedMessage={recibedMessage}
+          id={"Arriba"}
+        />
       </div>
 
       <div
@@ -50,7 +62,11 @@ export const CardImage = () => {
           padding: "2em",
         }}
       >
-        <ButtonImage data={outputs.Right} />
+        <ArrowControl
+          data={outputs.Right}
+          recibedMessage={recibedMessage}
+          id={"Izquierda"}
+        />
         <div style={{ display: "flex", flexDirection: "column" }}>
           <ButtonImage data={outputs.wheel1} />
           <ButtonImage data={outputs.wheel3} />
@@ -63,11 +79,19 @@ export const CardImage = () => {
           <ButtonImage data={outputs.wheel4} />
         </div>
         <div>
-          <ButtonImage data={outputs.Left} />
+          <ArrowControl
+            data={outputs.Left}
+            recibedMessage={recibedMessage}
+            id={"Derecha"}
+          />
         </div>
       </div>
       <div id="row3">
-        <ButtonImage data={outputs.Down} />
+        <ArrowControl
+          data={outputs.Down}
+          recibedMessage={recibedMessage}
+          id={"Abajo"}
+        />
       </div>
     </div>
   );

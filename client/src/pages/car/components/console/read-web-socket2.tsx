@@ -26,7 +26,7 @@ export const ReadWebSocket2 = (props: ReadWebSocket2Props) => {
       ws.send("react is open");
     };
     ws.onmessage = (event: { data: string }) => {
-      console.log("mensaje recibido: ", event.data);
+     // console.log("mensaje recibido: ", event.data);
       setRecibedMessage(JSON.parse(event.data));
     };
     setWs(ws);
@@ -35,7 +35,7 @@ export const ReadWebSocket2 = (props: ReadWebSocket2Props) => {
       console.log("Conectado")
     })*/
   }, []);
-  console.log(recibedMessage);
+// console.log(recibedMessage);
   return (
     <>
       <div

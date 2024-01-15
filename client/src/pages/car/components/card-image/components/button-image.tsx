@@ -1,5 +1,5 @@
 import { IconButton } from "@mui/material";
-import { robotService } from "../../../../services/robot-service";
+import { robotService } from "../../../../../services/robot-service";
 
 export interface ButtonImageProps {
   data: {

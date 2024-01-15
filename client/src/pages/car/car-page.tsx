@@ -5,7 +5,7 @@ import "./styles.css";
 import { robotService } from "../../services/robot-service";
 import { CardOutputs } from "./components/card-outputs";
 import { TableOutputs } from "./components/table-outputs";
-import { CardImage } from "./components/card-image/car-image";
+import { CardController } from "./components/card-image/car-controller";
 import { MpuGraphic } from "./components/giroscope/mpu-graphic";
 import { ValuesEchart } from "./components/giroscope/values-echart";
 import { ReadWebSocket } from "./components/console/read-web-socket";
@@ -105,7 +105,7 @@ export const CarPage = (props: any) => {
               </Box>
             </Box>
 
-            <CardImage />
+            <CardController recibedMessage={recibedMessage} />
           </div>
 
           <Box
