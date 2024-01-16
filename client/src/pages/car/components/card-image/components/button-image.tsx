@@ -7,7 +7,7 @@ export interface ButtonImageProps {
     image: string;
   };
 }
-const sizeIcons = "100px";
+const sizeIcons = "4vw";
 
 export const ButtonImage = (props: ButtonImageProps) => {
   const click = async (name: string) => {

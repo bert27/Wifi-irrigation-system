@@ -1,5 +1,5 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
-import { useState } from "react";
+import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import "./styles.css";
 import { robotService } from "../../services/robot-service";
@@ -19,6 +19,9 @@ export interface ResponseWebSocketInterface {
 }
 
 export const CarPage = (props: any) => {
+  //192.168.1.230
+  const urlEsp8266 = "ws://192.168.1.230/ws";
+
   const [recibedMessage, setRecibedMessage] = useState({
     ledState: undefined,
     jostickDirection: undefined,
@@ -29,6 +32,26 @@ export const CarPage = (props: any) => {
   const [colourSelected, setcolourSelected] = useState("#aabbcc");
 
   // console.log("colourSelected", colourSelected);
+  const [ws, setWs] = useState(null as WebSocket | null);
+  const [connectedMessage, setConnectedMessage] = useState("No conectasdo");
+
+  useEffect(() => {
+    const url = urlEsp8266;
+    const ws = new WebSocket(url);
+    ws.onopen = () => {
+      setConnectedMessage("Conectado al servidor");
+      ws.send("react is open");
+    };
+    ws.onmessage = (event: { data: string }) => {
+      // console.log("mensaje recibido: ", event.data);
+      setRecibedMessage(JSON.parse(event.data));
+    };
+    setWs(ws);
+
+    /*  ws.addEventListener("open", (event) => {
+      console.log("Conectado")
+    })*/
+  }, []);
 
   const sendDataToServer = async (newColor: string) => {
     const response = await robotService.sendDataColorToServer({
@@ -47,15 +70,86 @@ export const CarPage = (props: any) => {
       sx={{
         backgroundColor: "#0B2447",
         minHeight: "100vh",
-        padding: "2em",
+        padding: "1em",
         color: "white",
-        width: "100%",
+        width: "90%",
       }}
       component="div"
     >
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          justifyContent: "space-between",
+          marginBottom: "0.5em",
+          alignItems: "center",
+        }}
+      >
+        <div>{connectedMessage}</div>
+        <ReadWebSocket2
+          recibedMessage={recibedMessage}
+          setRecibedMessage={setRecibedMessage}
+        />
+        <div style={{ width: "20%" }}>
+          <Button
+            data-testid="button-send-websocket"
+            variant="contained"
+            sx={{ backgroundColor: "#576CBC" }}
+            onClick={() => {
+              ws?.send("toggle");
+            }}
+          >
+            Enviar mensaje
+          </Button>
+        </div>
+      </div>
       <Card>
         <CardContent>
-          <div style={{ display: "flex", width: "100%" }}>
+          <Box
+            component="div"
+            sx={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+            }}
+          >
+            <CardController recibedMessage={recibedMessage} />
+            <Box
+              component="div"
+              sx={{
+                display: "flex",
+                width: "60%",
+                justifyContent: "space-evenly",
+                alignItems: "center",
+                background: "#100c2a",
+                padding: "1em",
+              }}
+            >
+              <ValuesEchart
+                data={{
+                  title: "Grados Eje X",
+                  value: parseFloat(
+                    recibedMessage.giroscopeValues[0].toFixed(2)
+                  ),
+                }}
+              />
+              <ValuesEchart
+                data={{
+                  title: "Grados Eje Y",
+                  value: parseFloat(
+                    recibedMessage.giroscopeValues[1].toFixed(2)
+                  ),
+                }}
+              />
+              <MpuGraphic
+                data={{ height: "150px", width: "100%" }}
+                recibedMessage={recibedMessage}
+              />
+            </Box>
+          </Box>
+
+          {/*  <Box component="div" sx={{ display: "flex" }}>
             <Box
               component="div"
               id="giroscope"
@@ -66,48 +160,11 @@ export const CarPage = (props: any) => {
                 justifyContent: "center",
                 alignItems: "center",
                 width: "100%",
-                //     padding: "1em",
+                padding: "1em",
               }}
-            >
-              <ReadWebSocket2
-                recibedMessage={recibedMessage}
-                setRecibedMessage={setRecibedMessage}
-              />
-              <MpuGraphic
-                data={{ height: "250px", width: "100%" }}
-                recibedMessage={recibedMessage}
-              />
-              <Box
-                component="div"
-                sx={{
-                  display: "flex",
-                  width: "100%",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                }}
-              >
-                <ValuesEchart
-                  data={{
-                    title: "Grados Eje X",
-                    value: parseFloat(
-                      recibedMessage.giroscopeValues[0].toFixed(2)
-                    ),
-                  }}
-                />
-                <ValuesEchart
-                  data={{
-                    title: "Grados Eje Y",
-                    value: parseFloat(
-                      recibedMessage.giroscopeValues[1].toFixed(2)
-                    ),
-                  }}
-                />
-              </Box>
-            </Box>
-
-            <CardController recibedMessage={recibedMessage} />
-          </div>
-
+            ></Box>
+          </Box>
+            */}
           <Box
             sx={{
               display: "flex",
@@ -139,7 +196,7 @@ export const CarPage = (props: any) => {
 
             <CardOutputs />
           </Box>
-          <TableOutputs />
+          {/*  <TableOutputs />*/}
         </CardContent>
       </Card>
     </Box>

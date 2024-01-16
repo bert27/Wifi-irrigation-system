@@ -10,18 +10,17 @@ export const RoutingWeb = () => {
   return (
     <>
       <Router>
-        <Box style={{display: "flex"}} component="div">
-        <SideNavBar/>
-        <Routes>
-          <Route path="/" element={<CarPage />} />
-          <Route path="/water" element={<Plant/>} />
-          <Route path="/drinks" element={<DrinksPage/>} />
-          <Route path="/drinks/:tabRouter" element={<DrinksPage/>} />
-          <Route path="*" element={<Plant />} />
-        </Routes>
+        <Box style={{ display: "flex", width: "100%" }} component="div">
+          <SideNavBar />
+          <Routes>
+            <Route path="/" element={<CarPage />} />
+            <Route path="/water" element={<Plant />} />
+            <Route path="/drinks" element={<DrinksPage />} />
+            <Route path="/drinks/:tabRouter" element={<DrinksPage />} />
+            <Route path="*" element={<Plant />} />
+          </Routes>
         </Box>
       </Router>
-  
     </>
   );
 };

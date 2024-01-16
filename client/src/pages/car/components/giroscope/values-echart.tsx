@@ -2,13 +2,15 @@ import Chart from "echarts-for-react";
 
 interface DataInterface {
   title: string;
-  value: number
+  value: number;
 }
 interface ValuesEchartProps {
-  data: DataInterface
+  data: DataInterface;
 }
 export const ValuesEchart = (props: ValuesEchartProps) => {
-  const {data}=props;
+  const { data } = props;
+
+  const fontsize = 12;
   const option2 = {
     series: [
       {
@@ -19,15 +21,15 @@ export const ValuesEchart = (props: ValuesEchartProps) => {
         radius: "100%",
         min: 0,
         max: 180,
-        
+
         splitNumber: 8,
         axisLine: {
           lineStyle: {
             width: 6,
             color: [
               [0.5, "#FF6E76"],
-            //  [0.5, "#FDDD60"],
-           //   [0.75, "#58D9F9"],
+              //  [0.5, "#FDDD60"],
+              //   [0.75, "#58D9F9"],
               [1, "#7CFFB2"],
             ],
           },
@@ -57,11 +59,11 @@ export const ValuesEchart = (props: ValuesEchartProps) => {
         },
         axisLabel: {
           color: "#464646",
-          fontSize: 20,
+          fontSize: fontsize,
           distance: -60,
           rotate: "tangential",
           formatter: function (value: number) {
-           // console.log("value",value)
+            // console.log("value",value)
             if (value > 0 && value < 40) {
               return "Izquierda";
             }
@@ -73,14 +75,14 @@ export const ValuesEchart = (props: ValuesEchartProps) => {
         },
         title: {
           offsetCenter: [0, "-10%"],
-          fontSize: 20,
+          fontSize: fontsize,
         },
         detail: {
-          fontSize: 30,
+          fontSize: fontsize,
           offsetCenter: [0, "-35%"],
           valueAnimation: true,
           formatter: function (value: number) {
-           // console.log("value33",value)
+            // console.log("value33",value)
             return value;
           },
           color: "inherit",
@@ -91,15 +93,16 @@ export const ValuesEchart = (props: ValuesEchartProps) => {
             name: data.title,
           },
         ],
-     
       },
     ],
     title: {
       text: "Giros del giroscopio",
       subtext: "Valores",
       left: "center",
-      top: 40,
-
+      top: 15,
+      textStyle: {
+        fontSize: fontsize-4,
+      },
     },
   };
   const option3 = {
@@ -161,9 +164,16 @@ export const ValuesEchart = (props: ValuesEchartProps) => {
       text: "Giros del giroscopio",
       subtext: "Valores",
       left: "center",
-      top: 500
+      top: 500,
+      fontsize,
     },
   };
 
-  return <Chart option={option2} theme={"dark"} style={{ height: "300px",width: "40%"}} />;
+  return (
+    <Chart
+      option={option2}
+   //   theme={"dark"}
+      style={{ height: "35vh", width: "40%" }}
+    />
+  );
 };

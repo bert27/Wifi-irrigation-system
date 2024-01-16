@@ -1,4 +1,5 @@
 import { ResponseWebSocketInterface } from "../../car-page";
+import { Box } from "@mui/material";
 
 interface ConsoleComponentProps {
   message: ResponseWebSocketInterface;
@@ -6,20 +7,22 @@ interface ConsoleComponentProps {
 export const ConsoleComponent = (props: ConsoleComponentProps) => {
   const { message } = props;
   return (
-    <div
-      style={{
+    <Box
+      component="div"
+      sx={{
+        display: "flex",
         background: "black",
         color: "white",
-        padding: "1em",
-        marginBottom: "0.4em",
-        width: "50%"
+        padding: "0.5em",
+
+        width: "100%",
       }}
     >
-      Message from ESP8266: 
-      <div>Jostick: {message.jostickDirection}</div>
-      <div>Giroscopio: {message.giroscope}</div>
-      <div>X: {message.giroscopeValues[0]}</div>
-      <div>Y: {message.giroscopeValues[1]}</div>
-    </div>
+      Message from ESP8266:
+      <Box component="div">Jostick: {message.jostickDirection}</Box>
+      <Box component="div">Giroscopio: {message.giroscope}</Box>
+      <Box component="div">X: {message.giroscopeValues[0]}</Box>
+      <Box component="div">Y: {message.giroscopeValues[1]}</Box>
+    </Box>
   );
 };

@@ -38,7 +38,7 @@ export const CardController = (props: CardControllerProps) => {
     <div
       style={{
         display: "flex",
-        width: "50%",
+        width: "30%",
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
