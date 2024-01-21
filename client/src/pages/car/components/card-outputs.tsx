@@ -27,6 +27,7 @@ export const SliderLineComponent = (props: {
         PWM:
       </Typography>
       <Box
+        component="div"
         sx={{
           display: "flex",
           width: "100%",
@@ -44,8 +45,6 @@ export const SliderLineComponent = (props: {
 };
 
 export const CardOutputs = () => {
-  const size = "3em";
-
   const outputsData = [
     {
       name: "Rueda Izquierda delante",
@@ -117,42 +116,61 @@ export const CardOutputs = () => {
   const onChangePwmValue = (pwmTmp: number) => {
     setValuePwm(pwmTmp);
   };
+
+  const stylesC = {
+    width: "24%",
+  };
+  const size = "2em";
   return (
-    <Grid container width={"26em"} height={"100%"} spacing={1}>
+    <Box
+      sx={{
+        display: "flex",
+        width: "50%",
+       // alignItems: "start",
+        flexWrap: "wrap",
+      }}
+      component="div"
+    >
       {circles.map((circle, index) => (
-        <Grid item xs={6} key={index}>
-          <Box
-            display={"flex"}
-            alignItems="center"
-            sx={{
-              flexFlow:
-                index === 1 || index === 3 || index === 5 ? "row-reverse" : "",
-            }}
-          >
-            <Box>
+        <Box
+          component="div"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+         //   background: "green",
+            margin: "0.1em",
+            width: stylesC.width
+          }}
+          key={index}
+          id="outPut-card"
+        >
+          <Box component="div" display={"flex"} alignItems="center">
+            <Box component="div">
               <Typography
                 variant="body2"
                 color="black"
-                sx={{ textAlign: "center", fontSize: "1em" }}
+                sx={{ textAlign: "center" }}
               >
                 {circle.name}
               </Typography>
               <Box
+                component="div"
                 sx={{
                   background: circle.colorLabel,
                   width: "100%",
-                  height: "1em",
+                  height: "0.5em",
                 }}
               ></Box>
             </Box>
 
             <Box
+              component="div"
               sx={{
                 backgroundColor: circle.state ? "green" : "red",
                 borderRadius: "50%",
                 width: size,
                 height: size,
-                margin: "2em",
+                margin: "0.5em",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -166,7 +184,7 @@ export const CardOutputs = () => {
                 sx={{
                   textAlign: "center",
                   fontWeight: "bold",
-                  fontSize: "2em",
+                  fontSize: "1em",
                   padding: "0.5em",
                 }}
               >
@@ -178,8 +196,8 @@ export const CardOutputs = () => {
             onChangePwmValue={onChangePwmValue}
             valuePwm={valuePwm}
           />
-        </Grid>
+        </Box>
       ))}
-    </Grid>
+    </Box>
   );
 };

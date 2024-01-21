@@ -148,36 +148,30 @@ export const CarPage = (props: any) => {
               />
             </Box>
           </Box>
-
-          {/*  <Box component="div" sx={{ display: "flex" }}>
-            <Box
-              component="div"
-              id="giroscope"
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                background: "#100c2a",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "100%",
-                padding: "1em",
-              }}
-            ></Box>
-          </Box>
-            */}
           <Box
+            component="div"
+            id="column-2"
             sx={{
               display: "flex",
-              justifyContent: "space-around",
-              alignItems: "center",
+              width: "100%",
+              justifyContent: "space-between",
+              background: "#100c2a",
+              padding: "0.4em"
             }}
-            component="div"
           >
-            <div>
-              <Box
-                style={{ display: "flex", width: "50%", marginBottom: "10px" }}
-                component="div"
-              >
+            <CardOutputs />
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "40%",
+                marginBottom: "10px",
+                justifyContent: "center",
+              }}
+              component="div"
+              id="content-color"
+            >
+              <Box component="div">
                 <Typography fontSize={20}>Color Seleccionado:</Typography>
                 <Typography
                   fontSize={20}
@@ -186,16 +180,21 @@ export const CarPage = (props: any) => {
                   {colourSelected}
                 </Typography>
               </Box>
-              <div>
+              <Box
+                sx={{
+                  display: "flex",
+                }}
+                component="div"
+              >
                 <HexColorPicker
                   color={colourSelected}
                   onChange={changeHexColorPicker}
                 />
-              </div>
-            </div>
-
-            <CardOutputs />
+              </Box>
+            </Box>
           </Box>
+ 
+
           {/*  <TableOutputs />*/}
         </CardContent>
       </Card>
