@@ -1,8 +1,7 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useState } from "react";
 import { robotService } from "../../../services/robot-service";
-import { SliderComponent } from "../../drinks/tabs/config-tab-drinks/components/slider-material";
-import { color } from "../../drinks/tabs/config-tab-drinks/card-config-tab";
+import { SliderLineComponent } from "./sub-components/slider";
 
 export interface OutputDataInterface {
   name: string;
@@ -10,39 +9,6 @@ export interface OutputDataInterface {
   pin: number;
   state: number;
 }
-
-export const SliderLineComponent = (props: {
-  onChangePwmValue: (pwmTmp: number) => void;
-  valuePwm: number;
-}) => {
-  const { onChangePwmValue, valuePwm } = props;
-
-  return (
-    <>
-      <Typography
-        variant="subtitle2"
-        gutterBottom={false}
-        sx={{ fontWeight: "bold", color: color }}
-      >
-        PWM:
-      </Typography>
-      <Box
-        component="div"
-        sx={{
-          display: "flex",
-          width: "100%",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <SliderComponent
-          onChangeValue={onChangePwmValue}
-          valueSlider={valuePwm}
-        />
-      </Box>
-    </>
-  );
-};
 
 export const CardOutputs = () => {
   const outputsData = [
@@ -97,6 +63,7 @@ export const CardOutputs = () => {
       state: 0,
     },
   ] as OutputDataInterface[];
+
   const [circles, setCircles] = useState(outputsData);
   const [valuePwm, setValuePwm] = useState(140);
   const sendDataToServer = async (outputSelected: OutputDataInterface) => {
@@ -126,7 +93,7 @@ export const CardOutputs = () => {
       sx={{
         display: "flex",
         width: "50%",
-       // alignItems: "start",
+        // alignItems: "start",
         flexWrap: "wrap",
       }}
       component="div"
@@ -137,9 +104,9 @@ export const CardOutputs = () => {
           sx={{
             display: "flex",
             flexDirection: "column",
-         //   background: "green",
+            //   background: "green",
             margin: "0.1em",
-            width: stylesC.width
+            width: stylesC.width,
           }}
           key={index}
           id="outPut-card"

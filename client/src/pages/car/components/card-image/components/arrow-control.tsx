@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { ResponseWebSocketInterface } from "../../../car-page";
 import { ButtonImage } from "./button-image";
 export interface ArrowControlProps {
@@ -7,19 +8,22 @@ export interface ArrowControlProps {
   };
   recibedMessage: ResponseWebSocketInterface;
   id: string;
+  handleDirection: (name: string) => Promise<void>;
 }
 export const ArrowControl = (props: ArrowControlProps) => {
-  const { data, recibedMessage, id } = props;
+  const { data, recibedMessage, id, handleDirection } = props;
   const { jostickDirection } = recibedMessage;
 
   return (
     <>
       {jostickDirection === id ? (
         <div style={{ background: "blue" }}>
-          <ButtonImage data={data} />
+          <ButtonImage data={data} handleDirection={handleDirection} />
         </div>
       ) : (
-        <ButtonImage data={data} />
+        <Box component="div">
+          <ButtonImage data={data} handleDirection={handleDirection}/>
+        </Box>
       )}
     </>
   );

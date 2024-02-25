@@ -17,6 +17,7 @@ const CustomHeader = (props: CustomHeaderProps) => {
   return (
     <Box
       onClick={handleClick}
+      component="div"
       sx={{
         width: "100%",
         lineHeight: "1.5em",
@@ -30,6 +31,7 @@ const CustomHeader = (props: CustomHeaderProps) => {
       }}
     >
       <Box
+        component="div"
         sx={{
           width: 20,
           height: 20,
@@ -39,7 +41,7 @@ const CustomHeader = (props: CustomHeaderProps) => {
           border: "2px solid black",
         }}
       />
-      <Box> {name}</Box>
+      <Box component="div"> {name}</Box>
     </Box>
   );
 };
@@ -87,7 +89,10 @@ function CellButton(props: { row: ColumnInterface }): React.ReactElement {
   return (
     <>
       <ErrorMessage errors={[errorMessage]} />
-      <Box sx={{ width: "100%", justifyContent: "center", display: "flex" }}>
+      <Box
+        sx={{ width: "100%", justifyContent: "center", display: "flex" }}
+        component="div"
+      >
         {isLoading ? (
           <CircularProgress size={30} />
         ) : (
@@ -164,7 +169,7 @@ export const TableOutputs = (props: any) => {
   ]);
 
   return (
-    <Box sx={{ marginTop: "2em" }}>
+    <Box sx={{ marginTop: "2em" }} component="div">
       <Typography variant="h6" gutterBottom>
         Outputs:
       </Typography>

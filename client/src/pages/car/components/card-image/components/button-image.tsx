@@ -6,18 +6,14 @@ export interface ButtonImageProps {
     name: string;
     image: string;
   };
+  handleDirection: (name: string) => Promise<void>;
 }
 const sizeIcons = "4vw";
 
 export const ButtonImage = (props: ButtonImageProps) => {
-  const click = async (name: string) => {
-    console.log("name", name);
-    const response = await robotService.sendOutputRobotUI({ name: name });
-    console.log("response", response);
-  };
-  const { data } = props;
+  const { data, handleDirection } = props;
   return (
-    <IconButton onClick={() => click(data.name)}>
+    <IconButton onClick={() => handleDirection(data.name)}>
       <img
         style={{
           width: sizeIcons,

@@ -18,11 +18,22 @@ export const ConsoleComponent = (props: ConsoleComponentProps) => {
         width: "100%",
       }}
     >
-      Message from ESP8266:
-      <Box component="div">Jostick: {message.jostickDirection}</Box>
-      <Box component="div">Giroscopio: {message.giroscope}</Box>
-      <Box component="div">X: {message.giroscopeValues[0]}</Box>
-      <Box component="div">Y: {message.giroscopeValues[1]}</Box>
+      <Box component="div" sx={{ marginRight: "1em",fontWeight: "bold" }}>
+        Message from ESP32:
+      </Box>
+
+      <Box component="div" sx={{ marginRight: "1em" }}>
+        Jostick: {message.jostickDirection}
+      </Box>
+      <Box component="div" sx={{ marginRight: "1em" }}>
+        Giroscopio: {message.giroscope}
+      </Box>
+      {message.giroscopeValues && (
+        <Box component="div">
+          <Box component="div">X: {message.giroscopeValues[0]}</Box>
+          <Box component="div">Y: {message.giroscopeValues[1]}</Box>
+        </Box>
+      )}
     </Box>
   );
 };

@@ -19,7 +19,7 @@ export const ReadWebSocket2 = (props: ReadWebSocket2Props) => {
       <div
         style={{
           display: "flex",
-          width: "60%",
+          width: "50%",
           justifyContent: "space-between",
         }}
       >

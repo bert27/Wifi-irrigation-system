@@ -5,45 +5,60 @@ import "./styles.css";
 import { robotService } from "../../services/robot-service";
 import { CardOutputs } from "./components/card-outputs";
 import { TableOutputs } from "./components/table-outputs";
-import { CardController } from "./components/card-image/car-controller";
+import { CardController } from "./components/card-image/components/car-controller/car-controller";
 import { MpuGraphic } from "./components/giroscope/mpu-graphic";
 import { ValuesEchart } from "./components/giroscope/values-echart";
 import { ReadWebSocket } from "./components/console/read-web-socket";
 import { ReadWebSocket2 } from "./components/console/read-web-socket2";
+import { ConnectInfo } from "./components/connect-info";
 
 export interface ResponseWebSocketInterface {
   ledState: boolean | undefined;
   jostickDirection: string | undefined;
   giroscope: string | undefined;
-  giroscopeValues: number[];
+  giroscopeValues: number[] | undefined;
+  buttonState: string | undefined;
 }
 
 export const CarPage = (props: any) => {
   //192.168.1.230
-  const urlEsp8266 = "ws://192.168.1.230/ws";
+  const urlEsp8266 = "ws://192.168.1.230:3000/ws";
 
   const [recibedMessage, setRecibedMessage] = useState({
     ledState: undefined,
     jostickDirection: undefined,
     giroscope: undefined,
-    giroscopeValues: [0, 0],
+    giroscopeValues: undefined,
+    buttonState: undefined,
   } as ResponseWebSocketInterface);
 
   const [colourSelected, setcolourSelected] = useState("#aabbcc");
 
   // console.log("colourSelected", colourSelected);
   const [ws, setWs] = useState(null as WebSocket | null);
-  const [connectedMessage, setConnectedMessage] = useState("No conectasdo");
+  const [connectedWs, setConnectedWs] = useState(
+    undefined as boolean | undefined
+  );
 
   useEffect(() => {
     const url = urlEsp8266;
     const ws = new WebSocket(url);
     ws.onopen = () => {
-      setConnectedMessage("Conectado al servidor");
+      console.log("onopen");
+      setConnectedWs(true);
       ws.send("react is open");
     };
+    ws.onclose = () => {
+      console.log("WebSocket cerrado");
+      setConnectedWs(false);
+    };
+
     ws.onmessage = (event: { data: string }) => {
-      // console.log("mensaje recibido: ", event.data);
+      console.log("mensaje recibido: ", event.data);
+      console.log(
+        "recibedMessage.giroscopeValues",
+        recibedMessage.giroscopeValues
+      );
       setRecibedMessage(JSON.parse(event.data));
     };
     setWs(ws);
@@ -65,6 +80,7 @@ export const CarPage = (props: any) => {
     setcolourSelected(newColor);
     sendDataToServer(newColor);
   };
+
   return (
     <Box
       sx={{
@@ -85,21 +101,22 @@ export const CarPage = (props: any) => {
           alignItems: "center",
         }}
       >
-        <div>{connectedMessage}</div>
+        <ConnectInfo connectedWs={connectedWs} />
         <ReadWebSocket2
           recibedMessage={recibedMessage}
           setRecibedMessage={setRecibedMessage}
         />
-        <div style={{ width: "20%" }}>
+
+        <div>
           <Button
             data-testid="button-send-websocket"
             variant="contained"
-            sx={{ backgroundColor: "#576CBC" }}
+            sx={{ backgroundColor: "#576CBC", marginLeft: "1em" }}
             onClick={() => {
               ws?.send("toggle");
             }}
           >
-            Enviar mensaje
+            Enviar mensaje ws
           </Button>
         </div>
       </div>
@@ -115,38 +132,40 @@ export const CarPage = (props: any) => {
             }}
           >
             <CardController recibedMessage={recibedMessage} />
-            <Box
-              component="div"
-              sx={{
-                display: "flex",
-                width: "60%",
-                justifyContent: "space-evenly",
-                alignItems: "center",
-                background: "#100c2a",
-                padding: "1em",
-              }}
-            >
-              <ValuesEchart
-                data={{
-                  title: "Grados Eje X",
-                  value: parseFloat(
-                    recibedMessage.giroscopeValues[0].toFixed(2)
-                  ),
+            {recibedMessage.giroscopeValues && (
+              <Box
+                component="div"
+                sx={{
+                  display: "flex",
+                  width: "60%",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                  background: "#100c2a",
+                  padding: "1em",
                 }}
-              />
-              <ValuesEchart
-                data={{
-                  title: "Grados Eje Y",
-                  value: parseFloat(
-                    recibedMessage.giroscopeValues[1].toFixed(2)
-                  ),
-                }}
-              />
-              <MpuGraphic
-                data={{ height: "150px", width: "100%" }}
-                recibedMessage={recibedMessage}
-              />
-            </Box>
+              >
+                <ValuesEchart
+                  data={{
+                    title: "Grados Eje X",
+                    value: parseFloat(
+                      recibedMessage.giroscopeValues[0].toFixed(2)
+                    ),
+                  }}
+                />
+                <ValuesEchart
+                  data={{
+                    title: "Grados Eje Y",
+                    value: parseFloat(
+                      recibedMessage.giroscopeValues[1].toFixed(2)
+                    ),
+                  }}
+                />
+                <MpuGraphic
+                  data={{ height: "150px", width: "100%" }}
+                  recibedMessage={recibedMessage}
+                />
+              </Box>
+            )}
           </Box>
           <Box
             component="div"
@@ -156,7 +175,7 @@ export const CarPage = (props: any) => {
               width: "100%",
               justifyContent: "space-between",
               background: "#100c2a",
-              padding: "0.4em"
+              padding: "0.4em",
             }}
           >
             <CardOutputs />
@@ -193,7 +212,6 @@ export const CarPage = (props: any) => {
               </Box>
             </Box>
           </Box>
- 
 
           {/*  <TableOutputs />*/}
         </CardContent>

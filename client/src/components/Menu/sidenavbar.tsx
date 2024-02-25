@@ -22,7 +22,7 @@ export const SideNavBar = (): React.ReactElement => {
       style={{ background: "#282828", height: "auto" }}
     >
       {iconsPages.map((iconPage: IconSideNavBarInterface) => (
-        <div style={{ padding: "1vw" }}>
+        <div style={{ padding: "1vw" }} key={iconPage.name}>
           <Link
             arioa-label={iconPage.name}
             component={LinkDom}

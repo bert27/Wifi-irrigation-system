@@ -18,14 +18,17 @@ export const MpuGraphic = (props: MpuGraphicProps) => {
     <Canvas style={{ width, height }}>
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
-      <Box
-        position={[0, 0.2, 2.2]}
-        geometry={
-          new BoxGeometry()
-            .rotateX(recibedMessage.giroscopeValues[0]) // 180 degrees in the x-axis
-            .rotateY(recibedMessage.giroscopeValues[1]) // 90 degrees in the y-axis
-        }
-      />
+
+      {recibedMessage.giroscopeValues && (
+        <Box
+          position={[0, 0.2, 2.2]}
+          geometry={
+            new BoxGeometry()
+              .rotateX(recibedMessage.giroscopeValues[0] as number) // 180 degrees in the x-axis
+              .rotateY(recibedMessage.giroscopeValues[1] as number) // 90 degrees in the y-axis
+          }
+        />
+      )}
     </Canvas>
   );
 };
