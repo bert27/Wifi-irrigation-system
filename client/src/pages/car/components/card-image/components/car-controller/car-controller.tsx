@@ -36,8 +36,11 @@ interface CardControllerProps {
 
 export const CardController = (props: CardControllerProps) => {
   const { recibedMessage } = props;
-  const [valuePwm, setValuePwm] = useState(140);
-  const [valueTime, setValueTime] = useState(1000);
+
+  const [dataToEsp32, setDataToEsp32] = useState({
+    time: 1000,
+    pwm: 140,
+  });
 
   const handleDirection = async (name: string) => {
     console.log("name", name);
@@ -45,34 +48,42 @@ export const CardController = (props: CardControllerProps) => {
     console.log("response", response);
   };
 
-  const handleSlider = (pwmTmp: number) => {
-    setValuePwm(pwmTmp);
+  const handleSlider = (valuePwmTmp: number) => {
+    setDataToEsp32({ ...dataToEsp32, pwm: valuePwmTmp });
   };
 
   const handleTime = (timeSelect: number) => {
-    setValueTime(timeSelect);
+    setDataToEsp32({ ...dataToEsp32, time: timeSelect });
   };
 
   return (
     <Box
       component="div"
-      sx={{ display: "flex", width: "100%", justifyContent: "space-between" }}
+      sx={{
+        display: "flex",
+        width: "100%",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+      }}
       id="car-controller"
     >
-      <Box component="div" sx={{ width: "20%" }}>
-        <InputNumber
-          value={valueTime}
-          onChange={handleTime}
-          label={"Tiempo:"}
-        />
+      <Box component="div" id="controls-details" sx={{ width: "50%" }}>
+        <Box component="div">
+          <InputNumber
+            value={dataToEsp32.time}
+            onChange={handleTime}
+            label={"Tiempo:"}
+          />
+        </Box>
+        <Box component="div">
+          <SliderLineComponent
+            onChangePwmValue={handleSlider}
+            valuePwm={dataToEsp32.pwm}
+            label={"Potencia"}
+          />
+        </Box>
       </Box>
-      <Box component="div" sx={{ width: "30%" }}>
-        <SliderLineComponent
-          onChangePwmValue={handleSlider}
-          valuePwm={valuePwm}
-          label={"Potencia"}
-        />
-      </Box>
+
       <div
         style={{
           display: "flex",
