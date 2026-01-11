@@ -78,7 +78,7 @@ body {
 
 /* Global Overrides for Material UI Paper */
 .MuiPaper-root {
-  background-color: transparent !important;
+  background-color: var(--bg-surface) !important;
   color: var(--text-main) !important;
   background-image: none !important;
 }

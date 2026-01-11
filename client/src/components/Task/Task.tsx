@@ -15,6 +15,8 @@ interface IPropsTask {
   eliminateTask: (index: number) => void;
 }
 
+import { useTranslation } from "react-i18next";
+
 export const Task = ({
   taskData = {
     days: [],
@@ -24,6 +26,7 @@ export const Task = ({
   index = 0,
   eliminateTask = () => {},
 }: IPropsTask) => {
+  const { t } = useTranslation();
   return (
     <div
       className="cardTask_plant"
@@ -31,7 +34,7 @@ export const Task = ({
       data-testid={"task"}
     >
       <div className="delete-btn-container">
-        <Tooltip title="Eliminar tarea">
+        <Tooltip title={t('plant.task.delete')}>
           <IconButton 
             onClick={() => eliminateTask(index)} 
             className="delete-task-btn"
@@ -43,13 +46,13 @@ export const Task = ({
         </Tooltip>
       </div>
       <div className="title_cardtask">
-        A las {taskData?.hour}:{taskData?.minutes}
+        {t('plant.task.at')} {taskData?.hour}:{taskData?.minutes}
       </div>
       <div className="daysTask_plant">
         {taskData?.days.map((taskdatac, index) => (
           <div key={index}>
             {taskdatac?.state && (
-              <div className="day_task">{taskdatac?.name}</div>
+              <div className="day_task">{t(`plant.days.${taskdatac?.name}`)}</div>
             )}
           </div>
         ))}

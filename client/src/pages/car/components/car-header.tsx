@@ -1,6 +1,7 @@
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { ConnectInfo } from "./connect-info";
+import { useTranslation } from "react-i18next";
 
 interface HeaderProps {
   connected: boolean;
@@ -11,6 +12,7 @@ interface HeaderProps {
 }
 
 export const CarHeader: React.FC<HeaderProps> = ({ connected, ledState, onToggleLed, onPing, height }) => {
+  const { t } = useTranslation();
   return (
     <Box 
       component="header"
@@ -25,7 +27,7 @@ export const CarHeader: React.FC<HeaderProps> = ({ connected, ledState, onToggle
     >
       <Box>
         <Typography variant="h4" className="tech-text neon-glow" sx={{ fontWeight: 800, color: 'var(--text-main)', lineHeight: 1 }}>
-          ROBOT<span style={{ color: 'var(--primary)' }}>CORE</span>
+          {t('car.header.title')}<span style={{ color: 'var(--primary)' }}>CORE</span>
         </Typography>
         <ConnectInfo connectedWs={connected} />
       </Box>
@@ -60,7 +62,7 @@ export const CarHeader: React.FC<HeaderProps> = ({ connected, ledState, onToggle
             color: '#fff !important'
           }}
         >
-          PING
+          {t('common.ping')}
         </Button>
       </Box>
     </Box>

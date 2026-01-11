@@ -8,7 +8,10 @@ interface DrinksGridProps {
   onSelectDrink: (drink: Drink) => void;
 }
 
+import { useTranslation } from "react-i18next";
+
 export const DrinksGrid: React.FC<DrinksGridProps> = ({ drinks, onSelectDrink }) => {
+  const { t } = useTranslation();
   return (
     <Grid container spacing={3} sx={{ mt: 2 }}>
       {drinks.map((drink) => (
@@ -98,7 +101,7 @@ export const DrinksGrid: React.FC<DrinksGridProps> = ({ drinks, onSelectDrink })
                   letterSpacing: "2px",
                 }}
               >
-                Tap to Mix
+                {t('drinks.grid.tapToMix')}
               </Typography>
             </Box>
           </Paper>

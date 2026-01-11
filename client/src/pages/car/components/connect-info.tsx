@@ -1,12 +1,14 @@
 import { Box, Typography } from "@mui/material";
 import WifiIcon from '@mui/icons-material/Wifi';
 import SensorsOffIcon from '@mui/icons-material/SensorsOff';
+import { useTranslation } from "react-i18next";
 
 interface ConnectInfoProps {
   connectedWs: boolean | undefined;
 }
 
 export const ConnectInfo = (props: ConnectInfoProps) => {
+  const { t } = useTranslation();
   const { connectedWs } = props;
   
   const statusColor = connectedWs ? 'var(--success)' : 'var(--error)';
@@ -51,7 +53,7 @@ export const ConnectInfo = (props: ConnectInfoProps) => {
             letterSpacing: 1
           }}
         >
-          {connectedWs ? "SYSTEM ONLINE" : "SYSTEM OFFLINE"}
+          {connectedWs ? t('common.online') : t('common.offline')}
         </Typography>
       </Box>
     </Box>

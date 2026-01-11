@@ -9,21 +9,25 @@ interface PumpConfigPanelProps {
   onUpdatePump: (id: number, data: { pwm: number; timeCalibration: number }) => void;
 }
 
+import { useTranslation } from "react-i18next";
+
 export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ pumps, onUpdatePump }) => {
+  const { t } = useTranslation();
   return (
     <Grid container spacing={3} sx={{ mt: 2 }}>
       {pumps.map((pump) => (
         <Grid size={{ xs: 12, sm: 6, md: 3 }} key={pump.id}>
-          <PumpCard pump={pump} onUpdate={onUpdatePump} />
+          <PumpCard pump={pump} onUpdate={onUpdatePump} t={t} />
         </Grid>
       ))}
     </Grid>
   );
 };
 
-const PumpCard: React.FC<{ pump: PumpConfig; onUpdate: (id: number, data: any) => void }> = ({
+const PumpCard: React.FC<{ pump: PumpConfig; onUpdate: (id: number, data: any) => void; t: any }> = ({
   pump,
   onUpdate,
+  t
 }) => {
   const [pwm, setPwm] = useState(pump.pwm);
   const [timeCalibration, setTimeCalibration] = useState(pump.timeCalibration);
@@ -74,7 +78,7 @@ const PumpCard: React.FC<{ pump: PumpConfig; onUpdate: (id: number, data: any) =
       {/* PWM Slider */}
       <Box>
         <Typography className="tech-text" sx={{ fontSize: "0.7rem", color: "var(--text-muted)", mb: 1 }}>
-          PWM: {pwm}
+          {t('drinks.config.pwm')}: {pwm}
         </Typography>
         <Slider
           value={pwm}
@@ -99,7 +103,7 @@ const PumpCard: React.FC<{ pump: PumpConfig; onUpdate: (id: number, data: any) =
       {/* Time Calibration */}
       <Box>
         <Typography className="tech-text" sx={{ fontSize: "0.7rem", color: "var(--text-muted)", mb: 1 }}>
-          TIME: {timeCalibration}s
+          {t('drinks.config.time')}: {timeCalibration}s
         </Typography>
         <Slider
           value={timeCalibration}
@@ -131,7 +135,7 @@ const PumpCard: React.FC<{ pump: PumpConfig; onUpdate: (id: number, data: any) =
           letterSpacing: "1px",
         }}
       >
-        SET
+        {t('drinks.config.set')}
       </Button>
     </Paper>
   );

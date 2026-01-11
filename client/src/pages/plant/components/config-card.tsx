@@ -17,6 +17,8 @@ interface ConfigCardProps {
   errorCreateTask: string | null;
 }
 
+import { useTranslation } from "react-i18next";
+
 export const ConfigCard: React.FC<ConfigCardProps> = ({
   days,
   saveDays,
@@ -26,9 +28,10 @@ export const ConfigCard: React.FC<ConfigCardProps> = ({
   createTask,
   errorCreateTask,
 }) => {
+  const { t } = useTranslation();
   return (
     <Box className="cardPlanta" sx={{ width: '100%', mt: 1, p: 2 }}>
-      <Typography className="subtitle_plant" sx={{ mb: 1 }}>Configura Nuevo Riego</Typography>
+      <Typography className="subtitle_plant" sx={{ mb: 1 }}>{t('plant.config.title')}</Typography>
       <Days saveDays={saveDays} days={days} />
       
       <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} mt={1}>
@@ -48,7 +51,7 @@ export const ConfigCard: React.FC<ConfigCardProps> = ({
             size="small"
             sx={{ color: 'var(--accent)', borderColor: 'var(--accent)', borderRadius: '12px', py: 0.5 }}
           >
-            Ajustes Manuales
+            {t('plant.config.manualAdjustments')}
           </Button>
           
           <Button
@@ -62,7 +65,7 @@ export const ConfigCard: React.FC<ConfigCardProps> = ({
               fontWeight: 700
             }}
           >
-            GUARDAR PROGRAMACIÓN
+            {t('plant.config.saveButton')}
           </Button>
           {errorCreateTask && <Typography color="error" variant="caption">{errorCreateTask}</Typography>}
         </Box>

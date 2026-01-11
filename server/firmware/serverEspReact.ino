@@ -29,22 +29,11 @@
 
 
 
-#define pinClock1 1  // OPTIONAL CLOCK PIN 1 IN D7
-#define pinClock2 3  // OPTIONAL CLOCK PIN 2 IN D8
 
 void setup() {
 
   Serial.begin(9600);
   Serial.println("Arrancando");
-  pinMode(waterPump1, OUTPUT);
-  pinMode(waterPump2, OUTPUT);
-  pinMode(waterPump3, OUTPUT);
-  pinMode(waterPump4, OUTPUT);
-
-  digitalWrite(waterPump1, 0);
-  digitalWrite(waterPump2, 0);
-  digitalWrite(waterPump3, 0);
-  digitalWrite(waterPump4, 0);
   //
 
   ConnectWiFi_STA();

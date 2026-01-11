@@ -20,7 +20,10 @@ const withTimeout = <T,>(promise: Promise<T>, timeoutMs: number = 10000): Promis
   ]);
 };
 
+import { useTranslation } from "react-i18next";
+
 export const usePlantPage = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [stateWaterPump, setStateWaterPump] = useState<boolean>(false);
   const [clock, setClock] = useState<string | null>(null);
@@ -93,7 +96,7 @@ export const usePlantPage = () => {
           setListTasks(parsedTasks);
         }
       } catch (error) {
-        setErrorGet(`Error de conexión con ESP8266: ${error}`);
+        setErrorGet(`${t('plant.errors.connection')}: ${error}`);
       } finally {
         setLoading(false);
       }
@@ -116,7 +119,7 @@ export const usePlantPage = () => {
   const createTask = async () => {
     const selectedDays = days.filter(d => d.state);
     if (selectedDays.length === 0) {
-      setErrorCreateTask("Selecciona al menos un día");
+      setErrorCreateTask(t('plant.errors.noDaySelected'));
       return;
     }
 
@@ -129,7 +132,7 @@ export const usePlantPage = () => {
         JSON.stringify(selectedDays.map(d => d.name))
       );
     } catch (error) {
-      setErrorCreateTask("Error al guardar la tarea");
+      setErrorCreateTask(t('plant.errors.saveFailed'));
     }
   };
 

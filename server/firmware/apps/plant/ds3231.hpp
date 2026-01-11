@@ -2,6 +2,9 @@
 
 #include <RTClib.h>
 
+#define pinClock1 1  // OPTIONAL CLOCK PIN 1 IN D7
+#define pinClock2 3  // OPTIONAL CLOCK PIN 2 IN D8
+
 class DS3231Manager {
 public:
     static DS3231Manager& getInstance() {

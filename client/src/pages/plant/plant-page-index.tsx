@@ -8,7 +8,10 @@ import { ModalConfig } from "./modal-config";
 import { PlantSkeleton } from "./components/plant-skeleton";
 import "./plant.css";
 
+import { useTranslation } from "react-i18next";
+
 export const Plant: React.FC = () => {
+  const { t } = useTranslation();
   const {
     loading,
     stateWaterPump,
@@ -36,9 +39,9 @@ export const Plant: React.FC = () => {
 
   return (
     <div className="pagePlant">
-      {errorGet && <Alert severity="error" sx={{ mb: 2 }}>{errorGet}</Alert>}
+      {errorGet && <Alert severity="error" sx={{ mb: 2 }}>{t('plant.getError')}</Alert>}
       
-      <Typography className="title_plant">SISTEMA DE RIEGO</Typography>
+      <Typography className="title_plant">{t('plant.title')}</Typography>
 
       <Grid container spacing={4} sx={{ width: '100%', maxWidth: '1200px' }}>
         

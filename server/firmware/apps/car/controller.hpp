@@ -33,17 +33,21 @@ public:
         Serial.println("CAR: Controller Started");
     }
 
-    void changeColor(String color) {
-        Serial.println("CAR: Converting color " + color + " to RGB and setting LEDs...");
-        // Example: parse hex or name logic here
-        // For now, simpler test:
-        if(color == "red") {
-            digitalWrite(PIN_LED_R, 1); digitalWrite(PIN_LED_G, 0); digitalWrite(PIN_LED_B, 0);
-        } else if (color == "green") {
-            digitalWrite(PIN_LED_R, 0); digitalWrite(PIN_LED_G, 1); digitalWrite(PIN_LED_B, 0);
-        } else if (color == "blue") {
-            digitalWrite(PIN_LED_R, 0); digitalWrite(PIN_LED_G, 0); digitalWrite(PIN_LED_B, 1);
+    void changeColor(String hexColor) {
+        if (hexColor.startsWith("#")) {
+            hexColor = hexColor.substring(1);
         }
+        
+        long number = strtol(hexColor.c_str(), nullptr, 16);
+        int r = (number >> 16) & 0xFF;
+        int g = (number >> 8) & 0xFF;
+        int b = number & 0xFF;
+
+        analogWrite(PIN_LED_R, r);
+        analogWrite(PIN_LED_G, g);
+        analogWrite(PIN_LED_B, b);
+        
+        Serial.printf("CAR: Color set to R:%d G:%d B:%d\n", r, g, b);
     }
 
     void toggleLED() {
@@ -53,16 +57,53 @@ public:
         digitalWrite(PIN_LED_W, state);
     }
 
-    void setOutputRobot() {
-        Serial.println("CAR: Setting Output Robot logic...");
-    }
-
-    void setRowTableOutputs() {
-        Serial.println("CAR: Row Table Outputs logic...");
-    }
-
     void setOutputRobotUI(String name) {
-        Serial.println("CAR: UI Output logic for " + name);
+        Serial.println("CAR: UI Command -> " + name);
+        
+        if (name == "Arriba") {
+            moveForward();
+        } else if (name == "Abajo") {
+            moveBackward();
+        } else if (name == "Izquierda") {
+            turnLeft();
+        } else if (name == "Derecha") {
+            turnRight();
+        } else if (name == "CENTER") {
+            stopMotors();
+        }
+    }
+
+    void moveForward() {
+        digitalWrite(PIN_MOTOR_A_DIR, LOW);
+        analogWrite(PIN_MOTOR_A_SPEED, defaultSpeed);
+        digitalWrite(PIN_MOTOR_B_DIR, LOW);
+        analogWrite(PIN_MOTOR_B_SPEED, defaultSpeed);
+    }
+
+    void moveBackward() {
+        digitalWrite(PIN_MOTOR_A_DIR, HIGH);
+        analogWrite(PIN_MOTOR_A_SPEED, defaultSpeed);
+        digitalWrite(PIN_MOTOR_B_DIR, HIGH);
+        analogWrite(PIN_MOTOR_B_SPEED, defaultSpeed);
+    }
+
+    void turnLeft() {
+        digitalWrite(PIN_MOTOR_A_DIR, HIGH);
+        analogWrite(PIN_MOTOR_A_SPEED, defaultSpeed);
+        digitalWrite(PIN_MOTOR_B_DIR, LOW);
+        analogWrite(PIN_MOTOR_B_SPEED, defaultSpeed);
+    }
+
+    void turnRight() {
+        digitalWrite(PIN_MOTOR_A_DIR, LOW);
+        analogWrite(PIN_MOTOR_A_SPEED, defaultSpeed);
+        digitalWrite(PIN_MOTOR_B_DIR, HIGH);
+        analogWrite(PIN_MOTOR_B_SPEED, defaultSpeed);
+    }
+
+    void stopMotors() {
+        analogWrite(PIN_MOTOR_A_SPEED, 0);
+        analogWrite(PIN_MOTOR_B_SPEED, 0);
     }
 
 private:
@@ -76,6 +117,8 @@ private:
     const uint8_t PIN_LED_G = 12; // D6
     const uint8_t PIN_LED_B = 13; // D7
     const uint8_t PIN_LED_W = 15; // D8
+    
+    uint8_t defaultSpeed = 150;
 
     CarController() {}
 };

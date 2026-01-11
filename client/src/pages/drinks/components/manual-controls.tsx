@@ -10,7 +10,10 @@ interface ManualControlsProps {
   onPumpCommand: (pumpId: number) => void;
 }
 
+import { useTranslation } from "react-i18next";
+
 export const ManualControls: React.FC<ManualControlsProps> = ({ onPumpCommand }) => {
+  const { t } = useTranslation();
   const [activePump, setActivePump] = React.useState<number | null>(null);
 
   const handlePump = (pumpId: number) => {
@@ -71,7 +74,7 @@ export const ManualControls: React.FC<ManualControlsProps> = ({ onPumpCommand })
           letterSpacing: "2px",
         }}
       >
-        MANUAL PUMP CONTROL
+        {t('drinks.manual.title')}
       </Typography>
 
       {/* Decorative circle */}
@@ -89,10 +92,10 @@ export const ManualControls: React.FC<ManualControlsProps> = ({ onPumpCommand })
       {/* D-Pad Layout */}
       <Box sx={{ position: "relative", zIndex: 1 }}>
         <Box mb={2} display="flex" justifyContent="center">
-          <ControlBtn pumpId={1} icon={KeyboardArrowUpIcon} label="PUMP 1" />
+          <ControlBtn pumpId={1} icon={KeyboardArrowUpIcon} label={`${t('drinks.manual.pump')} 1`} />
         </Box>
         <Box display="flex" gap={2} alignItems="center">
-          <ControlBtn pumpId={4} icon={KeyboardArrowLeftIcon} label="PUMP 4" />
+          <ControlBtn pumpId={4} icon={KeyboardArrowLeftIcon} label={`${t('drinks.manual.pump')} 4`} />
           <Box
             className="glass-card"
             sx={{
@@ -110,10 +113,10 @@ export const ManualControls: React.FC<ManualControlsProps> = ({ onPumpCommand })
           >
             <AdjustIcon sx={{ fontSize: 40 }} />
           </Box>
-          <ControlBtn pumpId={2} icon={KeyboardArrowRightIcon} label="PUMP 2" />
+          <ControlBtn pumpId={2} icon={KeyboardArrowRightIcon} label={`${t('drinks.manual.pump')} 2`} />
         </Box>
         <Box mt={2} display="flex" justifyContent="center">
-          <ControlBtn pumpId={3} icon={KeyboardArrowDownIcon} label="PUMP 3" />
+          <ControlBtn pumpId={3} icon={KeyboardArrowDownIcon} label={`${t('drinks.manual.pump')} 3`} />
         </Box>
       </Box>
 
@@ -132,7 +135,7 @@ export const ManualControls: React.FC<ManualControlsProps> = ({ onPumpCommand })
             }}
           >
             <Typography className="tech-text" sx={{ fontSize: "0.7rem", color: "var(--text-secondary)", fontWeight: 700 }}>
-              P{id}
+              {t('drinks.manual.pump').substring(0, 1)}{id}
             </Typography>
             <Box
               sx={{

@@ -10,7 +10,10 @@ interface ActuatorsCardProps {
   id?: string;
 }
 
+import { useTranslation } from "react-i18next";
+
 export const ActuatorsCard: React.FC<ActuatorsCardProps> = ({ globalPwm, setGlobalPwm, panelStyle, sx, id }) => {
+  const { t } = useTranslation();
   return (
     <Paper 
       id={id} 
@@ -28,7 +31,7 @@ export const ActuatorsCard: React.FC<ActuatorsCardProps> = ({ globalPwm, setGlob
         {/* Left: Matrix */}
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
           <Typography variant="subtitle2" className="tech-text" sx={{ color: 'var(--accent)', mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <WifiIcon fontSize="small" /> ACTUATORS
+            <WifiIcon fontSize="small" /> {t('car.actuators.title')}
           </Typography>
           <Box sx={{ flexGrow: 1, minHeight: 0, overflowY: 'auto' }}>
               <CardOutputs globalPwm={globalPwm} />

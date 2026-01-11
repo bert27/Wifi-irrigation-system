@@ -12,12 +12,15 @@ interface ModalConfigProps {
   setstateWaterPump: (state: boolean) => void;
 }
 
+import { useTranslation } from "react-i18next";
+
 export const ModalConfig: React.FC<ModalConfigProps> = ({
   isOpenModalConfig,
   setIsOpenModalConfig,
   stateWaterPump,
   setstateWaterPump,
 }) => {
+  const { t } = useTranslation();
 
   const changeStateWatterPump1 = async () => {
     try {
@@ -63,7 +66,7 @@ export const ModalConfig: React.FC<ModalConfigProps> = ({
       <Box sx={styleModal}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
           <Typography variant="h5" sx={{ fontFamily: 'var(--font-tech)', fontWeight: 700, color: 'var(--accent)' }}>
-            CONTROL MANUAL
+            {t('plant.manualControl.title')}
           </Typography>
           <IconButton onClick={() => setIsOpenModalConfig(false)} sx={{ color: 'var(--text-muted)' }}>
             <CloseIcon />
@@ -85,9 +88,9 @@ export const ModalConfig: React.FC<ModalConfigProps> = ({
             }}
           >
             <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600 }}>
-              Bomba de Agua #1: 
+              {t('plant.status.pump1')}: 
               <span style={{ color: stateWaterPump ? 'var(--accent)' : 'var(--secondary)' }}>
-                {stateWaterPump ? "ON" : "OFF"}
+                {stateWaterPump ? t('common.on') : t('common.off')}
               </span>
             </Typography>
 
@@ -103,7 +106,7 @@ export const ModalConfig: React.FC<ModalConfigProps> = ({
                 fontWeight: 700
               }}
             >
-              {stateWaterPump ? "DETENER" : "ACTIVAR AHORA"}
+              {stateWaterPump ? t('plant.manualControl.stop') : t('plant.manualControl.start')}
             </Button>
           </Box>
         </div>

@@ -40,5 +40,18 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('three')) return 'vendor-three';
+            if (id.includes('@mui')) return 'vendor-mui';
+            if (id.includes('echarts')) return 'vendor-echarts';
+            return 'vendor';
+          }
+        },
+      },
+    },
   },
 });

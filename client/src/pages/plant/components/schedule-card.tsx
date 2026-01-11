@@ -9,12 +9,15 @@ interface ScheduleCardProps {
   eliminateTask: (index: number) => void;
 }
 
+import { useTranslation } from "react-i18next";
+
 export const ScheduleCard: React.FC<ScheduleCardProps> = ({ listTasks, eliminateTask }) => {
+  const { t } = useTranslation();
   return (
     <div className="cardPlanta" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Typography className="subtitle_plant">Riegos programados</Typography>
+      <Typography className="subtitle_plant">{t('plant.schedule.title')}</Typography>
       <Typography variant="caption" sx={{ mb: 1, display: 'block' }}>
-        Tareas activas: {listTasks.length}
+        {t('plant.schedule.activeTasks')}: {listTasks.length}
       </Typography>
       
       <div className="tasksList_plant" style={{ flex: 1 }}>
@@ -29,7 +32,7 @@ export const ScheduleCard: React.FC<ScheduleCardProps> = ({ listTasks, eliminate
           ))
         ) : (
           <Typography variant="body2" color="var(--text-muted)">
-            No hay tareas programadas.
+            {t('plant.schedule.noTasks')}
           </Typography>
         )}
       </div>

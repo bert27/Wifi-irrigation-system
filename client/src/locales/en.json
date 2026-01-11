@@ -1,0 +1,113 @@
+{
+    "menu": {
+        "robot": "Robot",
+        "drinks": "Drinks",
+        "irrigation": "Irrigation"
+    },
+    "common": {
+        "language": "Language",
+        "english": "English",
+        "spanish": "Spanish",
+        "synced": "SYNCED",
+        "on": "ON",
+        "off": "OFF",
+        "ping": "PING",
+        "online": "SYSTEM ONLINE",
+        "offline": "SYSTEM OFFLINE"
+    },
+    "car": {
+        "title": "RobotCore",
+        "header": {
+            "title": "ROBOT"
+        },
+        "telemetry": {
+            "title": "NEURAL TELEMETRY",
+            "pitch": "PITCH",
+            "roll": "ROLL"
+        },
+        "console": {
+            "title": "ESP8266 TELEMETRY:",
+            "joystick": "Joystick",
+            "gyroscope": "Gyroscope"
+        },
+        "actuators": {
+            "title": "ACTUATORS"
+        },
+        "kinetic": {
+            "title": "KINETIC CONTROL"
+        },
+        "rgb": {
+            "title": "RGB MODULE"
+        }
+    },
+    "plant": {
+        "title": "IRRIGATION SYSTEM",
+        "status": {
+            "title": "Current Status",
+            "temp": "TEMP",
+            "clock": "ESP TIME",
+            "pump1": "PUMP #1"
+        },
+        "config": {
+            "title": "New Irrigation Config",
+            "manualAdjustments": "Manual Adjustments",
+            "saveButton": "SAVE SCHEDULE"
+        },
+        "schedule": {
+            "title": "Scheduled Irrigations",
+            "activeTasks": "Active tasks",
+            "noTasks": "No scheduled tasks found."
+        },
+        "days": {
+            "L": "M",
+            "Ma": "T",
+            "Mi": "W",
+            "Ju": "T",
+            "V": "F",
+            "S": "S",
+            "D": "S"
+        },
+        "task": {
+            "at": "At",
+            "delete": "Delete task"
+        },
+        "manualControl": {
+            "title": "MANUAL CONTROL",
+            "stop": "STOP",
+            "start": "START NOW"
+        },
+        "errors": {
+            "connection": "Connection error with ESP8266",
+            "noDaySelected": "Select at least one day",
+            "saveFailed": "Error saving task",
+            "getError": "Error getting data"
+        }
+    },
+    "drinks": {
+        "title": "COCKTAIL MIXER 3000",
+        "subtitle": "AUTOMATED BEVERAGE DISPENSING SYSTEM",
+        "tabs": {
+            "drinks": "DRINKS",
+            "config": "CONFIG",
+            "manual": "MANUAL"
+        },
+        "manual": {
+            "title": "MANUAL PUMP CONTROL",
+            "pump": "PUMP"
+        },
+        "config": {
+            "pwm": "PWM",
+            "time": "TIME",
+            "set": "SET"
+        },
+        "grid": {
+            "tapToMix": "Tap to Mix"
+        },
+        "messages": {
+            "preparing": "Preparing {{name}}...",
+            "pumpUpdated": "Pump updated successfully",
+            "pumpUpdateError": "Error updating pump",
+            "activatingPump": "Activating Pump {{id}}"
+        }
+    }
+}

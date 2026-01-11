@@ -10,7 +10,10 @@ interface RgbCardProps {
   id?: string;
 }
 
+import { useTranslation } from "react-i18next";
+
 export const RgbCard: React.FC<RgbCardProps> = ({ color, handleColorChange, panelStyle, sx, id }) => {
+  const { t } = useTranslation();
   return (
     <Paper 
       id={id} 
@@ -18,7 +21,7 @@ export const RgbCard: React.FC<RgbCardProps> = ({ color, handleColorChange, pane
       sx={{ 
         ...panelStyle, 
         p: 2, 
-        position: 'relative',
+        position: 'relative', 
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
@@ -44,7 +47,7 @@ export const RgbCard: React.FC<RgbCardProps> = ({ color, handleColorChange, pane
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, position: 'relative', zIndex: 10, mb: 0.5 }}>
             <PaletteIcon sx={{ fontSize: 16, color: 'var(--primary)', filter: 'drop-shadow(0 0 5px var(--primary))' }} />
             <Typography variant="caption" className="tech-text" sx={{ color: 'var(--text-muted)', fontSize: '0.75rem', letterSpacing: '1px' }}>
-              RGB MODULE
+              {t('car.rgb.title')}
             </Typography>
         </Box>
         

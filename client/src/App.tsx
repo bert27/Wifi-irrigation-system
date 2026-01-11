@@ -1,4 +1,5 @@
 import React from "react";
+import "./i18n";
 import "./styles.css";
 import { Plant } from "@/pages/plant/plant-page-index";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";

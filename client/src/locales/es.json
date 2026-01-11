@@ -1,0 +1,113 @@
+{
+    "menu": {
+        "robot": "Robot",
+        "drinks": "Bebidas",
+        "irrigation": "Riego"
+    },
+    "common": {
+        "language": "Idioma",
+        "english": "Inglés",
+        "spanish": "Español",
+        "synced": "SINCR.",
+        "on": "ON",
+        "off": "OFF",
+        "ping": "PING",
+        "online": "SISTEMA ONLINE",
+        "offline": "SISTEMA OFFLINE"
+    },
+    "car": {
+        "title": "Núcleo Robot",
+        "header": {
+            "title": "ROBOT"
+        },
+        "telemetry": {
+            "title": "TELEMETRÍA NEURAL",
+            "pitch": "PITCH",
+            "roll": "ROLL"
+        },
+        "console": {
+            "title": "TELEMETRÍA ESP8266:",
+            "joystick": "Joystick",
+            "gyroscope": "Giroscopio"
+        },
+        "actuators": {
+            "title": "ACTUADORES"
+        },
+        "kinetic": {
+            "title": "CONTROL KINÉTICO"
+        },
+        "rgb": {
+            "title": "MÓDULO RGB"
+        }
+    },
+    "plant": {
+        "title": "SISTEMA DE RIEGO",
+        "status": {
+            "title": "Estado Actual",
+            "temp": "TEMP",
+            "clock": "HORA ESP",
+            "pump1": "BOMBA #1"
+        },
+        "config": {
+            "title": "Configura Nuevo Riego",
+            "manualAdjustments": "Ajustes Manuales",
+            "saveButton": "GUARDAR PROGRAMACIÓN"
+        },
+        "schedule": {
+            "title": "Riegos Programados",
+            "activeTasks": "Tareas activas",
+            "noTasks": "No hay tareas programadas."
+        },
+        "days": {
+            "L": "L",
+            "Ma": "Ma",
+            "Mi": "Mi",
+            "Ju": "Ju",
+            "V": "V",
+            "S": "S",
+            "D": "D"
+        },
+        "task": {
+            "at": "A las",
+            "delete": "Eliminar tarea"
+        },
+        "manualControl": {
+            "title": "CONTROL MANUAL",
+            "stop": "DETENER",
+            "start": "ACTIVAR AHORA"
+        },
+        "errors": {
+            "connection": "Error de conexión con ESP8266",
+            "noDaySelected": "Selecciona al menos un día",
+            "saveFailed": "Error al guardar la tarea",
+            "getError": "Error obteniendo datos"
+        }
+    },
+    "drinks": {
+        "title": "MEZCLADOR DE CÓCTELES 3000",
+        "subtitle": "SISTEMA AUTOMATIZADO DE BEBIDAS",
+        "tabs": {
+            "drinks": "BEBIDAS",
+            "config": "CONFIG",
+            "manual": "MANUAL"
+        },
+        "manual": {
+            "title": "CONTROL MANUAL DE BOMBAS",
+            "pump": "BOMBA"
+        },
+        "config": {
+            "pwm": "PWM",
+            "time": "TIEMPO",
+            "set": "FIJAR"
+        },
+        "grid": {
+            "tapToMix": "Toca para Mezclar"
+        },
+        "messages": {
+            "preparing": "Preparando {{name}}...",
+            "pumpUpdated": "Bomba actualizada con éxito",
+            "pumpUpdateError": "Error al actualizar la bomba",
+            "activatingPump": "Activando Bomba {{id}}"
+        }
+    }
+}

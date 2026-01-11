@@ -12,7 +12,10 @@ interface TelemetryCardProps {
   id?: string;
 }
 
+import { useTranslation } from "react-i18next";
+
 export const TelemetryCard: React.FC<TelemetryCardProps> = ({ robotStatus, setOrientation, panelStyle, sx, id }) => {
+  const { t } = useTranslation();
   // Conversion functions
   const radToDeg = (rad: number) => (rad * 180) / Math.PI;
   const degToRad = (deg: number) => (deg * Math.PI) / 180;
@@ -21,9 +24,9 @@ export const TelemetryCard: React.FC<TelemetryCardProps> = ({ robotStatus, setOr
     <Paper id={id} className="glass-effect" sx={{ ...panelStyle, p: 2, overflow: 'hidden', ...sx }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={1} flexShrink={0}>
         <Typography variant="subtitle2" className="tech-text" sx={{ color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: 1 }}>
-          <PsychologyIcon fontSize="small" /> NEURAL TELEMETRY
+          <PsychologyIcon fontSize="small" /> {t('car.telemetry.title')}
         </Typography>
-        <Typography className="tech-text" sx={{ fontSize: '0.65rem', color: 'var(--success)' }}>SYNCED</Typography>
+        <Typography className="tech-text" sx={{ fontSize: '0.65rem', color: 'var(--success)' }}>{t('common.synced')}</Typography>
       </Box>
       
       <Box sx={{ display: 'flex', gap: 2, flex: 1, minHeight: 0 }}>

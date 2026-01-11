@@ -34,6 +34,7 @@ public:
     void begin() {
         setupPins();
         setupButton();
+        offAllPumps();
     }
 
     void loop() {

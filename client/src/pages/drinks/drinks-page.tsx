@@ -8,7 +8,10 @@ import LocalBarIcon from "@mui/icons-material/LocalBar";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 
+import { useTranslation } from "react-i18next";
+
 export const DrinksPage = () => {
+  const { t } = useTranslation();
   const {
     activeTab,
     pumps,
@@ -71,7 +74,7 @@ export const DrinksPage = () => {
               mb: 1,
             }}
           >
-            COCKTAIL MIXER 3000
+            {t('drinks.title')}
           </Typography>
           <Typography
             sx={{
@@ -80,7 +83,7 @@ export const DrinksPage = () => {
               letterSpacing: "3px",
             }}
           >
-            AUTOMATED BEVERAGE DISPENSING SYSTEM
+            {t('drinks.subtitle')}
           </Typography>
         </Box>
 
@@ -120,9 +123,9 @@ export const DrinksPage = () => {
               },
             }}
           >
-            <Tab value="drinks" label="DRINKS" icon={<LocalBarIcon />} iconPosition="start" />
-            <Tab value="config" label="CONFIG" icon={<SettingsIcon />} iconPosition="start" />
-            <Tab value="manual" label="MANUAL" icon={<SportsEsportsIcon />} iconPosition="start" />
+            <Tab value="drinks" label={t('drinks.tabs.drinks')} icon={<LocalBarIcon />} iconPosition="start" />
+            <Tab value="config" label={t('drinks.tabs.config')} icon={<SettingsIcon />} iconPosition="start" />
+            <Tab value="manual" label={t('drinks.tabs.manual')} icon={<SportsEsportsIcon />} iconPosition="start" />
           </Tabs>
         </Box>
 

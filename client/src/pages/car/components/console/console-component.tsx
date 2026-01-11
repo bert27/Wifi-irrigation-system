@@ -1,11 +1,13 @@
 import { RobotStatus } from "../../models/robot-model";
 import { Box } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 interface ConsoleComponentProps {
   message: RobotStatus;
 }
 
 export const ConsoleComponent = (props: ConsoleComponentProps) => {
+  const { t } = useTranslation();
   const { message } = props;
   return (
     <Box
@@ -27,14 +29,14 @@ export const ConsoleComponent = (props: ConsoleComponentProps) => {
       }}
     >
       <Box component="div" sx={{ color: "var(--accent)", fontWeight: "bold" }}>
-        TELEMETRÍA ESP8266:
+        {t('car.console.title')}
       </Box>
 
       <Box component="div">
-        Joystick: {message.jostickDirection || "N/A"}
+        {t('car.console.joystick')}: {message.jostickDirection || "N/A"}
       </Box>
       <Box component="div">
-        Giroscopio: {message.giroscope || "N/A"}
+        {t('car.console.gyroscope')}: {message.giroscope || "N/A"}
       </Box>
       {message.giroscopeValues && (
         <Box component="div" sx={{ display: "flex", gap: "0.5rem" }}>
