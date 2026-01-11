@@ -1,0 +1,27 @@
+import React from "react";
+import "./styles.css";
+import { Plant } from "@/pages/plant/plant-page-index";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { DrinksPage } from "@/pages/drinks/drinks-page";
+import { SideNavBar } from "@/components/Menu/sidenavbar";
+import { Box } from "@mui/material";
+import { CarPage } from "@/pages/car/car-page";
+
+export const App: React.FC = () => {
+  return (
+    <Router>
+      <Box sx={{ display: "flex", width: "100%", minHeight: "100vh" }}>
+        <SideNavBar />
+        <Box component="main" sx={{ flexGrow: 1, overflowX: "hidden" }}>
+          <Routes>
+            <Route path="/" element={<CarPage />} />
+            <Route path="/irrigation" element={<Plant />} />
+            <Route path="/drinks" element={<DrinksPage />} />
+            <Route path="/drinks/:tabRouter" element={<DrinksPage />} />
+            <Route path="*" element={<Plant />} />
+          </Routes>
+        </Box>
+      </Box>
+    </Router>
+  );
+};

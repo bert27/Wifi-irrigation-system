@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production / Build
+build/
+dist/
+target/
+
+# Testing
+coverage/
+
+# Environment / Secret
+# .env (Unignored by user request)
+# .env.local
+# .env.development.local
+# .env.test.local
+# .env.production.local
+
+# Misc
+.DS_Store
+._*
+*.log
+
+.idea/
+*.swp
+*.lnk
+*.bat
+!run-windows.bat
+
+# Firmware specific
+.pio/
+.elf
+.bin
+.hex
+.zip
+

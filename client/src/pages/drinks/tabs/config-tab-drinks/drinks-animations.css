@@ -1,0 +1,19 @@
+@keyframes flashSuccess {
+  0% {
+    box-shadow: 0 0 0px rgba(0, 255, 0, 0);
+    border-color: transparent;
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    border-color: #00e676;
+  }
+  100% {
+    box-shadow: 0 0 0px rgba(0, 255, 0, 0);
+    border-color: transparent;
+  }
+}
+
+.flash-success {
+  animation: flashSuccess 1s ease-out;
+  border: 2px solid transparent;
+}
