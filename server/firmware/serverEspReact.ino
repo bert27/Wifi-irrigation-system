@@ -15,15 +15,18 @@
 
 #include "utils\wifi-start.hpp"
 
-#include "apps\plant\services\API.hpp"
-#include "apps\drinks\services\API.hpp"
-#include "apps\car\services\API.hpp"
+#include "apps/irrigation/services/API.hpp"
+#include "apps/drinks machine/services/API.hpp"
+#include "apps/robot car/services/API.hpp"
 
-#include "apps\plant\controller.hpp"
-#include "apps\drinks\display.hpp"
-#include "apps\drinks\controller.hpp"
-#include "apps\car\gyroscope.hpp"
-#include "apps\car\controller.hpp"
+#include "apps/irrigation/controller.hpp"
+#include "apps/drinks machine/utils/display.hpp"
+#include "apps/drinks machine/controller.hpp"
+#include "apps/robot car/utils/gyroscope.hpp"
+#include "apps/robot car/controller.hpp"
+#include "apps/robot car/services/websocket.hpp"
+#include "apps/drinks machine/services/websocket.hpp"
+#include "utils/RemoteControlHub.hpp"
 #include <Wire.h>
 #include <SPI.h>
 
@@ -42,6 +45,9 @@ void setup() {
   // ListenDisplay(); // Removed, handled by setupDrinksAPI
   setupController();
   setupGyroscope();
+  setupRemoteHub();
+  setupCarWebSocket(irrigationSystem.server);
+  setupDrinksWebSocket(irrigationSystem.server);
   
   // Setup Car Controller
   CarController::getInstance().begin();
@@ -60,4 +66,5 @@ void setup() {
 void loop() {
   loopDisplay();
   loopController();
+  CarController::getInstance().loop();
 }

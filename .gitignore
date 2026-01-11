@@ -36,3 +36,5 @@ coverage/
 .hex
 .zip
 
+# Legacy
+Robot-Core2026/

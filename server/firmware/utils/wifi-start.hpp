@@ -4,17 +4,9 @@ void ConnectWiFi_STA()
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   WiFi.config(ip, gateway, subnet);
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(100);
-    Serial.print("..");
-  }
-
-  Serial.println("");
-  Serial.print("Iniciado STA:\t");
-  Serial.println(ssid);
-  Serial.print("IP address:\t");
-  Serial.println(WiFi.localIP());
+  
+  Serial.println("STA: Connection started (Non-blocking)");
+  // Removed blocking loop to allow hardware control without WiFi
 }
 
 void ConnectWiFi_AP(bool useStaticIP = false)

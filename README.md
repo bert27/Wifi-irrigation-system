@@ -66,14 +66,23 @@ Sistema automatizado de mezcla de bebidas:
 
 El repositorio está organizado de forma modular para facilitar el mantenimiento y escalabilidad:
 
-- `/client`: Aplicación frontend en React + Vite.
-  - `/src/models`: Definiciones de tipos TypeScript
-  - `/src/pages`: Páginas principales (Car, Water, Drinks)
-  - `/src/components`: Componentes reutilizables
-  - `/src/hooks`: Custom hooks para lógica de negocio
-- `/server`:
-    - `/firmware`: Código fuente en C++ para el microcontrolador (Arduino IDE / PlatformIO).
-    - `/mock`: Servidor de simulación en Node.js que imita el comportamiento del hardware para pruebas locales.
+- `/client`: Aplicación frontend en React + Vite (Cyberpunk Dashboard).
+- `/remote-control`: Firmware para el **Mando Físico (ESP32)** con soporte para joystick, giroscopio y telemetría directa.
+- `/server/firmware`: Código fuente modular para el **Robot (ESP8266/ESP32)**.
+    - `/apps/robot car`: Lógica de control de motores y giroscopio interno.
+    - `/apps/drinks machine`: Gestión de bombas, recetas y pantalla OLED.
+    - `/apps/irrigation`: Programación horaria y tareas de riego.
+    - `/utils`: Componentes compartidos y Hub de comunicación.
+
+---
+
+## 🎮 Control Dual y Modo Offline (ESP-NOW)
+
+Este sistema destaca por su versatilidad en la conectividad:
+
+- **Modo Offline (Barrio)**: El mando y el robot se comunican mediante **ESP-NOW** (señal de radio directa). No requieren WiFi ni router para funcionar. Ideal para presentaciones en exteriores.
+- **Modo Online (Dashboard)**: Conexión vía WiFi para telemetría avanzada. Cada módulo actúa como su propio servidor de **WebSockets**, enviando datos en tiempo real al dashboard de React.
+- **Arquitectura Desacoplada**: El mando físico y el dashboard web pueden convivir; el robot procesa órdenes de ambas fuentes simultáneamente sin conflictos.
 
 ---
 
@@ -87,56 +96,40 @@ He creado scripts para facilitar el inicio del proyecto (instala dependencias y 
   ./run-mac.sh
   ```
 - **Windows:**
-  Doble clic en `run-windows.bat` o:
-  ```batch
-  run-windows.bat
-  ```
+  Doble clic en `run-windows.bat` o `run-windows.bat` desde la terminal.
 
 ---
 
-### Instalación Manual
-Si prefieres hacerlo paso a paso:
-
-### 3. Firmware (Hardware Real)
-Para desplegar en el ESP8266:
-1. Abre el archivo en `/server/firmware` con Arduino IDE.
-2. Configura tus credenciales Wi-Fi en `configNetwork.h`.
-3. Carga el sketch a tu dispositivo vía USB.
+### Instalación Manual del Firmware
+1. Abre el archivo en `/server/firmware` (Robot) o `/remote-control/firmware` (Mando) con Arduino IDE o VSCode.
+2. Configura las credenciales en `secrets.h` (en la raíz o carpeta local configurada).
+3. Carga el sketch a tus dispositivos. El robot y el mando se vincularán automáticamente por MAC address.
 
 ---
 
 ## 📋 Características Implementadas
 
-### Dashboard RobotCore
-- [x] Control de robot con joystick D-pad
-- [x] Visualización de giroscopio MPU
-- [x] Control RGB con selector de color
-- [x] Indicadores de estado en tiempo real
+### Dashboard & Mando Físico
+- [x] Control inalámbrico de largo alcance (ESP-NOW)
+- [x] Telemetría directa desde el mando a la Web (WebSocket `/ws/remote`)
+- [x] Visualización 3D del giroscopio del mando en tiempo real
+- [x] Control híbrido Web/Físico sin interrupciones
 
-### Sistema de Riego
-- [x] Programación de tareas por días y horarios
-- [x] Visualización de temperatura y hora ESP
-- [x] Control manual de bombas
-- [x] Grid responsive con glassmorphism
+### Módulo Robot Car
+- [x] Control de motores de alta frecuencia
+- [x] Telemetría interna de inclinación (Pitch/Roll)
+- [x] Efectos de iluminación RGB sincronizados
 
-### Cocktail Mixer
-- [x] Control de 4 bombas vía PWM
-- [x] Interfaz de calibración de caudales
-- [x] Selección de bebidas predefinidas
-- [x] Control manual con D-pad
-- [x] Comunicación WebSocket estable
+### Cocktail Mixer & Drinks
+- [x] Interfaz física en pantalla OLED (Menú autónomo)
+- [x] Selección de bebidas desde el mando (Joystick Up/Down/Accept)
+- [x] API de control remoto y visualización en dashboard
 
 ---
 
 ## 🎯 Próximas Mejoras
-- [ ] Gestión de recetas personalizadas
-- [ ] Calendario de riego automático avanzado
-- [ ] Integración con sensores de humedad
-- [ ] Sistema de notificaciones push
+- [ ] Gestión de recetas personalizadas persistentes
+- [ ] Soporte para múltiples mandos simultáneos
+- [ ] Integración de cámara ESP32-Cam para streaming en tiempo real
+- [ ] Modo de aprendizaje de rutas (Gravedad asistida)
 
----
-
-## 🤝 Contribuciones e Ideas
-El proyecto está en constante evolución. Se aceptan sugerencias, reportes de bugs y nuevas ideas para ampliar las capacidades del sistema.
-
-*¡Que tengas un excelente día de desarrollo!* :)
