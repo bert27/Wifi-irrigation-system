@@ -22,9 +22,31 @@ void setup() {
   GiroscopeManager::getInstance().begin();
   CommunicationManager::getInstance().begin(); // ESP-NOW setup
 
-  // 2. Start WiFi for Web/React in background (Non-blocking)
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
-  Serial.println("REMOTE: WiFi Connection started in background...");
+  // 2. Smart WiFi Connection (Prevents channel hopping if network is missing)
+  WiFi.mode(WIFI_STA);
+  Serial.println("REMOTE: Scanning for " + String(WIFI_SSID) + "...");
+  
+  int n = WiFi.scanNetworks();
+  bool found = false;
+  for (int i = 0; i < n; ++i) {
+    if (WiFi.SSID(i) == WIFI_SSID) {
+      found = true;
+      Serial.println("REMOTE: Network found (Signal: " + String(WiFi.RSSI(i)) + " dBm)");
+      break;
+    }
+  }
+
+  if (found) {
+      WiFi.begin(WIFI_SSID, WIFI_PASS);
+      Serial.println("REMOTE: Connecting to WiFi...");
+  } else {
+      Serial.println("REMOTE: Network not found. Enforcing Offline Mode (Channel 1).");
+      WiFi.disconnect(); 
+      // Force Channel 1 for stable ESP-NOW in offline mode
+      esp_wifi_set_promiscuous(true);
+      esp_wifi_set_channel(1, WIFI_SECOND_CHAN_NONE);
+      esp_wifi_set_promiscuous(false);
+  }
 
   // 3. Start WebSocket Server (Direct Telemetry to React)
   WebSocketManager::getInstance().begin(server);

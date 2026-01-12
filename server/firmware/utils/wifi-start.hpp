@@ -2,11 +2,26 @@ void ConnectWiFi_STA()
 {
   Serial.println("");
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  WiFi.config(ip, gateway, subnet);
+  Serial.println("STA: Scanning for network...");
+  int n = WiFi.scanNetworks();
+  bool found = false;
   
-  Serial.println("STA: Connection started (Non-blocking)");
-  // Removed blocking loop to allow hardware control without WiFi
+  for (int i = 0; i < n; ++i) {
+    if (WiFi.SSID(i) == String(ssid)) {
+      found = true;
+      break;
+    }
+  }
+
+  if (found) {
+    WiFi.begin(ssid, password);
+    WiFi.config(ip, gateway, subnet);
+    Serial.println("STA: Network found. Connecting in background...");
+  } else {
+    Serial.println("STA: Network NOT found. Running in Offline Mode (Channel 1).");
+    WiFi.disconnect();
+    wifi_set_channel(1); // Specific for ESP8266
+  }
 }
 
 void ConnectWiFi_AP(bool useStaticIP = false)
