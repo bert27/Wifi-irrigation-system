@@ -10,7 +10,7 @@ Orientado originalmente al riego automatizado, el proyecto ha evolucionado hacia
 
 ---
 
-## 🎨 Interfaz Cyberpunk Premium
+## 🎨 Interfaz Cyberpunk
 
 El dashboard cuenta con un diseño **cyberpunk de alta calidad** con efectos de glassmorphism, neon glows y animaciones fluidas.
 
@@ -101,6 +101,11 @@ He creado scripts para facilitar el inicio del proyecto (instala dependencias y 
 ---
 
 ### Instalación Manual del Firmware
+> **Nota para ESP32**: Si usas una placa ESP32, asegúrate de tener esta URL en *Arduino IDE -> Preferences -> Additional Board Manager URLs*:
+> `https://espressif.github.io/arduino-esp32/package_esp32_index.json`
+>
+> ⚠️ **Solución de problemas**: Si la instalación de la versión más reciente falla (error `DEADLINE_EXCEEDED` o similar), intenta instalar la versión **2.0.17** desde el Gestor de Tarjetas.
+
 1. Abre el archivo en `/server/firmware` (Robot) o `/remote-control/firmware` (Mando) con Arduino IDE o VSCode.
 2. Configura las credenciales en `secrets.h` (en la raíz o carpeta local configurada).
 3. Carga el sketch a tus dispositivos. El robot y el mando se vincularán automáticamente por MAC address.
