@@ -56,7 +56,7 @@ void setup() {
 void loop() {
   delay(50); // 20Hz cycle
 
-  JoystickData joy = JoystickManager::getInstance().getValues();
+  JoystickValues joy = JoystickManager::getInstance().getValues();
   String gyroDir = GiroscopeManager::getInstance().getDirection();
 
   // 1. Send via ESP-NOW to Robot (Only on change)

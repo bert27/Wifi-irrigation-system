@@ -1,6 +1,6 @@
 #pragma once
 #include <Arduino.h>
-#include "../../../secrets.h"
+#include "../secrets.h"
 
 // MAC Address of the Robot (Receiver)
 // Update this with the real MAC of your ESP8266 Robot

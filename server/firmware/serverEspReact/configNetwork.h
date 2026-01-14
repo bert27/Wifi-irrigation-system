@@ -1,4 +1,4 @@
-#include "../../secrets.h"
+#include "secrets.h"
 
 const char* ssid     = WIFI_SSID;
 const char* password = WIFI_PASS;

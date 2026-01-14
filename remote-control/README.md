@@ -2,6 +2,30 @@
 
 ## Descripción General
 Un mando a distancia portátil dedicado construido con un **ESP32** 38 PINES. Cuenta con un joystick físico y un giroscopio MPU6050 para un modo dual de control del robot. Se comunica vía **ESP-NOW** para una latencia casi nula.
+ 
+## 📦 Instalación de Dependencias (Firmware)
+Este proyecto requiere dos librerías fundamentales que **no** están disponibles (o están desactualizadas) en el Gestor de Librerías estándar de Arduino. **Ambas son OBLIGATORIAS para el ESP32**:
+
+1.  **ESPAsyncWebServer**: [Descargar ZIP](https://github.com/me-no-dev/ESPAsyncWebServer/archive/refs/heads/master.zip)
+    *   *Qué hace*: Crea el servidor web asíncrono que permite la comunicación WebSockets de alto rendimiento sin bloquear el procesador.
+2.  **AsyncTCP**: [Descargar ZIP](https://github.com/me-no-dev/AsyncTCP/archive/refs/heads/master.zip)
+    *   *Qué hace*: Librería de bajo nivel para ESP32 que gestiona las conexiones TCP de forma asíncrona. Es el "motor" que necesita el servidor web para funcionar en este chip.
+
+3.  **I2Cdev**: [Descargar ZIP](https://github.com/jrowberg/i2cdevlib/archive/refs/heads/master.zip)
+    *   *Qué hace*: Abstracción I2C necesaria para el controlador del giroscopio.
+    *   **Importante**: Dentro del ZIP, copia la carpeta `Arduino/I2Cdev` a tu carpeta `libraries`.
+4.  **MPU6050**: (Incluido en el mismo ZIP de arriba)
+    *   *Qué hace*: Controlador para leer el giroscopio MPU6050.
+    *   **Instalación**: Del mismo ZIP de `I2Cdevlib`, copia la carpeta `Arduino/MPU6050` a tu carpeta `libraries`.
+5.  **ArduinoJson**:
+    *   *Qué hace*: Manejo eficiente de datos JSON para la telemetría.
+    *   **Instalación**: Disponible directamente en el **Gestor de Librerías** de Arduino IDE (Buscar "ArduinoJson").
+
+**Pasos:**
+1. Descarga los ZIPs para las librerías 1-4.
+2. Para `I2Cdev` y `MPU6050`, descomprime y mueve las carpetas manualmente a `Documents/Arduino/libraries/`.
+3. Para `ArduinoJson`, instálala desde *Sketch -> Include Library -> Manage Libraries...*
+3. En Arduino IDE: *Sketch -> Include Library -> Add .ZIP Library...* para el resto.
 
 ## Configuración de Hardware
 | Componente | Pin | Función |

@@ -18,6 +18,8 @@ coverage/
 # .env.test.local
 # .env.production.local
 secrets.h
+remote-control/firmware/remote-control/secrets.h
+server/firmware/serverEspReact/secrets.h
 
 # Misc
 .DS_Store
