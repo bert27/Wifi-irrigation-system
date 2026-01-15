@@ -1,10 +1,10 @@
 import { Box, Paper, Typography, SxProps, Theme } from "@mui/material";
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { CardController } from "../card-image/components/car-controller/car-controller";
-import { RobotStatus } from "../../models/robot-model";
+import { IRemoteControlReceiveStatus } from "../../models/model";
 
 interface KineticCardProps {
-  robotStatus: RobotStatus;
+  remoteStatus: IRemoteControlReceiveStatus;
   panelStyle: any;
   sx?: SxProps<Theme>;
   id?: string;
@@ -13,7 +13,7 @@ interface KineticCardProps {
 
 import { useTranslation } from "react-i18next";
 
-export const KineticCard: React.FC<KineticCardProps> = ({ robotStatus, panelStyle, sx, id, lastCmd }) => {
+export const KineticCard: React.FC<KineticCardProps> = ({ remoteStatus, panelStyle, sx, id, lastCmd }) => {
   const { t } = useTranslation();
   return (
     <Paper
@@ -34,7 +34,7 @@ export const KineticCard: React.FC<KineticCardProps> = ({ robotStatus, panelStyl
       </Typography>
 
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: 0 }}>
-        <CardController recibedMessage={robotStatus} lastCmd={lastCmd} />
+        <CardController recibedMessage={remoteStatus} lastCmd={lastCmd} />
       </Box>
     </Paper>
   );

@@ -1,76 +1,32 @@
 import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { ResponseWebSocketInterface } from "@/pages/car/models/robot-model";
+
 import { Edges } from "@react-three/drei";
 
 interface MpuGraphicProps {
-  data: {
-    height: string;
-    width: string;
-  };
-  recibedMessage: ResponseWebSocketInterface;
-  setOrientation?: (pitch: number, roll: number) => void;
+  pitch: number;
+  roll: number;
 }
 
 export const MpuGraphic = (props: MpuGraphicProps) => {
-  const { data, recibedMessage, setOrientation } = props;
-  const { width, height } = data;
-  
-  const rotX = recibedMessage.giroscopeValues ? recibedMessage.giroscopeValues[0] : 0;
-  const rotY = recibedMessage.giroscopeValues ? recibedMessage.giroscopeValues[1] : 0;
+  const { pitch, roll } = props;
 
-  const [isDragging, setIsDragging] = useState(false);
-  const lastPosRef = useRef({ x: 0, y: 0 });
+  const rotX = pitch;
+  const rotY = roll;
+
+  // Removed drag logic for now
   const currentRotationRef = useRef({ x: rotX, y: rotY, z: 0 });
 
   useEffect(() => {
-    if (!isDragging) {
-      currentRotationRef.current = { x: rotX, y: rotY, z: 0 };
-    }
-  }, [rotX, rotY, isDragging]);
-
-  const handlePointerDown = (e: React.PointerEvent) => {
-    if (!setOrientation) return;
-    setIsDragging(true);
-    lastPosRef.current = { x: e.clientX, y: e.clientY };
-  };
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging || !setOrientation) return;
-    
-    const deltaX = e.clientX - lastPosRef.current.x;
-    const deltaY = e.clientY - lastPosRef.current.y;
-    
-    lastPosRef.current = { x: e.clientX, y: e.clientY };
-
-    const speed = 0.01;
-    let newPitch = currentRotationRef.current.x + deltaY * speed;
-    let newRoll = currentRotationRef.current.y + deltaX * speed;
-
-    newPitch = Math.round(newPitch * 100) / 100;
-    newRoll = Math.round(newRoll * 100) / 100;
-
-    currentRotationRef.current.x = newPitch;
-    currentRotationRef.current.y = newRoll;
-
-    setOrientation(newPitch, newRoll);
-  };
-
-  const handlePointerUp = () => {
-    setIsDragging(false);
-  };
+    currentRotationRef.current = { x: rotX, y: rotY, z: 0 };
+  }, [rotX, rotY]);
 
   return (
-    <div 
-      style={{ width, height, cursor: isDragging ? 'grabbing' : 'grab' }}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerUp}
-    >
-      <Canvas 
+    <div
+      style={{ width: '100%', height: '100%', cursor: 'default' }}>
+      <Canvas
         // Changed to a semi-transparent lighter background to create contrast
-        style={{ width: '100%', height: '100%', background: 'radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 70%)' }} 
+        style={{ width: '100%', height: '100%', background: 'radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 70%)' }}
         camera={{ position: [0, 2, 3], fov: 50 }}
       >
         {/* High Intensity Lighting Setup */}
@@ -79,15 +35,15 @@ export const MpuGraphic = (props: MpuGraphicProps) => {
         <pointLight position={[10, 0, 10]} intensity={5} color="#06b6d4" />
         <pointLight position={[-10, 0, -10]} intensity={3} color="#d946ef" />
 
-        <DataCube 
-          rotation={[currentRotationRef.current.x - 0.7, currentRotationRef.current.y - 0.9, currentRotationRef.current.z]} 
-          isDragging={isDragging}
+        <DataCube
+          rotation={[currentRotationRef.current.x - 0.7, currentRotationRef.current.y - 0.9, currentRotationRef.current.z]}
+          isDragging={false}
         />
-        
+
         {/* Much brighter grid */}
         <gridHelper args={[10, 10, 0x666666, 0x333333]} rotation={[Math.PI / 2, 0, 0]} position={[0, -2, 0]} />
       </Canvas>
-    </div>
+    </div >
   );
 };
 
@@ -120,11 +76,11 @@ function DataCube({ rotation, isDragging }: { rotation: [number, number, number]
           emissive={hovered || isDragging ? "#6366F1" : "#4f46e5"}
           emissiveIntensity={0.8}
         />
-        <Edges 
-          scale={1.02} 
-          threshold={15} 
-          color={hovered || isDragging ? "#ffffff" : "#a5b4fc"} 
-          linewidth={2} 
+        <Edges
+          scale={1.02}
+          threshold={15}
+          color={hovered || isDragging ? "#ffffff" : "#a5b4fc"}
+          linewidth={2}
         />
       </mesh>
 
@@ -138,11 +94,11 @@ function DataCube({ rotation, isDragging }: { rotation: [number, number, number]
           emissive={hovered || isDragging ? "#6366F1" : "#4f46e5"}
           emissiveIntensity={0.8}
         />
-        <Edges 
-          scale={1.02} 
-          threshold={15} 
-          color={hovered || isDragging ? "#ffffff" : "#a5b4fc"} 
-          linewidth={2} 
+        <Edges
+          scale={1.02}
+          threshold={15}
+          color={hovered || isDragging ? "#ffffff" : "#a5b4fc"}
+          linewidth={2}
         />
       </mesh>
 

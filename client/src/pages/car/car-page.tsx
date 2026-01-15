@@ -12,7 +12,7 @@ import { KineticCard } from "./components/kpi-cards/kinetic-card";
 
 export const CarPage: React.FC = () => {
   const {
-    robotStatus,
+    dashboardState,
     connected,
     color,
     handleColorChange,
@@ -59,7 +59,7 @@ export const CarPage: React.FC = () => {
 
       <CarHeader
         connected={connected}
-        ledState={robotStatus.ledState || false}
+        ledState={dashboardState.robot.ledState || false}
         onToggleLed={toggleLED}
         onPing={() => sendWSMessage("ping")}
         height={layoutConfig.header.height}
@@ -100,7 +100,7 @@ export const CarPage: React.FC = () => {
             <Box sx={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
               <TelemetryCard
                 id="card-telemetry"
-                robotStatus={robotStatus}
+                robotStatus={dashboardState.robot}
                 setOrientation={setOrientation}
                 panelStyle={panelStyle}
               />
@@ -144,7 +144,7 @@ export const CarPage: React.FC = () => {
           <Box sx={{ flex: 1, minHeight: 0 }}>
             <KineticCard
               id="card-kinetic-control"
-              robotStatus={robotStatus}
+              remoteStatus={dashboardState.remote}
               panelStyle={panelStyle}
               sx={{ height: '100%' }}
               lastCmd={lastCmd}

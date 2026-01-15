@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { ResponseWebSocketInterface } from "@/pages/car/models/robot-model";
+import { IRemoteControlReceiveStatus } from "@/pages/car/models/model";
 import { SliderLineComponent } from "@/pages/car/components/sub-components/slider";
 import { InputNumber } from "@/pages/car/components/sub-components/input-number";
 
@@ -11,7 +11,7 @@ import TimerIcon from '@mui/icons-material/Timer';
 import { JostickController } from "@/components/jostick-controller/jostick-controller";
 
 interface CardControllerProps {
-  recibedMessage: ResponseWebSocketInterface;
+  recibedMessage: IRemoteControlReceiveStatus;
   lastCmd?: string;
 }
 
@@ -93,7 +93,7 @@ export const CardController = ({ recibedMessage, lastCmd }: CardControllerProps)
             textOverflow: 'ellipsis'
           }}>
             {`> CMD: `}
-            <span style={{ color: '#fff' }}>{lastCmd || recibedMessage.jostickDirection || 'IDLE'}</span>
+            <span style={{ color: '#fff' }}>{lastCmd || recibedMessage.joystickDirection || 'IDLE'}</span>
             <span className="blink">_</span>
           </Typography>
         </Box>

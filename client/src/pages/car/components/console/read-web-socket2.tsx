@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { ConsoleComponent } from "./console-component";
 import { Button } from "@mui/material";
-import { ResponseWebSocketInterface } from "@/pages/car/models/robot-model";
+import { IDashboardState } from "@/pages/car/models/model";
 
 interface ReadWebSocket2Props {
-  recibedMessage: ResponseWebSocketInterface;
+  recibedMessage: IDashboardState;
   setRecibedMessage: React.Dispatch<
-    React.SetStateAction<ResponseWebSocketInterface>
+    React.SetStateAction<IDashboardState>
   >;
 }
 

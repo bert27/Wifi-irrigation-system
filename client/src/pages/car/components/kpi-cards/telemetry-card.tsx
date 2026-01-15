@@ -2,10 +2,10 @@ import { Box, Paper, Typography, Slider, SxProps, Theme } from "@mui/material";
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import { MpuGraphic } from "../giroscope/mpu-graphic";
 import { ValuesEchart } from "../giroscope/values-echart";
-import { RobotStatus } from "../../models/robot-model";
+import { IRobotSendStatus } from "../../models/model";
 
 interface TelemetryCardProps {
-  robotStatus: RobotStatus;
+  robotStatus: IRobotSendStatus;
   setOrientation: (pitch: number, roll: number) => void;
   panelStyle: any;
   sx?: SxProps<Theme>;
@@ -40,16 +40,15 @@ export const TelemetryCard: React.FC<TelemetryCardProps> = ({ robotStatus, setOr
           minHeight: 0
         }}>
           <MpuGraphic
-            data={{ height: "100%", width: "100%" }}
-            recibedMessage={robotStatus}
-            setOrientation={setOrientation}
+            pitch={robotStatus.robotGyroscopeValues?.[0] || 0}
+            roll={robotStatus.robotGyroscopeValues?.[1] || 0}
           />
         </Box>
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1, minWidth: '150px' }}>
           {/* PITCH SECTION */}
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
             <Box sx={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
-              <ValuesEchart data={{ title: "PITCH", value: radToDeg(robotStatus.giroscopeValues?.[0] || 0) }} />
+              <ValuesEchart data={{ title: "PITCH", value: radToDeg(robotStatus.robotGyroscopeValues?.[0] || 0) }} />
             </Box>
             <Box px={1} sx={{ flexShrink: 0 }}>
               <Slider
@@ -57,11 +56,11 @@ export const TelemetryCard: React.FC<TelemetryCardProps> = ({ robotStatus, setOr
                 min={-180}
                 max={180}
                 step={1}
-                value={radToDeg(robotStatus.giroscopeValues?.[0] || 0)}
+                value={radToDeg(robotStatus.robotGyroscopeValues?.[0] || 0)}
                 onChange={(_: Event, val: number | number[]) => {
                   const degValue = typeof val === 'number' ? val : val[0];
                   const radValue = degToRad(degValue);
-                  setOrientation(radValue, robotStatus.giroscopeValues?.[1] || 0);
+                  setOrientation(radValue, robotStatus.robotGyroscopeValues?.[1] || 0);
                 }}
                 sx={{ color: 'var(--primary)', height: 4, py: 1 }}
               />
@@ -71,7 +70,7 @@ export const TelemetryCard: React.FC<TelemetryCardProps> = ({ robotStatus, setOr
           {/* ROLL SECTION */}
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
             <Box sx={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
-              <ValuesEchart data={{ title: "ROLL", value: radToDeg(robotStatus.giroscopeValues?.[1] || 0) }} />
+              <ValuesEchart data={{ title: "ROLL", value: radToDeg(robotStatus.robotGyroscopeValues?.[1] || 0) }} />
             </Box>
             <Box px={1} sx={{ flexShrink: 0 }}>
               <Slider
@@ -79,11 +78,11 @@ export const TelemetryCard: React.FC<TelemetryCardProps> = ({ robotStatus, setOr
                 min={-180}
                 max={180}
                 step={1}
-                value={radToDeg(robotStatus.giroscopeValues?.[1] || 0)}
+                value={radToDeg(robotStatus.robotGyroscopeValues?.[1] || 0)}
                 onChange={(_: Event, val: number | number[]) => {
                   const degValue = typeof val === 'number' ? val : val[0];
                   const radValue = degToRad(degValue);
-                  setOrientation(robotStatus.giroscopeValues?.[0] || 0, radValue);
+                  setOrientation(robotStatus.robotGyroscopeValues?.[0] || 0, radValue);
                 }}
                 sx={{ color: 'var(--secondary)', height: 4, py: 1 }}
               />

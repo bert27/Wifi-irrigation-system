@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ColorData } from "../pages/car/models/robot-model";
+import { IColorData } from "../pages/car/models/model";
 import { directionWeb, getRequestOptions } from "./planta.service";
 import { OutputDataInterface } from "../pages/car/components/card-outputs";
 import { ColumnInterface } from "../pages/car/components/table-outputs";
@@ -18,7 +18,7 @@ const axiosGet = async (params: any, endpoint: string) => {
 };
 
 export const robotService = {
-  sendDataColorToServer: async (data: ColorData) => {
+  sendDataColorToServer: async (data: IColorData) => {
     return await axiosGet({ color: data.color }, "changeColor");
   },
 

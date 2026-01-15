@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { RobotStatus } from '@/pages/car/models/robot-model';
+import { IDashboardState } from '@/pages/car/models/model';
 import { robotService } from '@/services/robot.service';
 import { directionWeb } from "@/services/planta.service";
 
@@ -7,18 +7,22 @@ export const useRobotControl = () => {
   // Convert http/https to ws/wss and append /ws/remote
   const urlEsp8266 = directionWeb.replace(/^http/, 'ws') + '/ws';
   
-  const [robotStatus, setRobotStatus] = useState<RobotStatus>({
-    ledState: false,
-    jostickDirection: "CENTER",
-    giroscope: "LEVEL",
-    giroscopeValues: [0, 0, 0],
-    buttonState: "IDLE",
+  const [dashboardState, setDashboardState] = useState<IDashboardState>({
+    robot: {
+      ledState: false,
+      motorState: "STOP",
+      robotGyroscopeValues: [0, 0, 0]
+    },
+    remote: {
+      joystickDirection: "CENTER",
+      buttonState: "IDLE",
+      remoteGyroscopeValues: [0, 0, 0]
+    }
   });
 
   const [connected, setConnected] = useState(false);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [color, setColor] = useState("#00d2ff");
-
   const [lastCmd, setLastCmd] = useState<string>("Waiting...");
 
   // WebSocket Setup with Auto-Reconnection
@@ -56,14 +60,42 @@ export const useRobotControl = () => {
       socket.onerror = (error) => {
           console.error("WebSocket Error:", error);
           setLastCmd("Connection Error");
-          // socket.close() will be called automatically or manually, triggering onclose
       };
 
       socket.onmessage = (event) => {
         setLastCmd(typeof event.data === 'string' ? event.data : "Binary Data");
         try {
           const data = JSON.parse(event.data);
-          setRobotStatus(prev => ({ ...prev, ...data }));
+          
+          setDashboardState(prev => {
+             const newState = { ...prev };
+
+             // --- REMOTE CONTROL DATA MAPPING ---
+             // Default ESP32 remote sends: { gx, gy, direction, button }
+             if (data.direction !== undefined) {
+                 newState.remote.joystickDirection = (data.direction === "Sin Movimiento") ? "CENTER" : data.direction;
+             }
+             if (data.kx !== undefined || data.ky !== undefined) { // Assuming remote sends gx/gy or similar, need to confirm keys from firmware
+                // The firmware sends gx, gy. See WebSocketManager.hpp: doc["gx"] = gx;
+                newState.remote.remoteGyroscopeValues = [data.gx || 0, data.gy || 0, 0];
+             }
+              if (data.gx !== undefined || data.gy !== undefined) {
+                 newState.remote.remoteGyroscopeValues = [data.gx || 0, data.gy || 0, 0];
+             }
+             if (data.button !== undefined) {
+                 newState.remote.buttonState = data.button;
+             }
+
+             // --- ROBOT DATA MAPPING ---
+             // Assuming robot sends ledState, motorState, etc.
+             if (data.ledState !== undefined) newState.robot.ledState = data.ledState;
+             if (data.motorState !== undefined) newState.robot.motorState = data.motorState;
+             if (data.giroscopeValues !== undefined) newState.robot.robotGyroscopeValues = data.giroscopeValues;
+             if (data.giroscope !== undefined) newState.robot.robotGyroscope = data.giroscope;
+
+             return newState;
+          });
+
         } catch (e) {
           console.warn("Non-parsable message received:", event.data);
         }
@@ -88,9 +120,6 @@ export const useRobotControl = () => {
   // Actions
   const handleColorChange = useCallback(async (newColor: string) => {
     setColor(newColor);
-    // Debounce the websocket sending if needed, but for now direct
-    // Assuming throttledSendColor is defined elsewhere or this is a placeholder
-    // For now, we'll keep the original service call structure if throttledSendColor is not defined.
     try {
       await robotService.sendDataColorToServer({ color: newColor });
     } catch (e) {
@@ -121,14 +150,18 @@ export const useRobotControl = () => {
   }, []);
 
   const setOrientation = useCallback((pitch: number, roll: number) => {
-    setRobotStatus(prev => ({
+    // This looks like it was updating local state for simulation/testing?
+    setDashboardState(prev => ({
       ...prev,
-      giroscopeValues: [pitch, roll, prev.giroscopeValues?.[2] || 0]
+      robot: {
+          ...prev.robot,
+          robotGyroscopeValues: [pitch, roll, prev.robot.robotGyroscopeValues?.[2] || 0]
+      }
     }));
   }, []);
 
   return {
-    robotStatus,
+    dashboardState,
     connected,
     color,
     handleColorChange,

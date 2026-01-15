@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Paper, Tooltip } from "@mui/material";
-import { ResponseWebSocketInterface } from "@/pages/car/models/robot-model";
+import { IRemoteControlReceiveStatus } from "@/pages/car/models/model";
 import { robotService } from "@/services/robot.service";
 import "./styles.css";
 
@@ -12,7 +12,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import AdjustIcon from '@mui/icons-material/Adjust';
 
 interface JostickControllerProps {
-    recibedMessage: ResponseWebSocketInterface;
+    recibedMessage: IRemoteControlReceiveStatus;
     id?: string;
 }
 
@@ -26,7 +26,7 @@ export const JostickController: React.FC<JostickControllerProps> = ({ recibedMes
         }
     };
 
-    const isActive = (dir: string) => recibedMessage.jostickDirection === dir;
+    const isActive = (dir: string) => recibedMessage.joystickDirection === dir;
 
     const ControlBtn = ({ dir, icon: Icon, label }: { dir: string; icon: any; label: string }) => (
         <Tooltip title={label} arrow placement="top">

@@ -76,7 +76,10 @@ export const ReadWebSocket: React.FC = () => {
           </div>
         ))}
       </div>
-      <ConsoleComponent message={{ jostickDirection: "N/A", giroscope: "N/A" }} />
+      <ConsoleComponent message={{
+        robot: { robotGyroscopeValues: [0, 0, 0] },
+        remote: { joystickDirection: "N/A", remoteGyroscopeValues: [0, 0, 0] }
+      }} />
     </div>
   );
 };

@@ -1,9 +1,9 @@
-import { RobotStatus } from "../../models/robot-model";
+import { IDashboardState } from "../../models/model";
 import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 interface ConsoleComponentProps {
-  message: RobotStatus;
+  message: IDashboardState;
 }
 
 export const ConsoleComponent = (props: ConsoleComponentProps) => {
@@ -33,17 +33,15 @@ export const ConsoleComponent = (props: ConsoleComponentProps) => {
       </Box>
 
       <Box component="div">
-        {t('car.console.joystick')}: {message.jostickDirection || "N/A"}
+        {t('car.console.joystick')}: {message.remote.joystickDirection || "N/A"}
       </Box>
       <Box component="div">
-        {t('car.console.gyroscope')}: {message.giroscope || "N/A"}
+        {/* Default to Remote Gyro for Console if that's what we want, or Robot Gyro */}
+        Gyroscopio Mando: {message.remote.remoteGyroscopeValues ? `X:${message.remote.remoteGyroscopeValues[0]} Y:${message.remote.remoteGyroscopeValues[1]}` : "N/A"}
       </Box>
-      {message.giroscopeValues && (
-        <Box component="div" sx={{ display: "flex", gap: "0.5rem" }}>
-          <span>X: {message.giroscopeValues[0]}</span>
-          <span>Y: {message.giroscopeValues[1]}</span>
-        </Box>
-      )}
+      <Box component="div">
+        Gyroscopio Robot: {message.robot.robotGyroscopeValues ? `X:${message.robot.robotGyroscopeValues[0]} Y:${message.robot.robotGyroscopeValues[1]}` : "N/A"}
+      </Box>
     </Box>
   );
 };
