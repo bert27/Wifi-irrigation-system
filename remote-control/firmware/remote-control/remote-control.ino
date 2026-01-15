@@ -79,8 +79,8 @@ void loop() {
   if (millis() - lastWifiCheck > 5000) {
     lastWifiCheck = millis();
     if (WiFi.status() == WL_CONNECTED) {
-      Serial.printf("WiFi: Connected (RSSI: %d dBm) IP: %s\n", 
-                    WiFi.RSSI(), WiFi.localIP().toString().c_str());
+      // Serial.printf("WiFi: Connected (RSSI: %d dBm) IP: %s\n", 
+      //               WiFi.RSSI(), WiFi.localIP().toString().c_str());
     } else {
       Serial.println("WiFi: DISCONNECTED!");
     }

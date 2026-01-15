@@ -48,10 +48,11 @@ export const CarPage: React.FC = () => {
 
   return (
     <Box sx={{
-      height: '100vh',
+      height: isDesktop ? '100vh' : 'auto',
+      minHeight: '100vh',
       width: '100%',
       background: 'var(--bg-deep)',
-      overflow: 'hidden',
+      overflow: isDesktop ? 'hidden' : 'auto',
       p: 2,
       display: 'flex',
       flexDirection: 'column',
@@ -74,7 +75,7 @@ export const CarPage: React.FC = () => {
         gridTemplateColumns: isDesktop ? 'minmax(0, 0.7fr) minmax(0, 0.3fr)' : '1fr',
         gap: 2,
         height: isDesktop ? layoutConfig.grid.desktopHeight : 'auto',
-        overflow: 'hidden',
+        overflow: isDesktop ? 'hidden' : 'visible',
         minHeight: 0
       }}>
 

@@ -13,8 +13,8 @@ const int PIN_JOY_Y = 39;
 const int PIN_JOY_BTN = 34;
 
 // Joystick Calibration
-const int JOY_THRESHOLD_UP = 4000;
-const int JOY_THRESHOLD_DOWN = 500;
+const int JOY_THRESHOLD_UP = 3000;
+const int JOY_THRESHOLD_DOWN = 1000;
 
 // Communication Settings
 const char* REMOTE_SSID = WIFI_SSID; // Used for channel scanning

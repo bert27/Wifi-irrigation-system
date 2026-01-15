@@ -30,7 +30,9 @@ public:
         else if (y > JOY_THRESHOLD_UP) values.direction = "Derecha";
         else if (y < JOY_THRESHOLD_DOWN) values.direction = "Izquierda";
 
-        values.buttonState = (btn > 4000) ? "on" : "off";
+        // Button Logic: Assuming Pull-UP (Pressed = ~0V, Released = ~4095V)
+        // If Pin 34 is floating, this might be unstable without external resistor.
+        values.buttonState = (btn < 2000) ? "on" : "off";
 
         return values;
     }
