@@ -17,8 +17,8 @@ export const useRobotControl = () => {
       robotGyroscopeValues: [0, 0, 0]
     },
     remote: {
-      joystickDirection: "CENTER",
-      buttonState: "IDLE",
+      joystickDirection: "IDLE",
+      buttonJostick: "IDLE",
       remoteGyroscopeValues: [0, 0, 0]
     }
   });
@@ -100,7 +100,7 @@ export const useRobotControl = () => {
       () => setConnectedRobot(true),
       () => setConnectedRobot(false),
       (data) => {
-        setLastCmd("Robot: Data received");
+        // setLastCmd("Robot: Data received");
         setDashboardState(prev => {
           const newState = { ...prev };
           if (data.ledState !== undefined) newState.robot.ledState = data.ledState;
@@ -122,17 +122,28 @@ export const useRobotControl = () => {
       () => setConnectedRemote(true),
       () => setConnectedRemote(false),
       (data) => {
-        // console.log('[WS Remote] Data:', data); // Uncomment for verbose debug
+        console.log('[WS Remote] Data:', data); 
         setDashboardState(prev => {
-          const newState = { ...prev };
+          // Properly copy nested 'remote' object to avoid mutation
+          const remoteUpdate = { ...prev.remote };
+          let hasChanges = false;
+
           if (data.direction !== undefined) {
-             newState.remote.joystickDirection = (data.direction === "Sin Movimiento") ? "CENTER" : data.direction;
+             remoteUpdate.joystickDirection = (data.direction === "Sin Movimiento") ? "IDLE" : data.direction;
+             hasChanges = true;
           }
-          if (data.gx !== undefined || data.gy !== undefined) { // Check both to cover firmware variations
-             newState.remote.remoteGyroscopeValues = [data.gx || 0, data.gy || 0, 0];
+          if (data.gx !== undefined || data.gy !== undefined) {
+             remoteUpdate.remoteGyroscopeValues = [data.gx || 0, data.gy || 0, 0];
+             hasChanges = true;
           }
-          if (data.button !== undefined) newState.remote.buttonState = data.button;
-          return newState;
+          if (data.button !== undefined) {
+             remoteUpdate.buttonJostick = data.button;
+             hasChanges = true;
+          }
+          
+          if (!hasChanges) return prev; // Optimization
+
+          return { ...prev, remote: remoteUpdate };
         });
       },
       // Review: Do we need to store Remote socket? Only if we want to send data TO remote. 

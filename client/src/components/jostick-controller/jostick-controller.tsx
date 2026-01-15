@@ -49,7 +49,7 @@ export const JostickController: React.FC<JostickControllerProps> = ({ recibedMes
                 <Box display="flex" gap={2} alignItems="center">
                     <ControlBtn dir="Izquierda" icon={KeyboardArrowLeftIcon} label="TURN LEFT" />
                     <Box
-                        className={`glass-card center-btn ${isActive("CENTER") ? 'active' : ''}`}
+                        className={`glass-card center-btn ${recibedMessage.buttonJostick === "off" ? 'active' : ''}`}
                         onClick={() => handleDirection("CENTER")}
                     >
                         <AdjustIcon sx={{ fontSize: 40 }} />

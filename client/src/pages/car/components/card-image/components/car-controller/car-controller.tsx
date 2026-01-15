@@ -94,7 +94,9 @@ export const CardController = ({ recibedMessage, lastCmd, onDirection }: CardCon
             textOverflow: 'ellipsis'
           }}>
             {`> CMD: `}
-            <span style={{ color: '#fff' }}>{lastCmd || recibedMessage.joystickDirection || 'IDLE'}</span>
+            <span style={{ color: '#fff' }}>
+              {lastCmd || (recibedMessage.buttonJostick === 'off' ? 'CENTER' : recibedMessage.joystickDirection) || 'IDLE'}
+            </span>
             <span className="blink">_</span>
           </Typography>
         </Box>

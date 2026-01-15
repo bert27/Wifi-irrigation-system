@@ -7,7 +7,7 @@ export interface IRobotSendStatus {
 
 export interface IRemoteControlReceiveStatus {
   joystickDirection?: string; // "Arriba", "Abajo", "Izquierda", "Derecha", "CENTER"
-  buttonState?: string; // "on" | "off"
+  buttonJostick?: string; // "on" | "off"
   remoteGyroscopeValues?: number[]; // [x, y, z] from remote
   remoteGyroscope?: string; // e.g. "LEVEL"
 }

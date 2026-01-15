@@ -106,7 +106,9 @@ void loop() {
     lastBtn = joy.buttonState;
     lastGyroDir = gyroDir;
     
-    Serial.printf("REMOTE: Sent Joy:%s Gyro:%s\n", joy.direction.c_str(), gyroDir.c_str());
+    Serial.printf("REMOTE: Joy X:%d Y:%d Btn:%d -> %s (%s) | Gyro:%s\n", 
+                  analogRead(PIN_JOY_X), analogRead(PIN_JOY_Y), analogRead(PIN_JOY_BTN), 
+                  joy.direction.c_str(), joy.buttonState.c_str(), gyroDir.c_str());
   }
 
   // 2. Broadcast WebSockets directly to React (Every loop for smooth UI)
