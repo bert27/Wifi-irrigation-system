@@ -4,58 +4,51 @@ import SensorsOffIcon from '@mui/icons-material/SensorsOff';
 import { useTranslation } from "react-i18next";
 
 interface ConnectInfoProps {
-  connectedWs: boolean | undefined;
+  connectedRobot: boolean;
+  connectedRemote: boolean;
 }
 
-export const ConnectInfo = (props: ConnectInfoProps) => {
+export const ConnectInfo = ({ connectedRobot, connectedRemote }: ConnectInfoProps) => {
   const { t } = useTranslation();
-  const { connectedWs } = props;
-  
-  const statusColor = connectedWs ? 'var(--success)' : 'var(--error)';
-  const glowShadow = connectedWs ? 'var(--success-glow)' : 'var(--error-glow)';
+
+  const StatusBadge = ({ label, active }: { label: string, active: boolean }) => (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box
+        className={active ? "status-pulse" : ""}
+        sx={{
+          width: 8,
+          height: 8,
+          borderRadius: "50%",
+          backgroundColor: active ? 'var(--success)' : 'var(--error)',
+          boxShadow: `0 0 8px ${active ? 'var(--success-glow)' : 'var(--error-glow)'}`,
+        }}
+      />
+      <Typography sx={{
+        fontSize: '0.7rem',
+        fontWeight: 700,
+        color: active ? 'var(--text-main)' : 'var(--text-muted)'
+      }}>
+        {label}
+      </Typography>
+    </Box>
+  );
 
   return (
-    <Box 
-      className="glass-card" 
-      sx={{ 
-        display: "inline-flex", 
-        alignItems: "center", 
-        gap: 2, 
-        px: 2, 
+    <Box
+      className="glass-card"
+      sx={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 3,
+        px: 2,
         py: 1,
-        border: `1px solid ${statusColor}44`,
-        background: `${statusColor}11`,
+        border: `1px solid var(--glass-border)`,
+        background: `rgba(0,0,0,0.2)`,
       }}
     >
-      <Box 
-        className={connectedWs ? "status-pulse" : ""}
-        sx={{ 
-          width: 10, 
-          height: 10, 
-          borderRadius: "50%", 
-          backgroundColor: statusColor,
-          boxShadow: `0 0 10px ${glowShadow}`,
-        }} 
-      />
-      
-      <Box display="flex" alignItems="center" gap={1}>
-        {connectedWs ? (
-          <WifiIcon sx={{ fontSize: 18, color: 'var(--success)' }} />
-        ) : (
-          <SensorsOffIcon sx={{ fontSize: 18, color: 'var(--error)' }} />
-        )}
-        <Typography 
-          className="tech-text"
-          sx={{ 
-            fontSize: '0.75rem', 
-            fontWeight: 700,
-            color: connectedWs ? 'var(--success)' : 'var(--text-muted)',
-            letterSpacing: 1
-          }}
-        >
-          {connectedWs ? t('common.online') : t('common.offline')}
-        </Typography>
-      </Box>
+      <StatusBadge label="ROBOT" active={connectedRobot} />
+      <Box sx={{ width: '1px', height: '12px', background: 'rgba(255,255,255,0.1)' }} />
+      <StatusBadge label="REMOTE" active={connectedRemote} />
     </Box>
   );
 };

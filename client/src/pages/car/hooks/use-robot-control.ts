@@ -8,6 +8,8 @@ export const useRobotControl = () => {
   const urlRobot = directionWebRobot.replace(/^http/, 'ws') + '/ws';
   const urlRemote = directionWebRemote.replace(/^http/, 'ws') + '/ws';
   
+  console.log('[useRobotControl] URLs:', { urlRobot, urlRemote });
+  
   const [dashboardState, setDashboardState] = useState<IDashboardState>({
     robot: {
       ledState: false,
@@ -25,40 +27,50 @@ export const useRobotControl = () => {
   const [connectedRemote, setConnectedRemote] = useState(false);
   const [wsRobot, setWsRobot] = useState<WebSocket | null>(null);
   const [color, setColor] = useState("#00d2ff");
-  const [lastCmd, setLastCmd] = useState<string>("Waiting...");
+  const [lastCmd, setLastCmd] = useState<string>("");
 
   // Generic Socket Connector
-  const setupSocket = useCallback((url: string, onOpen: () => void, onClose: () => void, onMessage: (data: any) => void) => {
+  const setupSocket = useCallback((
+    url: string, 
+    onOpen: () => void, 
+    onClose: () => void, 
+    onMessage: (data: any) => void,
+    setSocketCallback?: (socket: WebSocket | null) => void
+  ) => {
     let socket: WebSocket | null = null;
     let timeoutId: NodeJS.Timeout;
     let shouldReconnect = true;
 
     const connect = () => {
-      console.log(`Attempting Connection to: ${url}`);
+      console.log(`[WS] Attempting Connection to: ${url}`);
       socket = new WebSocket(url);
       
+      if (setSocketCallback) setSocketCallback(socket);
+      
       socket.onopen = () => {
-        console.log(`Connected to ${url}`);
+        console.log(`[WS] Connected to ${url}`);
         onOpen();
-        socket?.send(JSON.stringify({ type: "CONNECT", client: "React-Dashboard" }));
-      };
-
-      socket.onclose = () => {
-        console.log(`Disconnected from ${url}. Retrying...`);
-        onClose();
-        if (shouldReconnect) {
-          timeoutId = setTimeout(connect, 2000);
+        if (socket?.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify({ type: "CONNECT", client: "React-Dashboard" }));
         }
       };
 
-      socket.onerror = (err) => console.error(`Error on ${url}:`, err);
+      socket.onclose = () => {
+        console.log(`[WS] Disconnected from ${url}. Retrying...`);
+        onClose();
+        if (shouldReconnect) {
+          timeoutId = setTimeout(connect, 3000);
+        }
+      };
+
+      socket.onerror = (err) => console.error(`[WS] Error on ${url}:`, err);
 
       socket.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
           onMessage(data);
         } catch (e) {
-          console.warn("Parse error:", event.data);
+          console.warn("[WS] Parse error:", event.data);
         }
       };
     };
@@ -66,18 +78,24 @@ export const useRobotControl = () => {
     connect();
 
     return {
-      socket,
       cleanup: () => {
         shouldReconnect = false;
         if (timeoutId) clearTimeout(timeoutId);
-        if (socket) socket.close();
+        if (socket) {
+            // Avoid closing if it's already connecting/open to reduce "closed before established" spam in strict mode
+            // But strict mode re-mounts, so we MUST close the previous one or we leak connections.
+            // The error is harmless but annoying. We can check readyState.
+            if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
+                socket.close();
+            }
+        }
       }
     };
   }, []);
 
   // Robot Socket
   useEffect(() => {
-    const { socket, cleanup } = setupSocket(
+    const { cleanup } = setupSocket(
       urlRobot,
       () => setConnectedRobot(true),
       () => setConnectedRobot(false),
@@ -91,9 +109,9 @@ export const useRobotControl = () => {
           if (data.giroscope !== undefined) newState.robot.robotGyroscope = data.giroscope;
           return newState;
         });
-      }
+      },
+      setWsRobot // Pass state updater
     );
-    setWsRobot(socket);
     return cleanup;
   }, [urlRobot, setupSocket]);
 
@@ -104,18 +122,21 @@ export const useRobotControl = () => {
       () => setConnectedRemote(true),
       () => setConnectedRemote(false),
       (data) => {
+        // console.log('[WS Remote] Data:', data); // Uncomment for verbose debug
         setDashboardState(prev => {
           const newState = { ...prev };
           if (data.direction !== undefined) {
              newState.remote.joystickDirection = (data.direction === "Sin Movimiento") ? "CENTER" : data.direction;
           }
-          if (data.gx !== undefined || data.gy !== undefined) {
+          if (data.gx !== undefined || data.gy !== undefined) { // Check both to cover firmware variations
              newState.remote.remoteGyroscopeValues = [data.gx || 0, data.gy || 0, 0];
           }
           if (data.button !== undefined) newState.remote.buttonState = data.button;
           return newState;
         });
-      }
+      },
+      // Review: Do we need to store Remote socket? Only if we want to send data TO remote. 
+      // Current requirement: Receive from remote, Send to Robot. So no need to store wsRemote for now.
     );
     return cleanup;
   }, [urlRemote, setupSocket]);
@@ -139,8 +160,11 @@ export const useRobotControl = () => {
   }, []);
 
   const sendWSMessage = useCallback((action: string, payload?: any) => {
+    // Check wsRobot state
     if (wsRobot && wsRobot.readyState === WebSocket.OPEN) {
       wsRobot.send(JSON.stringify({ action, ...payload }));
+    } else {
+        console.warn("WS Robot not ready. State:", wsRobot?.readyState);
     }
   }, [wsRobot]);
 

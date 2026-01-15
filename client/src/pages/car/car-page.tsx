@@ -13,7 +13,8 @@ import { KineticCard } from "./components/kpi-cards/kinetic-card";
 export const CarPage: React.FC = () => {
   const {
     dashboardState,
-    connected,
+    connected: connectedRobot,
+    connectedRemote,
     color,
     handleColorChange,
     toggleLED,
@@ -60,7 +61,8 @@ export const CarPage: React.FC = () => {
     }}>
 
       <CarHeader
-        connected={connected}
+        connectedRobot={connectedRobot}
+        connectedRemote={connectedRemote}
         ledState={dashboardState.robot.ledState || false}
         onToggleLed={toggleLED}
         onPing={() => sendWSMessage("ping")}

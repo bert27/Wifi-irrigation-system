@@ -4,40 +4,41 @@ import { ConnectInfo } from "./connect-info";
 import { useTranslation } from "react-i18next";
 
 interface HeaderProps {
-  connected: boolean;
+  connectedRobot: boolean;
+  connectedRemote: boolean;
   ledState: boolean;
   onToggleLed: () => void;
   onPing: () => void;
   height: string;
 }
 
-export const CarHeader: React.FC<HeaderProps> = ({ connected, ledState, onToggleLed, onPing, height }) => {
+export const CarHeader: React.FC<HeaderProps> = ({ connectedRobot, connectedRemote, ledState, onToggleLed, onPing, height }) => {
   const { t } = useTranslation();
   return (
-    <Box 
+    <Box
       component="header"
-      sx={{ 
-        height: height, 
+      sx={{
+        height: height,
         flexShrink: 0,
-        display: 'flex', 
-        justifyContent: 'space-between', 
+        display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        mb: 2 
+        mb: 2
       }}
     >
       <Box>
         <Typography variant="h4" className="tech-text neon-glow" sx={{ fontWeight: 800, color: 'var(--text-main)', lineHeight: 1 }}>
           {t('car.header.title')}<span style={{ color: 'var(--primary)' }}>CORE</span>
         </Typography>
-        <ConnectInfo connectedWs={connected} />
+        <ConnectInfo connectedRobot={connectedRobot} connectedRemote={connectedRemote} />
       </Box>
-      
+
       <Box display="flex" gap={2}>
-        <IconButton 
+        <IconButton
           onClick={onToggleLed}
           className="glass-card"
           size="small"
-          sx={{ 
+          sx={{
             p: 1.5,
             color: ledState ? 'var(--primary)' : 'var(--text-dim)',
             borderColor: ledState ? 'var(--primary)' : 'var(--glass-border)',
@@ -46,14 +47,14 @@ export const CarHeader: React.FC<HeaderProps> = ({ connected, ledState, onToggle
         >
           <PowerSettingsNewIcon />
         </IconButton>
-        
+
         <Button
           variant="contained"
           onClick={onPing}
-          disabled={!connected}
+          disabled={!connectedRobot}
           className="tech-text"
           size="small"
-          sx={{ 
+          sx={{
             background: 'linear-gradient(45deg, var(--primary), var(--secondary))',
             borderRadius: '12px',
             px: 3,
