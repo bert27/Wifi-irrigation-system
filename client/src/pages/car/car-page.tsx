@@ -105,6 +105,7 @@ export const CarPage: React.FC = () => {
               <TelemetryCard
                 id="card-telemetry"
                 robotStatus={dashboardState.robot}
+                remoteStatus={dashboardState.remote}
                 setOrientation={setOrientation}
                 panelStyle={panelStyle}
               />

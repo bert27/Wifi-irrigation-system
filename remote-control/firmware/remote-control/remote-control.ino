@@ -4,6 +4,7 @@
 #include "utils/config.h"
 #include "utils/JoystickManager.hpp"
 #include "utils/GiroscopeManager.hpp"
+#include "utils/BarometerManager.hpp"
 #include "utils/CommunicationManager.hpp"
 #include "utils/WebSocketManager.hpp"
 
@@ -11,6 +12,8 @@
 String lastJoyDir = "";
 String lastGyroDir = "";
 String lastBtn = "";
+float lastGx = 0.0;
+float lastGy = 0.0;
 
 AsyncWebServer server(80);
 
@@ -23,6 +26,7 @@ void setup() {
   // 1. Init Hardware FIRST (Works without WiFi)
   JoystickManager::getInstance().begin();
   GiroscopeManager::getInstance().begin();
+  BarometerManager::getInstance().begin();
   
   // 2. Smart WiFi Connection (Prevents channel hopping if network is missing)
   WiFi.mode(WIFI_STA);
@@ -90,14 +94,23 @@ void loop() {
 
   JoystickValues joy = JoystickManager::getInstance().getValues();
   String gyroDir = GiroscopeManager::getInstance().getDirection();
+  float gx = GiroscopeManager::getInstance().getX();
+  float gy = GiroscopeManager::getInstance().getY();
+  
+  // Barometer Readings
+  float temp = BarometerManager::getInstance().getTemperature();
+  float alt = BarometerManager::getInstance().getAltitude();
 
   // 1. Send to Robot via ESP-NOW (Hardware Control)
-  if (joy.direction != lastJoyDir || joy.buttonState != lastBtn || gyroDir != lastGyroDir) {
+  // Trigger if Direction changes OR if Angles change significantly (> 2.0 degrees)
+  if (joy.direction != lastJoyDir || joy.buttonState != lastBtn || gyroDir != lastGyroDir || 
+      abs(gx - lastGx) > 2.0 || abs(gy - lastGy) > 2.0) {
     struct_message msg;
     msg.joystickValues.direction = joy.direction;
     msg.joystickValues.buttonState = joy.buttonState;
-    msg.giroscopeValues.X = GiroscopeManager::getInstance().getX();
-    msg.giroscopeValues.Y = GiroscopeManager::getInstance().getY();
+    msg.giroscopeValues.X = gx;
+    msg.giroscopeValues.Y = gy;
+    msg.temp = temp; // Add temp to ESP-NOW msg
 
     CommunicationManager::getInstance().send(msg);
 
@@ -105,17 +118,23 @@ void loop() {
     lastJoyDir = joy.direction;
     lastBtn = joy.buttonState;
     lastGyroDir = gyroDir;
+    lastGx = gx;
+    lastGy = gy;
     
-    Serial.printf("REMOTE: Joy X:%d Y:%d Btn:%d -> %s (%s) | Gyro:%s\n", 
+    Serial.printf("REMOTE: Joy X:%d Y:%d Btn:%d -> %s (%s) | Gyro:%s (X:%.2f Y:%.2f) | Temp:%.2fC Alt:%.2fm\n", 
                   analogRead(PIN_JOY_X), analogRead(PIN_JOY_Y), analogRead(PIN_JOY_BTN), 
-                  joy.direction.c_str(), joy.buttonState.c_str(), gyroDir.c_str());
+                  joy.direction.c_str(), joy.buttonState.c_str(), gyroDir.c_str(),
+                  gx, gy, temp, alt);
   }
 
   // 2. Broadcast WebSockets directly to React (Every loop for smooth UI)
   WebSocketManager::getInstance().broadcastState(
-      GiroscopeManager::getInstance().getX(),
-      GiroscopeManager::getInstance().getY(),
+      gx,
+      gy,
       joy.direction,
-      joy.buttonState == "on"
+      joy.buttonState == "on",
+      temp,
+      alt,
+      gyroDir
   );
 }

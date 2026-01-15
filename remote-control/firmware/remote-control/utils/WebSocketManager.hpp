@@ -38,7 +38,7 @@ public:
         Serial.println("REMOTE WS: Handler attached at /ws");
     }
 
-    void broadcastState(float gx, float gy, String joyDir, bool buttonPressed) {
+    void broadcastState(float gx, float gy, String joyDir, bool buttonPressed, float temp, float altitude, String gyroDir) {
         if (ws.count() == 0) return;
 
         static unsigned long lastBroadcast = 0;
@@ -51,6 +51,9 @@ public:
         doc["gy"] = gy;
         doc["direction"] = joyDir;
         doc["button"] = buttonPressed ? "on" : "off";
+        doc["temp"] = temp;
+        doc["altitude"] = altitude;
+        doc["gyro_direction"] = gyroDir;
 
         String json;
         serializeJson(doc, json);

@@ -7,13 +7,13 @@
 #include "Wire.h"
 #endif
 
-// Calibration Offsets
-#define AX_OFFSET -3906
-#define AY_OFFSET 3241
-#define AZ_OFFSET 1247
-#define GX_OFFSET 137
-#define GY_OFFSET -73
-#define GZ_OFFSET -30
+// Calibration Offsets (Reset to 0 for new GY-91 sensor - Calibrate if needed)
+#define AX_OFFSET 0
+#define AY_OFFSET 0
+#define AZ_OFFSET 0
+#define GX_OFFSET 0
+#define GY_OFFSET 0
+#define GZ_OFFSET 0
 
 #define INTERRUPT_PIN 4
 
@@ -29,12 +29,27 @@ public:
         Serial.println(F("REMOTE: Initializing MPU6050..."));
         mpu.initialize();
         pinMode(INTERRUPT_PIN, INPUT);
-
-        if (!mpu.testConnection()) {
-            Serial.println(F("REMOTE: MPU6050 connection failed"));
-            return;
+        
+        // Debug: I2C Scanner
+        Serial.println("Scanning I2C bus...");
+        for(byte address = 1; address < 127; address++ ) {
+            Wire.beginTransmission(address);
+            if (Wire.endTransmission() == 0) {
+                Serial.print("I2C device found at address 0x");
+                if (address<16) Serial.print("0");
+                Serial.println(address,HEX);
+            }
         }
 
+        Serial.print("MPU Device ID: 0x");
+        Serial.println(mpu.getDeviceID(), HEX);
+
+        if (!mpu.testConnection()) {
+            Serial.println(F("REMOTE: Connection test failed (ID Mismatch?), but I2C device found. Proceeding anyway..."));
+            // return; // Bypass check to support MPU9250/GY-91
+        }
+        
+        Serial.println(F("REMOTE: Initializing DMP..."));
         devStatus = mpu.dmpInitialize();
 
         // Apply offsets

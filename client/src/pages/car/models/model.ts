@@ -9,6 +9,8 @@ export interface IRemoteControlReceiveStatus {
   joystickDirection?: string; // "Arriba", "Abajo", "Izquierda", "Derecha", "CENTER"
   buttonJostick?: string; // "on" | "off"
   remoteGyroscopeValues?: number[]; // [x, y, z] from remote
+  temperature?: number;
+  altitude?: number;
   remoteGyroscope?: string; // e.g. "LEVEL"
 }
 

@@ -140,6 +140,18 @@ export const useRobotControl = () => {
              remoteUpdate.buttonJostick = data.button;
              hasChanges = true;
           }
+          if (data.temp !== undefined) {
+             remoteUpdate.temperature = data.temp;
+             hasChanges = true;
+          }
+          if (data.altitude !== undefined) {
+             remoteUpdate.altitude = data.altitude;
+             hasChanges = true;
+          }
+          if (data.gyro_direction !== undefined) {
+             remoteUpdate.remoteGyroscope = data.gyro_direction;
+             hasChanges = true;
+          }
           
           if (!hasChanges) return prev; // Optimization
 

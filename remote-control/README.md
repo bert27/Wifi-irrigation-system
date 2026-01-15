@@ -19,7 +19,11 @@ Este proyecto requiere dos librerías fundamentales que **no** están disponible
     *   **Instalación**: Del mismo ZIP de `I2Cdevlib`, copia la carpeta `Arduino/MPU6050` a tu carpeta `libraries`.
 5.  **ArduinoJson**:
     *   *Qué hace*: Manejo eficiente de datos JSON para la telemetría.
-    *   **Instalación**: Disponible directamente en el **Gestor de Librerías** de Arduino IDE (Buscar "ArduinoJson").
+    *   **Instalación**: Buscar "ArduinoJson" en el Gestor de Librerías.
+6.  **Adafruit BMP280 Library**:
+    *   *Qué hace*: Controlador para el barómetro del GY-91.
+    *   **Instalación**: Buscar "Adafruit BMP280" en el Gestor (Instalar también dependencias si pregunta).
+
 
 **Pasos:**
 1. Descarga los ZIPs para las librerías 1-4.
@@ -33,7 +37,7 @@ Este proyecto requiere dos librerías fundamentales que **no** están disponible
 | **Joystick X** | 36 (VP) | Movimiento lateral |
 | **Joystick Y** | 39 (VN) | Movimiento vertical |
 | **Joystick SW**| 34 | Entrada de botón |
-| **MPU6050 / GY-91 SDA**| 21 | Datos I2C (El GY-91 incluye MPU6050 + Magnetómetro + Barómetro) |
+| **MPU6050 / GY-91 SDA**| 21 | Datos I2C (El GY-91 incluye MPU6050 + Magnetómetro + Barómetro BMP280) |
 | **MPU6050 / GY-91 SCL**| 22 | Reloj I2C |
 | **Batería** | 3.3V | Li-Po / Li-Ion |
 | **Carga** | USB-C | Entrada 5V |

@@ -23,7 +23,9 @@ export const JostickController: React.FC<JostickControllerProps> = ({ recibedMes
         onDirection(name);
     };
 
-    const isActive = (dir: string) => recibedMessage.joystickDirection === dir;
+    const isActive = (dir: string) =>
+        recibedMessage.joystickDirection === dir ||
+        recibedMessage.remoteGyroscope === dir;
 
     const ControlBtn = ({ dir, icon: Icon, label }: { dir: string; icon: any; label: string }) => (
         <Tooltip title={label} arrow placement="top">
