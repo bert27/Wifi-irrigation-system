@@ -1,7 +1,7 @@
 # Mando a Distancia Físico (ESP32)
 
 ## Descripción General
-Un mando a distancia portátil dedicado construido con un **ESP32** 38 PINES. Cuenta con un joystick físico y un giroscopio MPU6050 para un modo dual de control del robot. Se comunica vía **ESP-NOW** para una latencia casi nula.
+Un mando a distancia portátil dedicado construido con un **ESP32** 38 PINES. Cuenta con un joystick físico y un giroscopio (compatible con **MPU6050** o **GY-91**) para un control dual del robot. Se comunica vía **ESP-NOW** para una latencia casi nula.
  
 ## 📦 Instalación de Dependencias (Firmware)
 Este proyecto requiere dos librerías fundamentales que **no** están disponibles (o están desactualizadas) en el Gestor de Librerías estándar de Arduino. **Ambas son OBLIGATORIAS para el ESP32**:
@@ -33,8 +33,8 @@ Este proyecto requiere dos librerías fundamentales que **no** están disponible
 | **Joystick X** | 36 (VP) | Movimiento lateral |
 | **Joystick Y** | 39 (VN) | Movimiento vertical |
 | **Joystick SW**| 34 | Entrada de botón |
-| **MPU6050 SDA**| 21 | Datos I2C |
-| **MPU6050 SCL**| 22 | Reloj I2C |
+| **MPU6050 / GY-91 SDA**| 21 | Datos I2C (El GY-91 incluye MPU6050 + Magnetómetro + Barómetro) |
+| **MPU6050 / GY-91 SCL**| 22 | Reloj I2C |
 | **Batería** | 3.3V | Li-Po / Li-Ion |
 | **Carga** | USB-C | Entrada 5V |
 | **Boost DC-DC** | 3.3V -> 5V | Elevador de tensión para alimentar a 5v el esp32|
@@ -50,7 +50,7 @@ El mando es totalmente portátil gracias a su sistema de gestión de energía:
 5.  **Carga USB-C**: Puerto moderno para recargar la batería.
 
 ## Características Principales
-- **Control Dual**: Joystick y Giroscopio (MPU6050).
+- **Control Dual**: Joystick y Giroscopio (Compatible con MPU6050 estándar o módulos GY-91 avanzados).
 - **Control Offline**: Comunicación de baja latencia vía **ESP-NOW** sin necesidad de WiFi.
 - **Telemetría Directa**: Servidor de WebSockets integrado para enviar datos a React en tiempo real (`/ws`).
 - **Arranque Híbrido**: El hardware y el control ESP-NOW arrancan instantáneamente; la conexión WiFi se gestiona en segundo plano sin bloquear el uso.
