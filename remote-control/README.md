@@ -59,6 +59,21 @@ El mando es totalmente portátil gracias a su sistema de gestión de energía:
 - **Telemetría Directa**: Servidor de WebSockets integrado para enviar datos a React en tiempo real (`/ws`).
 - **Arranque Híbrido**: El hardware y el control ESP-NOW arrancan instantáneamente; la conexión WiFi se gestiona en segundo plano sin bloquear el uso.
 
+## ⚙️ Configuración (Importante)
+El proyecto utiliza un archivo `secrets.h` para gestionar las credenciales WiFi y la IP estática. Este archivo **no se debe subir al repositorio**.
+
+1.  Ve a la carpeta `firmware/remote-control/`.
+2.  Busca el archivo `secrets_example.h`.
+3.  Renómbralo a `secrets.h` (o crea una copia).
+4.  Edita el contenido con tus datos:
+    ```cpp
+    #define WIFI_SSID "TU_WIFI"
+    #define WIFI_PASS "TU_CONTRASEÑA"
+    
+    // IP del Robot (ESP32 Cam)
+    #define STATIC_IP 192, 168, 1, 144 
+    ```
+
 ## Estructura del Proyecto
 - `JoystickManager.hpp`: Lee y filtra la entrada del joystick.
 - `GiroscopeManager.hpp`: Procesa los datos del MPU6050 y calcula orientaciones.

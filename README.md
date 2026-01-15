@@ -106,9 +106,12 @@ He creado scripts para facilitar el inicio del proyecto (instala dependencias y 
 >
 > ⚠️ **Solución de problemas**: Si la instalación de la versión más reciente falla (error `DEADLINE_EXCEEDED` o similar), intenta instalar la versión **2.0.17** desde el Gestor de Tarjetas.
 
-1. Abre el archivo en `/server/firmware` (Robot) o `/remote-control/firmware` (Mando) con Arduino IDE o VSCode.
-2. Configura las credenciales en `secrets.h` (en la raíz o carpeta local configurada).
-3. Carga el sketch a tus dispositivos. El robot y el mando se vincularán automáticamente por MAC address.
+1. Abre el archivo en `/server/firmware` (Robot) o `/remote-control/firmware` (Mando).
+2. **Configuración de Secretos**:
+   - Este proyecto requiere **dos** archivos `secrets.h` (uno para el mando, otro para el robot).
+   - En cada carpeta de firmware (`server/firmware/serverEspReact/` y `remote-control/firmware/remote-control/`), encontrarás un `secrets_example.h`.
+   - Renómbralos a `secrets.h` y rellena tus credenciales WiFi y MACs.
+3. Carga el sketch a tus dispositivos.
 
 ### ⚠️ Importante: Problemas de Conexión WiFi
 Si el frontend no conecta con el ESP32 (error `ws: connection failed` o `No route to host`) y usas mDNS (`remote-control.local`), verifica esto:
