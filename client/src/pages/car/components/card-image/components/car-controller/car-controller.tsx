@@ -95,7 +95,7 @@ export const CardController = ({ recibedMessage, lastCmd, onDirection }: CardCon
           }}>
             {`> CMD: `}
             <span style={{ color: '#fff' }}>
-              {lastCmd || (recibedMessage.buttonJostick === 'off' ? 'CENTER' : recibedMessage.joystickDirection) || 'IDLE'}
+              {lastCmd || (recibedMessage.buttonJostick === 'on' ? 'CENTER' : recibedMessage.joystickDirection) || 'IDLE'}
             </span>
             <span className="blink">_</span>
           </Typography>

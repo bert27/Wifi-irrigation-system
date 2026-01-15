@@ -32,8 +32,11 @@ public:
 
         // Button Logic: Assuming Pull-UP (Pressed = ~0V, Released = ~4095V)
         // If Pin 34 is floating, this might be unstable without external resistor.
-        // Increasing threshold to 2500 to catch weak presses (e.g. 1984).
-        values.buttonState = (btn < 2500) ? "on" : "off";
+        // Button Logic: Hard Inverted or Pull-Down?
+        // User requested to send "on" when we were previously sending "off".
+        // Previously: < 2500 = "on", >= 2500 = "off".
+        // New: > 2500 = "on" (Active High).
+        values.buttonState = (btn > 2500) ? "on" : "off";
 
         return values;
     }
