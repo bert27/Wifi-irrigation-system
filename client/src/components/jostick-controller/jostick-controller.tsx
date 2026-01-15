@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Paper, Tooltip } from "@mui/material";
 import { IRemoteControlReceiveStatus } from "@/pages/car/models/model";
-import { robotService } from "@/services/robot.service";
+
 import "./styles.css";
 
 // Icons
@@ -14,16 +14,13 @@ import AdjustIcon from '@mui/icons-material/Adjust';
 interface JostickControllerProps {
     recibedMessage: IRemoteControlReceiveStatus;
     id?: string;
+    onDirection: (name: string) => void;
 }
 
-export const JostickController: React.FC<JostickControllerProps> = ({ recibedMessage, id }) => {
+export const JostickController: React.FC<JostickControllerProps> = ({ recibedMessage, id, onDirection }) => {
 
     const handleDirection = async (name: string) => {
-        try {
-            await robotService.sendOutputRobotUI({ name });
-        } catch (e) {
-            console.error(e);
-        }
+        onDirection(name);
     };
 
     const isActive = (dir: string) => recibedMessage.joystickDirection === dir;

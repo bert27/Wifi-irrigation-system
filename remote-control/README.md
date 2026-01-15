@@ -52,7 +52,7 @@ El mando es totalmente portátil gracias a su sistema de gestión de energía:
 ## Características Principales
 - **Control Dual**: Joystick y Giroscopio (MPU6050).
 - **Control Offline**: Comunicación de baja latencia vía **ESP-NOW** sin necesidad de WiFi.
-- **Telemetría Directa**: Servidor de WebSockets integrado para enviar datos a React en tiempo real (`/ws/remote`).
+- **Telemetría Directa**: Servidor de WebSockets integrado para enviar datos a React en tiempo real (`/ws`).
 - **Arranque Híbrido**: El hardware y el control ESP-NOW arrancan instantáneamente; la conexión WiFi se gestiona en segundo plano sin bloquear el uso.
 
 ## Estructura del Proyecto

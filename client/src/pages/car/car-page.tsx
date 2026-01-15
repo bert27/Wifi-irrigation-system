@@ -19,7 +19,8 @@ export const CarPage: React.FC = () => {
     toggleLED,
     sendWSMessage,
     setOrientation,
-    lastCmd
+    lastCmd,
+    handleDirection
   } = useRobotControl();
 
   const [globalPwm, setGlobalPwm] = React.useState(140);
@@ -148,6 +149,7 @@ export const CarPage: React.FC = () => {
               panelStyle={panelStyle}
               sx={{ height: '100%' }}
               lastCmd={lastCmd}
+              onDirection={handleDirection}
             />
           </Box>
         </Box>

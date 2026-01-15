@@ -12,7 +12,10 @@ let mockState = {
   ]
 };
 
-export const directionWeb = import.meta.env.VITE_API_DIR || import.meta.env.REACT_APP_API_DIR || "";
+export const directionWebRemote = import.meta.env.VITE_REMOTE_IP || import.meta.env.REACT_APP_REMOTE_IP || "";
+export const directionWebRobot = import.meta.env.VITE_ROBOT_IP || import.meta.env.REACT_APP_ROBOT_IP || "";
+// Backward compatibility for generic use if needed, or deprecate directionWeb
+export const directionWeb = directionWebRobot;
 
 export const handleResponse = (response: AxiosResponse) => {
   if (response.status >= 400) {

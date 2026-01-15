@@ -13,9 +13,10 @@ import { JostickController } from "@/components/jostick-controller/jostick-contr
 interface CardControllerProps {
   recibedMessage: IRemoteControlReceiveStatus;
   lastCmd?: string;
+  onDirection: (name: string) => void;
 }
 
-export const CardController = ({ recibedMessage, lastCmd }: CardControllerProps) => {
+export const CardController = ({ recibedMessage, lastCmd, onDirection }: CardControllerProps) => {
   const [settings, setSettings] = useState({
     time: 1000,
     pwm: 140,
@@ -140,7 +141,7 @@ export const CardController = ({ recibedMessage, lastCmd }: CardControllerProps)
         </Box>
 
         {/* RIGHT: D-PAD Visualization */}
-        <JostickController id="jostick-controller" recibedMessage={recibedMessage} />
+        <JostickController id="jostick-controller" recibedMessage={recibedMessage} onDirection={onDirection} />
       </Box>
     </Box>
   );

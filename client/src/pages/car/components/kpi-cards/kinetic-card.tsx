@@ -9,11 +9,12 @@ interface KineticCardProps {
   sx?: SxProps<Theme>;
   id?: string;
   lastCmd?: string;
+  onDirection: (name: string) => void;
 }
 
 import { useTranslation } from "react-i18next";
 
-export const KineticCard: React.FC<KineticCardProps> = ({ remoteStatus, panelStyle, sx, id, lastCmd }) => {
+export const KineticCard: React.FC<KineticCardProps> = ({ remoteStatus, panelStyle, sx, id, lastCmd, onDirection }) => {
   const { t } = useTranslation();
   return (
     <Paper
@@ -34,7 +35,7 @@ export const KineticCard: React.FC<KineticCardProps> = ({ remoteStatus, panelSty
       </Typography>
 
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: 0 }}>
-        <CardController recibedMessage={remoteStatus} lastCmd={lastCmd} />
+        <CardController recibedMessage={remoteStatus} lastCmd={lastCmd} onDirection={onDirection} />
       </Box>
     </Paper>
   );
