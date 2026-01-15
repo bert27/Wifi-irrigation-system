@@ -110,6 +110,13 @@ He creado scripts para facilitar el inicio del proyecto (instala dependencias y 
 2. Configura las credenciales en `secrets.h` (en la raíz o carpeta local configurada).
 3. Carga el sketch a tus dispositivos. El robot y el mando se vincularán automáticamente por MAC address.
 
+### ⚠️ Importante: Problemas de Conexión WiFi
+Si el frontend no conecta con el ESP32 (error `ws: connection failed` o `No route to host`) y usas mDNS (`remote-control.local`), verifica esto:
+
+1.  **Redes 2.4GHz vs 5GHz**: Los ESP32 antiguos (38 pines) solo conectan a 2.4GHz. Si tu PC está en 5GHz y el router las aísla, no se verán.
+2.  **Aislamiento de AP (AP Isolation)**: Asegúrate de que esta opción esté **DESACTIVADA** en tu router. Impide que los dispositivos WiFi hablen entre sí.
+3.  **Solución Alternativa**: Crea un **Hotspot (Punto de acceso)** con tu móvil y conecta tanto el PC como el ESP32 a esa red para garantizar visibilidad directa.
+
 ---
 
 ## 📋 Características Implementadas

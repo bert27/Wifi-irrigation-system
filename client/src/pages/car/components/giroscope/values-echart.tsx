@@ -1,5 +1,4 @@
-import Chart from "echarts-for-react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 interface DataInterface {
   title: string;
@@ -8,81 +7,56 @@ interface DataInterface {
 interface ValuesEchartProps {
   data: DataInterface;
 }
+
 export const ValuesEchart = (props: ValuesEchartProps) => {
   const { data } = props;
 
-  const animationDuration = 500;
-  
-  const option = {
-    backgroundColor: 'transparent',
-    series: [
-      {
-        type: "gauge",
-        startAngle: 180,
-        endAngle: 0,
-        min: 0,
-        max: 180,
-        splitNumber: 5,
-        radius: '120%', // Increased radius to fill space
-        center: ['50%', '85%'], // Moved down
-        axisLine: {
-          lineStyle: {
-            width: 8,
-            color: [
-              [0.3, "#06b6d4"],  // Accent
-              [0.7, "#6366f1"],  // Primary
-              [1, "#d946ef"]     // Secondary
-            ]
-          }
-        },
-        pointer: {
-          icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
-          length: '12%',
-          width: 8,
-          offsetCenter: [0, '-55%'],
-          itemStyle: {
-            color: 'inherit',
-            shadowBlur: 10,
-            shadowColor: 'rgba(0,0,0,0.5)'
-          }
-        },
-        axisTick: { length: 8, lineStyle: { color: 'rgba(255,255,255,0.2)', width: 1 } },
-        splitLine: { length: 12, lineStyle: { color: 'rgba(255,255,255,0.4)', width: 2 } },
-        axisLabel: { show: false }, // Hidden for compactness
-        title: {
-          offsetCenter: [0, '-30%'],
-          fontSize: 10,
-          color: '#64748b',
-          fontWeight: 700,
-          fontFamily: 'Space Grotesk'
-        },
-        detail: {
-          fontSize: 18,
-          offsetCenter: [0, '-5%'],
-          valueAnimation: true,
-          formatter: (val: number) => typeof val === 'number' ? val.toFixed(2) + '°' : val + '°',
-          color: 'inherit',
-          fontFamily: 'Space Grotesk',
-          fontWeight: 800
-        },
-        data: [
-          {
-            value: data.value,
-            name: data.title
-          }
-        ]
-      }
-    ]
-  };
+  if (!data) return null;
+
+  // Simple Gauge calculations
+  const radius = 45;
+  const circumference = 2 * Math.PI * radius;
+  const progress = Math.min(Math.max(data.value, 0), 180);
+  // Map 0-180 to a portion of the circle (half circle)
+  const offset = circumference - ((progress / 180) * (circumference / 2));
 
   return (
-    <Box sx={{ width: '100%', height: '100%', minHeight: '100px', position: 'relative' }}>
-       <Chart
-        option={option}
-        style={{ height: "100%", width: "100%" }}
-        lazyUpdate={true}
-        opts={{ renderer: 'svg' }}
-      />
+    <Box sx={{ width: '100%', height: '100%', minHeight: '100px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+      {/* SVG Gauge */}
+      <svg width="120" height="80" viewBox="0 0 120 70">
+        {/* Background Arc */}
+        <path d="M 10 60 A 50 50 0 0 1 110 60" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="10" strokeLinecap="round" />
+
+        {/* Progress Arc */}
+        <path
+          d="M 10 60 A 50 50 0 0 1 110 60"
+          fill="none"
+          stroke="url(#gradient)"
+          strokeWidth="10"
+          strokeLinecap="round"
+          strokeDasharray={`${circumference / 2} ${circumference}`}
+          strokeDashoffset={offset}
+          style={{ transition: 'stroke-dashoffset 0.5s ease' }}
+        />
+
+        {/* Gradient Definition */}
+        <defs>
+          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#06b6d4" />
+            <stop offset="100%" stopColor="#d946ef" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      {/* Value Text */}
+      <Box sx={{ position: 'absolute', bottom: '15%', textAlign: 'center' }}>
+        <Typography sx={{ fontFamily: 'Space Grotesk', fontWeight: 800, fontSize: '1.5rem', lineHeight: 1 }}>
+          {data.value.toFixed(0)}°
+        </Typography>
+        <Typography sx={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: '0.65rem', color: '#64748b', textTransform: 'uppercase' }}>
+          {data.title}
+        </Typography>
+      </Box>
     </Box>
   );
 };

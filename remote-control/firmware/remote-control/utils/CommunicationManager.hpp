@@ -33,12 +33,12 @@ public:
     }
 
     void begin() {
-        // Init WiFi in STA mode for ESP-NOW
-        WiFi.mode(WIFI_STA);
+        // Init WiFi in STA mode for ESP-NOW (Already done in main setup)
+        // WiFi.mode(WIFI_STA); 
         
-        // Scan for channel if needed
-        int32_t channel = getWiFiChannel(REMOTE_SSID);
-        esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
+        // Channel is already set by WiFi.begin() in main setup!
+        // int32_t channel = getWiFiChannel(REMOTE_SSID);
+        // esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
 
         if (esp_now_init() != ESP_OK) {
             Serial.println("Error initializing ESP-NOW");

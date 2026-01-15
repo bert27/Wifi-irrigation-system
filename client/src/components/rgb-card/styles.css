@@ -1,0 +1,90 @@
+
+.rgb-card-container {
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ambient-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    z-index: 0;
+    pointer-events: none;
+    transition: background 0.3s ease;
+}
+
+.rgb-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    z-index: 10;
+    margin-bottom: 4px;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+    position: relative;
+    z-index: 10;
+    gap: 8px;
+}
+
+.hex-display-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+}
+
+.hex-text {
+    color: #fff;
+    font-weight: 700;
+    font-family: "Fira Code", monospace;
+    font-size: 0.9rem;
+    letter-spacing: 1.2px;
+}
+
+.color-viewer {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    align-self: flex-start;
+    margin-left: 4px;
+}
+
+.color-picker-container {
+    width: 85%;
+    align-self: center;
+    flex: 1;
+    min-height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-top: 4px;
+}
+
+.color-picker-container .react-colorful {
+    width: 100%;
+    height: 180px;
+    border-radius: 8px;
+}
+
+.color-picker-container .react-colorful__saturation {
+    border-radius: 8px 8px 0 0;
+}
+
+.color-picker-container .react-colorful__hue {
+    border-radius: 0 0 8px 8px;
+    height: 16px;
+}

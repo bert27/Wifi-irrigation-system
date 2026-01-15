@@ -2,8 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ConsoleComponent } from "./console-component";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { Typography } from "@mui/material";
+import { directionWeb } from "@/services/planta.service";
 
-const urlEsp8266 = "ws://localhost:3001/ws";
+const urlEsp8266 = directionWeb.replace(/^http/, 'ws') + '/ws/remote';
 
 interface Message {
   data: string;
@@ -42,7 +43,7 @@ export const ReadWebSocket: React.FC = () => {
   return (
     <div className="glass-effect" style={{ padding: '1rem', borderRadius: '15px', color: 'var(--text-main)' }}>
       <div style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem' }}>
-        <button 
+        <button
           onClick={handleClickChangeSocketUrl}
           style={{ background: 'var(--primary)', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer' }}
         >
@@ -60,7 +61,7 @@ export const ReadWebSocket: React.FC = () => {
       <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>
         Status: <span style={{ color: readyState === ReadyState.OPEN ? 'var(--accent)' : 'var(--secondary)' }}>{connectionStatus}</span>
       </div>
-      
+
       {lastMessage && (
         <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>
           Last message: {lastMessage.data}

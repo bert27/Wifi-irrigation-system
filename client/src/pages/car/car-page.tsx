@@ -7,18 +7,19 @@ import { useRobotControl } from "./hooks/use-robot-control";
 import { CarHeader } from "./components/car-header";
 import { TelemetryCard } from "./components/kpi-cards/telemetry-card";
 import { ActuatorsCard } from "./components/kpi-cards/actuators-card";
-import { RgbCard } from "./components/kpi-cards/rgb-card";
+import { RgbCard } from "@/components/rgb-card/rgb-card";
 import { KineticCard } from "./components/kpi-cards/kinetic-card";
 
 export const CarPage: React.FC = () => {
-  const { 
-    robotStatus, 
-    connected, 
-    color, 
-    handleColorChange, 
+  const {
+    robotStatus,
+    connected,
+    color,
+    handleColorChange,
     toggleLED,
     sendWSMessage,
-    setOrientation 
+    setOrientation,
+    lastCmd
   } = useRobotControl();
 
   const [globalPwm, setGlobalPwm] = React.useState(140);
@@ -37,17 +38,17 @@ export const CarPage: React.FC = () => {
   };
 
   const panelStyle = {
-    p: 3, 
-    height: '100%', 
-    display: 'flex', 
+    p: 3,
+    height: '100%',
+    display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden'
   };
 
   return (
-    <Box sx={{ 
-      height: '100vh', 
-      width: '100%', 
+    <Box sx={{
+      height: '100vh',
+      width: '100%',
       background: 'var(--bg-deep)',
       overflow: 'hidden',
       p: 2,
@@ -55,8 +56,8 @@ export const CarPage: React.FC = () => {
       flexDirection: 'column',
       boxSizing: 'border-box'
     }}>
-      
-      <CarHeader 
+
+      <CarHeader
         connected={connected}
         ledState={robotStatus.ledState || false}
         onToggleLed={toggleLED}
@@ -65,61 +66,61 @@ export const CarPage: React.FC = () => {
       />
 
       {/* Main Bento Grid */}
-      <Box sx={{ 
-        flexGrow: 1, 
+      <Box sx={{
+        flexGrow: 1,
         display: 'grid',
         // 70% Left / 30% Right Split
-        gridTemplateColumns: isDesktop ? 'minmax(0, 0.7fr) minmax(0, 0.3fr)' : '1fr', 
+        gridTemplateColumns: isDesktop ? 'minmax(0, 0.7fr) minmax(0, 0.3fr)' : '1fr',
         gap: 2,
-        height: isDesktop ? layoutConfig.grid.desktopHeight : 'auto', 
+        height: isDesktop ? layoutConfig.grid.desktopHeight : 'auto',
         overflow: 'hidden',
         minHeight: 0
       }}>
-        
+
         {/* --- LEFT COLUMN (70%) --- */}
-        <Box sx={{ 
-          display: 'flex', 
+        <Box sx={{
+          display: 'flex',
           flexDirection: 'column',
-          gap: 2, 
-          height: '100%', 
-          minHeight: 0, 
-          minWidth: 0, 
-          overflow: 'hidden' 
+          gap: 2,
+          height: '100%',
+          minHeight: 0,
+          minWidth: 0,
+          overflow: 'hidden'
         }}>
-          
+
           {/* TOP ROW: Telemetry + RGB (45% Height) */}
-          <Box sx={{ 
-            display: 'flex', 
-            gap: 2, 
+          <Box sx={{
+            display: 'flex',
+            gap: 2,
             height: '45%',
             minHeight: 0,
             overflow: 'hidden'
           }}>
-             {/* Telemetry (Flexible Width) */}
-             <Box sx={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
-                <TelemetryCard 
-                  id="card-telemetry"
-                  robotStatus={robotStatus}
-                  setOrientation={setOrientation}
-                  panelStyle={panelStyle}
-                />
-             </Box>
+            {/* Telemetry (Flexible Width) */}
+            <Box sx={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+              <TelemetryCard
+                id="card-telemetry"
+                robotStatus={robotStatus}
+                setOrientation={setOrientation}
+                panelStyle={panelStyle}
+              />
+            </Box>
 
-             {/* RGB (Square, Auto Width) */}
-             <Box sx={{ height: '100%', aspectRatio: '1/1' }}>
-                <RgbCard 
-                  id="card-rgb"
-                  color={color}
-                  handleColorChange={handleColorChange}
-                  panelStyle={panelStyle}
-                  sx={{ height: '100%', width: '100%' }}
-                />
-             </Box>
+            {/* RGB (Square, Auto Width) */}
+            <Box sx={{ height: '100%', aspectRatio: '1/1' }}>
+              <RgbCard
+                id="card-rgb"
+                color={color}
+                handleColorChange={handleColorChange}
+                panelStyle={panelStyle}
+                sx={{ height: '100%', width: '100%' }}
+              />
+            </Box>
           </Box>
 
           {/* BOTTOM ROW: Actuators (55% Height) */}
           <Box sx={{ height: '55%', minHeight: 0 }}>
-            <ActuatorsCard 
+            <ActuatorsCard
               id="card-actuators"
               globalPwm={globalPwm}
               setGlobalPwm={setGlobalPwm}
@@ -131,21 +132,22 @@ export const CarPage: React.FC = () => {
         </Box>
 
         {/* --- RIGHT COLUMN (30%) --- */}
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: 2, 
-          height: '100%', 
-          minHeight: 0, 
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          height: '100%',
+          minHeight: 0,
           minWidth: 0,
-          overflow: 'hidden' 
+          overflow: 'hidden'
         }}>
           <Box sx={{ flex: 1, minHeight: 0 }}>
-            <KineticCard 
+            <KineticCard
               id="card-kinetic-control"
               robotStatus={robotStatus}
               panelStyle={panelStyle}
               sx={{ height: '100%' }}
+              lastCmd={lastCmd}
             />
           </Box>
         </Box>

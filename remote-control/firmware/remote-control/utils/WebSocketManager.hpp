@@ -16,16 +16,34 @@ public:
 
     void begin(AsyncWebServer& server) {
         ws.onEvent([this](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
-            if (type == WS_EVT_CONNECT) {
-                Serial.printf("REMOTE WS: Client #%u connected\n", client->id());
+            switch (type) {
+                case WS_EVT_CONNECT:
+                    Serial.printf("WS: Client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
+                    break;
+                case WS_EVT_DISCONNECT:
+                    Serial.printf("WS: Client #%u disconnected\n", client->id());
+                    break;
+                case WS_EVT_ERROR:
+                    Serial.printf("WS: Client #%u error\n", client->id());
+                    break;
+                case WS_EVT_PONG:
+                    // Serial.printf("WS: Client #%u pong\n", client->id());
+                    break;
+                case WS_EVT_DATA:
+                    // Serial.printf("WS: Data received from #%u\n", client->id());
+                    break;
             }
         });
         server.addHandler(&ws);
-        Serial.println("REMOTE WS: Handler attached at /ws/remote");
+        Serial.println("REMOTE WS: Handler attached at /ws");
     }
 
     void broadcastState(float gx, float gy, String joyDir, bool buttonPressed) {
-        if (ws.count() == 0) return; // Save resources if no one is watching
+        if (ws.count() == 0) return;
+
+        static unsigned long lastBroadcast = 0;
+        if (millis() - lastBroadcast < 100) return; // Limit to 10Hz
+        lastBroadcast = millis();
 
         StaticJsonDocument<256> doc;
         doc["type"] = "remote_state";
@@ -41,5 +59,5 @@ public:
 
 private:
     AsyncWebSocket ws;
-    WebSocketManager() : ws("/ws/remote") {}
+    WebSocketManager() : ws("/ws") {}
 };

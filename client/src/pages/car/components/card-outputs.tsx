@@ -9,7 +9,7 @@ export interface OutputDataInterface {
   state: number;
 }
 
-export const CardOutputs = ({ globalPwm }: { globalPwm: number }) => {
+export const CardOutputs = ({ globalPwm, lastCmd }: { globalPwm: number, lastCmd?: string }) => {
   const [outputs, setOutputs] = useState<OutputDataInterface[]>([
     { name: "FRONT LEFT", colorLabel: "black", pin: 25, state: 0 },
     { name: "FRONT RIGHT", colorLabel: "black", pin: 4, state: 0 },
@@ -24,10 +24,10 @@ export const CardOutputs = ({ globalPwm }: { globalPwm: number }) => {
   const handleToggle = async (index: number) => {
     const newOutputs = [...outputs];
     const target = newOutputs[index];
-    
+
     // Toggle state
     target.state = target.state === 0 ? globalPwm : 0;
-    
+
     setOutputs(newOutputs);
     try {
       await robotService.sendDataOutputSelectedToServer(target);
@@ -47,7 +47,7 @@ export const CardOutputs = ({ globalPwm }: { globalPwm: number }) => {
   };
 
   return (
-    <Box sx={{ width: '100%', height: '100%', overflowY: 'auto', minHeight: 0 }}>
+    <Box id="card-outputs" sx={{ width: '100%', height: '100%', overflowY: 'auto', minHeight: 0 }}>
       {/* Defines a Cyberpunk styled switch locally */}
       <style>
         {`
@@ -132,10 +132,10 @@ export const CardOutputs = ({ globalPwm }: { globalPwm: number }) => {
       <Grid container spacing={1}>
         {outputs.map((item, index) => (
           <Grid size={{ xs: 12, sm: 6, lg: 6 }} key={index}>
-            <Paper 
+            <Paper
               id={`card-output-pin-${item.pin}`}
               className="glass-card"
-              sx={{ 
+              sx={{
                 p: 1.5,
                 border: item.state ? `1px solid ${getColorForLabel(item.colorLabel)}` : '1px solid var(--glass-border)',
                 background: item.state ? `${getColorForLabel(item.colorLabel)}10` : 'transparent',
@@ -147,31 +147,31 @@ export const CardOutputs = ({ globalPwm }: { globalPwm: number }) => {
                 overflow: 'hidden'
               }}
             >
-                {/* Decorative corner */}
-                <Box sx={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  width: '10px',
-                  height: '10px',
-                  borderTop: item.state ? `2px solid ${getColorForLabel(item.colorLabel)}` : 'none',
-                  borderRight: item.state ? `2px solid ${getColorForLabel(item.colorLabel)}` : 'none',
-                  opacity: 0.5
-                }} />
+              {/* Decorative corner */}
+              <Box sx={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                width: '10px',
+                height: '10px',
+                borderTop: item.state ? `2px solid ${getColorForLabel(item.colorLabel)}` : 'none',
+                borderRight: item.state ? `2px solid ${getColorForLabel(item.colorLabel)}` : 'none',
+                opacity: 0.5
+              }} />
 
-                <Box>
-                  <Typography className="tech-text" sx={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
-                    PIN {item.pin}
-                  </Typography>
-                  <Typography variant="body2" className="tech-text" sx={{ fontWeight: 700, fontSize: '0.8rem', color: item.state ? getColorForLabel(item.colorLabel) : 'var(--text-main)' }}>
-                    {item.name}
-                  </Typography>
-                </Box>
-                
-                <label className="cyber-switch">
-                  <input type="checkbox" checked={item.state > 0} onChange={() => handleToggle(index)} />
-                  <span className="cyber-slider" data-color={item.colorLabel}></span>
-                </label>
+              <Box>
+                <Typography className="tech-text" sx={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
+                  PIN {item.pin}
+                </Typography>
+                <Typography variant="body2" className="tech-text" sx={{ fontWeight: 700, fontSize: '0.8rem', color: item.state ? getColorForLabel(item.colorLabel) : 'var(--text-main)' }}>
+                  {item.name}
+                </Typography>
+              </Box>
+
+              <label className="cyber-switch">
+                <input type="checkbox" checked={item.state > 0} onChange={() => handleToggle(index)} />
+                <span className="cyber-slider" data-color={item.colorLabel}></span>
+              </label>
             </Paper>
           </Grid>
         ))}

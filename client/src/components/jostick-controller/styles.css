@@ -1,0 +1,92 @@
+
+.jostick-container {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.connection-lines {
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.controls-layout {
+    position: relative;
+    z-index: 1;
+}
+
+.control-btn {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: all 0.2s ease;
+}
+
+.control-btn:active {
+    transform: scale(0.9);
+}
+
+.control-btn:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.control-btn.active {
+    background: rgba(189, 0, 255, 0.2);
+    color: #bd00ff;
+    border: 2px solid #bd00ff;
+    box-shadow: 0 0 20px #bd00ff;
+}
+
+.control-btn.active:hover {
+    border-color: #bd00ff;
+    background: rgba(189, 0, 255, 0.3);
+}
+
+.center-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.center-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.center-btn.active {
+    color: #bd00ff;
+    border: 2px solid #bd00ff;
+    box-shadow: 0 0 30px #bd00ff;
+}

@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { RobotStatus } from '@/pages/car/models/robot-model';
 import { robotService } from '@/services/robot.service';
+import { directionWeb } from "@/services/planta.service";
 
 export const useRobotControl = () => {
-  const urlEsp8266 = "ws://localhost:3001/ws";
+  // Convert http/https to ws/wss and append /ws/remote
+  const urlEsp8266 = directionWeb.replace(/^http/, 'ws') + '/ws';
   
   const [robotStatus, setRobotStatus] = useState<RobotStatus>({
     ledState: false,
@@ -17,31 +19,70 @@ export const useRobotControl = () => {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [color, setColor] = useState("#00d2ff");
 
-  // WebSocket Setup
+  const [lastCmd, setLastCmd] = useState<string>("Waiting...");
+
+  // WebSocket Setup with Auto-Reconnection
   useEffect(() => {
-    const socket = new WebSocket(urlEsp8266);
-    
-    socket.onopen = () => {
-      setConnected(true);
-      socket.send(JSON.stringify({ type: "CONNECT", client: "React-Dashboard" }));
+    let socket: WebSocket | null = null;
+    let timeoutId: NodeJS.Timeout;
+    let shouldReconnect = true;
+
+    const connect = () => {
+      console.log("Attempting WebSocket Connection to:", urlEsp8266);
+      socket = new WebSocket(urlEsp8266);
+      
+      socket.onopen = () => {
+        console.log("WebSocket Connected!");
+        setConnected(true);
+        setLastCmd("Connected!");
+        if (socket) {
+             socket.send(JSON.stringify({ type: "CONNECT", client: "React-Dashboard" }));
+        }
+      };
+
+      socket.onclose = (event) => {
+        console.log("WebSocket Closed (Code: " + event.code + "). Retrying in 2s...");
+        setConnected(false);
+        setLastCmd("Disconnected. Retrying...");
+        
+        if (shouldReconnect) {
+          timeoutId = setTimeout(() => {
+             console.log("Reconnecting...");
+             connect();
+          }, 2000);
+        }
+      };
+
+      socket.onerror = (error) => {
+          console.error("WebSocket Error:", error);
+          setLastCmd("Connection Error");
+          // socket.close() will be called automatically or manually, triggering onclose
+      };
+
+      socket.onmessage = (event) => {
+        setLastCmd(typeof event.data === 'string' ? event.data : "Binary Data");
+        try {
+          const data = JSON.parse(event.data);
+          setRobotStatus(prev => ({ ...prev, ...data }));
+        } catch (e) {
+          console.warn("Non-parsable message received:", event.data);
+        }
+      };
+
+      setWs(socket);
     };
 
-    socket.onclose = () => {
-      setConnected(false);
-      // Reconnection logic could go here
-    };
+    connect();
 
-    socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        setRobotStatus(prev => ({ ...prev, ...data }));
-      } catch (e) {
-        console.warn("Non-parsable message received:", event.data);
+    // Cleanup
+    return () => {
+      shouldReconnect = false;
+      if (timeoutId) clearTimeout(timeoutId);
+      if (socket) {
+        socket.onclose = null; // Prevent reconnect on unmount
+        socket.close();
       }
     };
-
-    setWs(socket);
-    return () => socket.close();
   }, [urlEsp8266]);
 
   // Actions
@@ -94,6 +135,7 @@ export const useRobotControl = () => {
     toggleLED,
     sendWSMessage,
     handleDirection,
-    setOrientation
+    setOrientation,
+    lastCmd
   };
 };

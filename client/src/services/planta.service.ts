@@ -1,7 +1,7 @@
 import { IWaterPumpStatus, ITemperature, IAddTask } from "../pages/plant/models/plant-model";
 import axios, { AxiosResponse } from "axios";
 
-const USE_MOCK = import.meta.env.VITE_MOCK_IRRIGATION === 'true';
+const USE_MOCK = import.meta.env.VITE_MOCK_SERVER === 'true';
 
 let mockState = {
   waterPump1: false,

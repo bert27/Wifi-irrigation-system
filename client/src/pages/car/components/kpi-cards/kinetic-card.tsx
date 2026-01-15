@@ -8,32 +8,33 @@ interface KineticCardProps {
   panelStyle: any;
   sx?: SxProps<Theme>;
   id?: string;
+  lastCmd?: string;
 }
 
 import { useTranslation } from "react-i18next";
 
-export const KineticCard: React.FC<KineticCardProps> = ({ robotStatus, panelStyle, sx, id }) => {
+export const KineticCard: React.FC<KineticCardProps> = ({ robotStatus, panelStyle, sx, id, lastCmd }) => {
   const { t } = useTranslation();
   return (
-    <Paper 
-      id={id} 
-      className="glass-effect" 
-      sx={{ 
-        ...panelStyle, 
-        p: 2, 
+    <Paper
+      id={id || "kinetic-card"}
+      className="glass-effect"
+      sx={{
+        ...panelStyle,
+        p: 2,
         justifyContent: 'center',
         maxWidth: '100%',
         overflow: 'hidden',
         boxSizing: 'border-box',
-        ...sx 
+        ...sx
       }}
     >
       <Typography variant="subtitle2" className="tech-text" sx={{ color: 'var(--secondary)', mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
         <SportsEsportsIcon fontSize="small" /> {t('car.kinetic.title')}
       </Typography>
-      
+
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: 0 }}>
-        <CardController recibedMessage={robotStatus} />
+        <CardController recibedMessage={robotStatus} lastCmd={lastCmd} />
       </Box>
     </Paper>
   );
