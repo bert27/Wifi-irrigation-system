@@ -7,9 +7,9 @@ export const useRobotControl = () => {
   // Convert http/https to ws/wss
   const urlRobot = directionWebRobot.replace(/^http/, 'ws') + '/ws';
   const urlRemote = directionWebRemote.replace(/^http/, 'ws') + '/ws';
-  
+
   console.log('[useRobotControl] URLs:', { urlRobot, urlRemote });
-  
+
   const [dashboardState, setDashboardState] = useState<IDashboardState>({
     robot: {
       ledState: false,
@@ -28,28 +28,43 @@ export const useRobotControl = () => {
   const [wsRobot, setWsRobot] = useState<WebSocket | null>(null);
   const [color, setColor] = useState("#00d2ff");
   const [lastCmd, setLastCmd] = useState<string>("");
+  const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [isMock, setIsMock] = useState(import.meta.env.VITE_MOCK_SERVER === 'true');
 
   // Generic Socket Connector
   const setupSocket = useCallback((
-    url: string, 
-    onOpen: () => void, 
-    onClose: () => void, 
+    url: string,
+    onOpen: () => void,
+    onClose: () => void,
     onMessage: (data: any) => void,
     setSocketCallback?: (socket: WebSocket | null) => void
   ) => {
+    // Mixed Content / HTTPS Detection
+    if ((window.location.protocol === 'https:' && url.startsWith('ws:')) || import.meta.env.VITE_MOCK_SERVER === 'true') {
+      console.warn(`[MockMode] Activation Request. Secure: ${window.location.protocol === 'https:'}, Env: ${import.meta.env.VITE_MOCK_SERVER}`);
+      setIsMock(true);
+      return { cleanup: () => { } };
+    }
+
     let socket: WebSocket | null = null;
     let timeoutId: NodeJS.Timeout;
     let shouldReconnect = true;
 
     const connect = () => {
       console.log(`[WS] Attempting Connection to: ${url}`);
-      socket = new WebSocket(url);
-      
+      try {
+        socket = new WebSocket(url);
+      } catch (e) {
+        console.error(`[WS] Failed to construct WebSocket:`, e);
+        return;
+      }
+
       if (setSocketCallback) setSocketCallback(socket);
-      
+
       socket.onopen = () => {
         console.log(`[WS] Connected to ${url}`);
         onOpen();
+        setConnectionError(null);
         if (socket?.readyState === WebSocket.OPEN) {
           socket.send(JSON.stringify({ type: "CONNECT", client: "React-Dashboard" }));
         }
@@ -63,7 +78,13 @@ export const useRobotControl = () => {
         }
       };
 
-      socket.onerror = (err) => console.error(`[WS] Error on ${url}:`, err);
+      socket.onerror = (err) => {
+        console.error(`[WS] Error on ${url}:`, err);
+        // Fallback detection
+        if (window.location.protocol === 'https:' && url.startsWith('ws:')) {
+          setIsMock(true);
+        }
+      }
 
       socket.onmessage = (event) => {
         try {
@@ -82,16 +103,47 @@ export const useRobotControl = () => {
         shouldReconnect = false;
         if (timeoutId) clearTimeout(timeoutId);
         if (socket) {
-            // Avoid closing if it's already connecting/open to reduce "closed before established" spam in strict mode
-            // But strict mode re-mounts, so we MUST close the previous one or we leak connections.
-            // The error is harmless but annoying. We can check readyState.
-            if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
-                socket.close();
-            }
+          if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
+            socket.close();
+          }
         }
       }
     };
   }, []);
+
+  // Mock Mode Simulation Effect
+  useEffect(() => {
+    if (!isMock) return;
+
+    setConnectedRobot(true);
+    setConnectedRemote(true);
+    setConnectionError(null);
+
+    const interval = setInterval(() => {
+      const time = Date.now() / 1000;
+      setDashboardState(prev => ({
+        ...prev,
+        robot: {
+          ...prev.robot,
+          robotGyroscopeValues: [
+            Math.sin(time) * 15,
+            Math.cos(time * 0.5) * 10,
+            0
+          ]
+        },
+        remote: {
+          ...prev.remote,
+          remoteGyroscopeValues: [
+            Math.sin(time * 0.8) * 10,
+            Math.cos(time * 0.8) * 10,
+            0
+          ]
+        }
+      }));
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [isMock]);
 
   // Robot Socket
   useEffect(() => {
@@ -100,17 +152,18 @@ export const useRobotControl = () => {
       () => setConnectedRobot(true),
       () => setConnectedRobot(false),
       (data) => {
-        // setLastCmd("Robot: Data received");
-        setDashboardState(prev => {
-          const newState = { ...prev };
-          if (data.ledState !== undefined) newState.robot.ledState = data.ledState;
-          if (data.motorState !== undefined) newState.robot.motorState = data.motorState;
-          if (data.giroscopeValues !== undefined) newState.robot.robotGyroscopeValues = data.giroscopeValues;
-          if (data.giroscope !== undefined) newState.robot.robotGyroscope = data.giroscope;
-          return newState;
-        });
+        setDashboardState(prev => ({
+          ...prev,
+          robot: {
+            ...prev.robot,
+            ledState: data.ledState !== undefined ? data.ledState : prev.robot.ledState,
+            motorState: data.motorState !== undefined ? data.motorState : prev.robot.motorState,
+            robotGyroscopeValues: data.giroscopeValues !== undefined ? data.giroscopeValues : prev.robot.robotGyroscopeValues,
+            robotGyroscope: data.giroscope !== undefined ? data.giroscope : prev.robot.robotGyroscope,
+          }
+        }));
       },
-      setWsRobot // Pass state updater
+      setWsRobot
     );
     return cleanup;
   }, [urlRobot, setupSocket]);
@@ -122,44 +175,40 @@ export const useRobotControl = () => {
       () => setConnectedRemote(true),
       () => setConnectedRemote(false),
       (data) => {
-        console.log('[WS Remote] Data:', data); 
         setDashboardState(prev => {
-          // Properly copy nested 'remote' object to avoid mutation
           const remoteUpdate = { ...prev.remote };
           let hasChanges = false;
 
           if (data.direction !== undefined) {
-             remoteUpdate.joystickDirection = (data.direction === "Sin Movimiento") ? "IDLE" : data.direction;
-             hasChanges = true;
+            remoteUpdate.joystickDirection = (data.direction === "Sin Movimiento") ? "IDLE" : data.direction;
+            hasChanges = true;
           }
           if (data.gx !== undefined || data.gy !== undefined) {
-             remoteUpdate.remoteGyroscopeValues = [data.gx || 0, data.gy || 0, 0];
-             hasChanges = true;
+            remoteUpdate.remoteGyroscopeValues = [data.gx || 0, data.gy || 0, 0];
+            hasChanges = true;
           }
           if (data.button !== undefined) {
-             remoteUpdate.buttonJostick = data.button;
-             hasChanges = true;
+            remoteUpdate.buttonJostick = data.button;
+            hasChanges = true;
           }
           if (data.temp !== undefined) {
-             remoteUpdate.temperature = data.temp;
-             hasChanges = true;
+            remoteUpdate.temperature = data.temp;
+            hasChanges = true;
           }
           if (data.altitude !== undefined) {
-             remoteUpdate.altitude = data.altitude;
-             hasChanges = true;
+            remoteUpdate.altitude = data.altitude;
+            hasChanges = true;
           }
           if (data.gyro_direction !== undefined) {
-             remoteUpdate.remoteGyroscope = data.gyro_direction;
-             hasChanges = true;
+            remoteUpdate.remoteGyroscope = data.gyro_direction;
+            hasChanges = true;
           }
-          
-          if (!hasChanges) return prev; // Optimization
+
+          if (!hasChanges) return prev;
 
           return { ...prev, remote: remoteUpdate };
         });
       },
-      // Review: Do we need to store Remote socket? Only if we want to send data TO remote. 
-      // Current requirement: Receive from remote, Send to Robot. So no need to store wsRemote for now.
     );
     return cleanup;
   }, [urlRemote, setupSocket]);
@@ -167,51 +216,64 @@ export const useRobotControl = () => {
   // Actions
   const handleColorChange = useCallback(async (newColor: string) => {
     setColor(newColor);
-    try {
-      await robotService.sendDataColorToServer({ color: newColor });
-    } catch (e) {
-      console.error("Failed to sync color", e);
+    if (!isMock) {
+      try {
+        await robotService.sendDataColorToServer({ color: newColor });
+      } catch (e) {
+        console.error("Failed to sync color", e);
+      }
     }
-  }, []);
+  }, [isMock]);
 
   const toggleLED = useCallback(async () => {
-    try {
-      await robotService.toggleLED();
-    } catch (e) {
-      console.error("Failed to toggle LED", e);
+    if (!isMock) {
+      try {
+        await robotService.toggleLED();
+      } catch (e) {
+        console.error("Failed to toggle LED", e);
+      }
+    } else {
+      setDashboardState(prev => ({
+        ...prev,
+        robot: { ...prev.robot, ledState: !prev.robot.ledState }
+      }));
     }
-  }, []);
+  }, [isMock]);
 
   const sendWSMessage = useCallback((action: string, payload?: any) => {
-    // Check wsRobot state
+    if (isMock) {
+      console.log(`[Mock] Action: ${action}`, payload);
+      return;
+    }
     if (wsRobot && wsRobot.readyState === WebSocket.OPEN) {
       wsRobot.send(JSON.stringify({ action, ...payload }));
     } else {
-        console.warn("WS Robot not ready. State:", wsRobot?.readyState);
+      console.warn("WS Robot not ready. State:", wsRobot?.readyState);
     }
-  }, [wsRobot]);
+  }, [wsRobot, isMock]);
 
   const handleDirection = useCallback(async (directionName: string) => {
+    if (isMock) return;
     try {
       await robotService.sendOutputRobotUI({ name: directionName });
     } catch (e) {
       console.error("Failed to send direction", e);
     }
-  }, []);
+  }, [isMock]);
 
   const setOrientation = useCallback((pitch: number, roll: number) => {
     setDashboardState(prev => ({
       ...prev,
       robot: {
-          ...prev.robot,
-          robotGyroscopeValues: [pitch, roll, prev.robot.robotGyroscopeValues?.[2] || 0]
+        ...prev.robot,
+        robotGyroscopeValues: [pitch, roll, prev.robot.robotGyroscopeValues?.[2] || 0]
       }
     }));
   }, []);
 
   return {
     dashboardState,
-    connected: connectedRobot, // Primary connection status
+    connected: connectedRobot,
     connectedRemote,
     color,
     handleColorChange,
@@ -219,6 +281,8 @@ export const useRobotControl = () => {
     sendWSMessage,
     handleDirection,
     setOrientation,
-    lastCmd
+    lastCmd,
+    connectionError,
+    isMock
   };
 };

@@ -100,7 +100,12 @@ He creado scripts para facilitar el inicio del proyecto (instala dependencias y 
 
 ---
 
-### Instalación Manual del Firmware
+4. **Modo Simulación (Mock)**:
+   - Si no tienes el robot físico contigo, puedes activar el modo simulación para ver la UI funcionando con datos falsos.
+   - En el archivo `client/.env`, cambia `VITE_MOCK_SERVER=true`.
+   - Esto también se activa automáticamente si despliegas en Vercel (HTTPS) para evitar errores de conexión segurida.
+
+1. Abre el archivo en `/server/firmware` (Robot) o `/remote-control/firmware` (Mando).
 > **Nota para ESP32**: Si usas una placa ESP32, asegúrate de tener esta URL en *Arduino IDE -> Preferences -> Additional Board Manager URLs*:
 > `https://espressif.github.io/arduino-esp32/package_esp32_index.json`
 >
@@ -116,8 +121,10 @@ He creado scripts para facilitar el inicio del proyecto (instala dependencias y 
 ### ⚠️ Importante: Problemas de Conexión WiFi
 Si el frontend no conecta con el ESP32 (error `ws: connection failed` o `No route to host`) y usas mDNS (`remote-control.local`), verifica esto:
 
-1.  **Navegador y Mixed Content**: Chrome es muy estricto con la seguridad. Si la web carga por HTTPS (o localhost) y el ESP32 por HTTP (`ws://`), a veces bloquea la conexión.
-    *   **Solución**: Prueba en **Safari** o asegúrate de permitir contenido inseguro para redes locales en Chrome (`chrome://flags/#block-insecure-private-network-requests` -> Disabled).
+1.  **Navegador y Mixed Content (Error comunes en Vercel/HTTPS)**:
+    *   **Problema**: Si despliegas esta web en Vercel (`https://...`), el navegador bloqueará la conexión al ESP32 (`ws://...`) por seguridad ("Mixed Content"). Verás un mensaje de error rojo en la aplicación.
+    *   **Solución Recomendada**: Ejecuta el cliente **localmente** (`npm run dev`) en tu ordenador. Desde `http://localhost`, la conexión al robot funciona perfectamente.
+    *   **Solución Alternativa (Difícil)**: Configurar Chrome para permitir contenido inseguro (`chrome://flags/#block-insecure-private-network-requests`), aunque esto no siempre funciona para WebSockets desde dominios públicos HTTPS.
 2.  **mDNS en Windows/Android**: `.local` funciona nativamente en Apple (Mac/iPhone). En Windows necesitas tener instalado Bonjour (viene con iTunes) o usar la IP directa en lugar de `remote-control.local`.
 3.  **Firewall**: A veces el firewall del ordenador bloquea las conexiones entrantes/salientes al puerto 80 del ESP32.
 

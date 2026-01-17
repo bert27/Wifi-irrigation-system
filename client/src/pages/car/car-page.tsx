@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box, useTheme, useMediaQuery, Theme } from "@mui/material";
+import { Box, useTheme, useMediaQuery, Theme, Alert } from "@mui/material";
 import "@/pages/car/styles.css";
 import { useRobotControl } from "./hooks/use-robot-control";
 
@@ -21,7 +21,9 @@ export const CarPage: React.FC = () => {
     sendWSMessage,
     setOrientation,
     lastCmd,
-    handleDirection
+    handleDirection,
+    connectionError,
+    isMock
   } = useRobotControl();
 
   const [globalPwm, setGlobalPwm] = React.useState(140);
@@ -59,6 +61,18 @@ export const CarPage: React.FC = () => {
       flexDirection: 'column',
       boxSizing: 'border-box'
     }}>
+
+      {isMock && (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          Modo Simulación Activado: Navegando en Vercel (HTTPS). Conexión real deshabilitada por seguridad.
+        </Alert>
+      )}
+
+      {!isMock && connectionError && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {connectionError}
+        </Alert>
+      )}
 
       <CarHeader
         connectedRobot={connectedRobot}
