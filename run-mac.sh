@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Wifi Irrigation System - Startup Script for Mac/Linux
+# RobotCore - Startup Script for Mac/Linux
 
 # Colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}Starting Wifi Irrigation System Setup...${NC}"
+echo -e "${BLUE}Starting RobotCore Setup...${NC}"
 
 # Check for node_modules in client
 if [ ! -d "client/node_modules" ]; then

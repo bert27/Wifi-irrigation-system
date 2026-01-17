@@ -6,7 +6,7 @@ Este ecosistema de software y hardware permite el control avanzado del microcont
 
 Orientado originalmente al riego automatizado, el proyecto ha evolucionado hacia la creación de una **máquina de cocktelería ultra compacta**, aprovechando la conectividad Wi-Fi nativa del ESP8266 para gestionar múltiples bombas de agua con precisión PWM (Pulse Width Modulation).
 
-> **🌐 [Visita RobotCore](https://wifi-irrigation-system.vercel.app/)**
+> **🌐 [Visita RobotCore](https://robot-core.vercel.app/)**
 
 ---
 

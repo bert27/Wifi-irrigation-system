@@ -1,7 +1,7 @@
 {
   "name": "server-mock",
   "version": "1.0.0",
-  "description": "Mock server for Wifi Irrigation System",
+  "description": "Mock server for RobotCore",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

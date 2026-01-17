@@ -1,9 +1,9 @@
 @echo off
 setlocal
 
-:: Wifi Irrigation System - Startup Script for Windows
+:: RobotCore - Startup Script for Windows
 
-echo Starting Wifi Irrigation System Setup...
+echo Starting RobotCore Setup...
 
 :: Check for node_modules in client
 if not exist "client\node_modules\" (
@@ -29,7 +29,7 @@ echo Launching Frontend and Mock Server in separate windows...
 
 :: Start the mock server in a new window
 echo Starting Mock Server...
-start "WIFI-IRRIGATION: Mock Server" cmd /k "cd server\mock && npm start"
+start "RobotCore: Mock Server" cmd /k "cd server\mock && npm start"
 
 :: Start the frontend developer server
 echo Starting Frontend...
