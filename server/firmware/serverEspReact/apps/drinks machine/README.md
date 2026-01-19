@@ -1,4 +1,4 @@
-# 🍹 Módulo Máquina de Bebidas
+# 🍹 Módulo Máquina de Bebidas (NodeMCU ESP8266)
 
 ## 📋 Descripción General
 El módulo **Máquina de Bebidas** gestiona la selección y el dispensado de bebidas y cócteles. Proporciona una interfaz de usuario física utilizando una **pantalla OLED** y un **encoder rotativo**, permitiendo el funcionamiento autónomo sin necesidad de un smartphone.
@@ -9,7 +9,29 @@ El módulo **Máquina de Bebidas** gestiona la selección y el dispensado de beb
 - **📺 IU/Pantalla**: `utils/display.hpp` (Clase: `DisplayManager`)
 - **🖼 Activos (Assets)**: `utils/display.hpp` (Espacio de nombres: `DisplayAssets`)
 
+## 🛠 Configuración del Entorno (Arduino IDE)
+Para poder cargar el código en el NodeMCU, necesitas instalar las definiciones de la placa y algunas librerías específicas:
+
+### 1. Placa (Board Manager)
+1.  Abre Arduino IDE y ve a **File** -> **Preferences**.
+2.  En "Additional Boards Manager URLs", añade: `http://arduino.esp8266.com/stable/package_esp8266com_index.json`
+3.  Ve a **Tools** -> **Board** -> **Boards Manager**.
+4.  Busca `esp8266` e instala la última versión por *ESP8266 Community*.
+5.  Una vez instalado, selecciona la placa: **NodeMCU 1.0 (ESP-12E Module)**.
+
+### 2. Librerías Necesarias (Library Manager)
+Ve a **Sketch** -> **Include Library** -> **Manage Libraries...** e instala:
+*   **ESP Async TCP** de *ESP32Async* (⚠️ IMPORTANTE: Instalar esta versión).
+*   **ESPAsyncWebServer** de *ESP32Async*.
+*   **ArduinoJson** (v6.x).
+*   **Adafruit GFX Library**.
+*   **Adafruit SSD1306**.
+*   **BfButton**.
+*   **RTClib** de *Adafruit* (Para el módulo de Riego).
+
 ## ⚡ Configuración de Hardware (ESP8266)
+
+> **Placa en Arduino IDE**: Seleccionar `NodeMCU 1.0 (ESP-12E Module)`.
 
 ### 💧 Bombas (Pumps)
 | Componente | GPIO | Pin NodeMCU | Notas |
@@ -25,12 +47,21 @@ El módulo **Máquina de Bebidas** gestiona la selección y el dispensado de beb
 | **SDA** | GPIO 4 | D2 |
 | **SCL** | GPIO 5 | D1 |
 
-### 🔄 Encoder Rotativo
-| Función | GPIO | Pin NodeMCU | Descripción |
-| :--- | :--- | :--- | :--- |
-| **CLK** | GPIO 13 | D7 | Reloj / Pasos |
-| **DT** | GPIO 12 | D6 | Datos / Dirección |
-| **SW** | GPIO 14 | D5 | Botón / Selección |
+### 🔢 Sistema de Entrada Híbrido (Dual Input)
+El sistema soporta el uso simultáneo de ambos métodos de entrada:
+
+#### 1. Teclado Analógico (Recomendado)
+| Función | GPIO | Descripción |
+| :--- | :--- | :--- |
+| **Señal Analog** | A0 | Lectura de botones por voltaje (Escalera de resistencias) |
+
+#### 2. Encoder Rotativo (Legacy / Opcional)
+| Función | GPIO | Pin NodeMCU |
+| :--- | :--- | :--- |
+| **CLK** | GPIO 13 | D7 |
+| **DT** | GPIO 12 | D6 |
+| **SW** | GPIO 14 | D5 |
+
 
 ```mermaid
 graph TD
@@ -55,11 +86,15 @@ graph TD
     OLED["🖥️ OLED SSD1306"]:::dev
     MCU -- I2C (D1/D2) --> OLED
     
+    %% Keypad
+    Keypad["🔢 Teclado Analógico (A0)"]:::dev
+    MCU -- A0 --> Keypad
+    
     %% Encoder
-    Enc["🔄 Encoder Rotativo"]:::dev
-    MCU -- D7 (CLK) --> Enc
-    MCU -- D6 (DT) --> Enc
-    MCU -- D5 (SW) --> Enc
+    Enc["🔄 Encoder (D5/D6/D7)"]:::dev
+    MCU -- D7 --> Enc
+    MCU -- D6 --> Enc
+    MCU -- D5 --> Enc
     
     %% Pumps
     MCU -- D3 (GPIO0) --> DriverBoard

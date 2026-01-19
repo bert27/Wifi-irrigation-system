@@ -13,7 +13,7 @@
 
 #include "configNetwork.h"
 
-#include "utils\wifi-start.hpp"
+#include "utils/wifi-start.hpp"
 
 #include "apps/irrigation/services/API.hpp"
 #include "apps/drinks machine/services/API.hpp"
@@ -53,10 +53,7 @@ void setup() {
   CarController::getInstance().begin();
 
   // Setup App APIs
-
-  // Setup App APIs
-  extern AsyncWebServer server; // Ensure server is available (it's in irrigation_system_clock.hpp but we might need a getter if it's private... wait, we made it public)
-  // Actually, irrigationSystem.server is public now.
+  extern AsyncWebServer server; 
   setupPlantAPI(irrigationSystem.server);
   setupDrinksAPI(irrigationSystem.server);
   setupCarAPI(irrigationSystem.server);
