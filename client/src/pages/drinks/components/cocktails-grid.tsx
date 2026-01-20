@@ -1,27 +1,27 @@
 import React from "react";
 import { Grid, Box, Typography, Paper } from "@mui/material";
 import LocalBarIcon from "@mui/icons-material/LocalBar";
-import { Drink } from "../models/drinks-model";
+import { Cocktail } from "../models/drinks-model";
 
-interface DrinksGridProps {
-  drinks: Drink[];
-  onSelectDrink: (drink: Drink) => void;
+interface CocktailsGridProps {
+  cocktails: Cocktail[];
+  onSelectCocktail: (cocktail: Cocktail) => void;
   selectedIndex?: number | null;
 }
 
 import { useTranslation } from "react-i18next";
 
-export const DrinksGrid: React.FC<DrinksGridProps> = ({ drinks, onSelectDrink, selectedIndex }) => {
+export const CocktailsGrid: React.FC<CocktailsGridProps> = ({ cocktails, onSelectCocktail, selectedIndex }) => {
   const { t } = useTranslation();
   return (
     <Grid container spacing={3} sx={{ mt: 2 }}>
-      {drinks.map((drink, index) => {
+      {cocktails.map((cocktail, index) => {
         const isSelected = selectedIndex === (index + 1); // index is 0-based, selectedIndex from raw ESP is 1-based (based on counter)
 
         return (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={drink.id}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={cocktail.id}>
             <Paper
-              onClick={() => onSelectDrink(drink)}
+              onClick={() => onSelectCocktail(cocktail)}
               className={`glass-card ${isSelected ? 'active-selection' : ''}`}
               sx={{
                 p: 3,
@@ -94,7 +94,7 @@ export const DrinksGrid: React.FC<DrinksGridProps> = ({ drinks, onSelectDrink, s
                     letterSpacing: "1px",
                   }}
                 >
-                  {drink.name.toUpperCase()}
+                  {cocktail.name.toUpperCase()}
                 </Typography>
 
                 <Box

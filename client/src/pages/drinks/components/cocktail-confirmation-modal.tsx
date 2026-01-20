@@ -7,22 +7,22 @@ import {
     Typography,
     Button
 } from "@mui/material";
-import { Drink } from "../models/drinks-model";
+import { Cocktail } from "../models/drinks-model";
 
-interface DrinkConfirmationModalProps {
-    drink: Drink | null;
+interface CocktailConfirmationModalProps {
+    cocktail: Cocktail | null;
     onConfirm: () => void;
     onCancel: () => void;
 }
 
-export const DrinkConfirmationModal: React.FC<DrinkConfirmationModalProps> = ({
-    drink,
+export const CocktailConfirmationModal: React.FC<CocktailConfirmationModalProps> = ({
+    cocktail,
     onConfirm,
     onCancel
 }) => {
     return (
         <Dialog
-            open={Boolean(drink)}
+            open={Boolean(cocktail)}
             onClose={onCancel}
             PaperProps={{
                 sx: {
@@ -43,7 +43,7 @@ export const DrinkConfirmationModal: React.FC<DrinkConfirmationModalProps> = ({
                     ¿Quieres esta bebida?
                 </Typography>
                 <Typography variant="h5" sx={{ color: 'var(--primary)', fontWeight: 800 }}>
-                    {drink?.name}
+                    {cocktail?.name}
                 </Typography>
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center', gap: 2, pb: 4, px: 3 }}>

@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { Box, Typography, Tabs, Tab, Alert, Snackbar } from "@mui/material";
 import { useDrinksPage } from "./hooks/use-drinks-page";
-import { DrinksGrid } from "./components/drinks-grid";
+import { CocktailsGrid } from "./components/cocktails-grid";
 import { PumpConfigPanel } from "./components/pump-config-panel";
 import { ManualControls } from "./components/manual-controls";
-import { DrinkConfirmationModal } from "./components/drink-confirmation-modal";
+import { CocktailConfirmationModal } from "./components/cocktail-confirmation-modal";
 import LocalBarIcon from "@mui/icons-material/LocalBar";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
@@ -15,20 +15,20 @@ export const DrinksPage = () => {
   const { t } = useTranslation();
   const {
     activeTab,
-    pumps,
-    drinks,
+    bottles,
+    cocktails,
     message,
     showMessage,
     setShowMessage,
     handleTabChange,
-    selectDrink,
+    selectCocktail,
     updatePump,
     sendPumpCommand,
     sendCommand,
     selectedIndex,
-    selectedDrinkForConfirm,
-    confirmDrink,
-    cancelDrinkSelection,
+    selectedCocktailForConfirm,
+    confirmCocktail,
+    cancelCocktailSelection,
   } = useDrinksPage();
 
   useEffect(() => {
@@ -197,9 +197,9 @@ export const DrinksPage = () => {
                 },
               }}
             >
-              <DrinksGrid
-                drinks={drinks}
-                onSelectDrink={selectDrink}
+              <CocktailsGrid
+                cocktails={cocktails}
+                onSelectCocktail={selectCocktail}
                 selectedIndex={selectedIndex}
               />
             </Box>
@@ -208,8 +208,8 @@ export const DrinksPage = () => {
           {/* Config Tab */}
           {activeTab === "config" && (
             <PumpConfigPanel
-              drinks={drinks}
-              pumps={pumps}
+              cocktails={cocktails}
+              bottles={bottles}
               onUpdatePump={updatePump}
             />
           )}
@@ -238,10 +238,10 @@ export const DrinksPage = () => {
           {message}
         </Alert>
       </Snackbar>
-      <DrinkConfirmationModal
-        drink={selectedDrinkForConfirm}
-        onConfirm={confirmDrink}
-        onCancel={cancelDrinkSelection}
+      <CocktailConfirmationModal
+        cocktail={selectedCocktailForConfirm}
+        onConfirm={confirmCocktail}
+        onCancel={cancelCocktailSelection}
       />
     </Box>
   );

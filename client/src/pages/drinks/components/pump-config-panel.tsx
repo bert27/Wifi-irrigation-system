@@ -1,23 +1,23 @@
 import React, { useState } from "react";
 import { Grid, Box, Typography, Paper, IconButton, Tooltip } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { PumpConfig, Drink } from "../models/drinks-model";
+import { Bottle, Cocktail } from "../models/drinks-model";
 import { useTranslation } from "react-i18next";
 import { PumpSettingsModal } from "./pump-settings-modal";
 
 interface PumpConfigPanelProps {
-  drinks: Drink[];
-  pumps: PumpConfig[];
+  cocktails: Cocktail[];
+  bottles: Bottle[];
   onUpdatePump: (id: number, data: { pwm: number; timeCalibration: number }) => void;
 }
 
-export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ drinks, pumps, onUpdatePump }) => {
+export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ cocktails, bottles, onUpdatePump }) => {
   const { t } = useTranslation();
-  const [selectedPump, setSelectedPump] = useState<PumpConfig | null>(null);
+  const [selectedPump, setSelectedPump] = useState<Bottle | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = (pumpId: number) => {
-    const pump = pumps.find((p) => p.id === pumpId);
+    const pump = bottles.find((p) => p.id === pumpId);
     if (pump) {
       setSelectedPump(pump);
       setIsModalOpen(true);
@@ -27,9 +27,9 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ drinks, pumps,
   return (
     <Box sx={{ mt: 2 }}>
       <Grid container spacing={3}>
-        {drinks.map((drink) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={drink.id}>
-            <DrinkConfigCard drink={drink} onConfigPump={handleOpenModal} />
+        {cocktails.map((cocktail) => (
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={cocktail.id}>
+            <CocktailConfigCard cocktail={cocktail} onConfigPump={handleOpenModal} />
           </Grid>
         ))}
       </Grid>
@@ -44,8 +44,8 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ drinks, pumps,
   );
 };
 
-const DrinkConfigCard: React.FC<{ drink: Drink; onConfigPump: (id: number) => void }> = ({
-  drink,
+const CocktailConfigCard: React.FC<{ cocktail: Cocktail; onConfigPump: (id: number) => void }> = ({
+  cocktail,
   onConfigPump
 }) => {
   return (
@@ -65,7 +65,7 @@ const DrinkConfigCard: React.FC<{ drink: Drink; onConfigPump: (id: number) => vo
       }}
     >
       <Typography className="tech-text" sx={{ fontSize: "1rem", fontWeight: 700, color: "var(--accent)" }}>
-        {drink.name}
+        {cocktail.name}
       </Typography>
 
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: "auto" }}>

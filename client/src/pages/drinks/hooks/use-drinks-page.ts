@@ -1,34 +1,21 @@
 import { useState, useEffect } from "react";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
-import { PumpConfig, Drink, TabType } from "../models/drinks-model";
+import { Bottle, Cocktail, TabType } from "../models/drinks-model";
 import { irrigationService } from "../../../services/irrigation.service";
 import { drinksService } from "../../../services/drinks.service";
 import { directionWebDrinks } from "../../../config/api.config";
 
-const initialPumps: PumpConfig[] = [
-  { id: 1, title: "Pump 1", liquid: "Cocacola", pwm: 20, timeCalibration: 0 },
-  { id: 2, title: "Pump 2", liquid: "Naranja", pwm: 20, timeCalibration: 0 },
-  { id: 3, title: "Pump 3", liquid: "Vodka", pwm: 20, timeCalibration: 0 },
-  { id: 4, title: "Pump 4", liquid: "Granadina", pwm: 20, timeCalibration: 0 },
-];
-
-const availableDrinks: Drink[] = [
-  { id: "1", name: "Cocacola" },
-  { id: "2", name: "Sex on the beach" },
-  { id: "3", name: "Zumo de naranja" },
-  { id: "4", name: "Vodka con cocacola" },
-  { id: "5", name: "Granadina" },
-  { id: "6", name: "Vodka" },
-];
+import { initialBottles } from "../data/bottles.data";
+import { availableCocktails } from "../data/cocktails.data";
 
 export const useDrinksPage = () => {
   const [activeTab, setActiveTab] = useState<TabType>("drinks");
-  const [pumps, setPumps] = useState<PumpConfig[]>(initialPumps);
-  const [drinks] = useState<Drink[]>(availableDrinks);
+  const [bottles, setBottles] = useState<Bottle[]>(initialBottles);
+  const [cocktails] = useState<Cocktail[]>(availableCocktails);
   const [message, setMessage] = useState<string | undefined>(undefined);
   const [showMessage, setShowMessage] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [selectedDrinkForConfirm, setSelectedDrinkForConfirm] = useState<Drink | null>(null);
+  const [selectedCocktailForConfirm, setSelectedCocktailForConfirm] = useState<Cocktail | null>(null);
 
   // WebSocket for real-time feedback from ESP8266
   const socketUrl = directionWebDrinks.replace(/^http/, 'ws') + '/ws/drinks';
@@ -44,14 +31,14 @@ export const useDrinksPage = () => {
         setSelectedIndex(data.index);
 
         // Sync Modal with Hardware Selection Screen (actualScreen == 1)
-        if (data.screen === 1 && !selectedDrinkForConfirm) {
-          const drink = drinks[data.index - 1];
-          if (drink) setSelectedDrinkForConfirm(drink);
+        if (data.screen === 1 && !selectedCocktailForConfirm) {
+          const cocktail = cocktails[data.index - 1];
+          if (cocktail) setSelectedCocktailForConfirm(cocktail);
         }
 
         // If hardware leaves confirmation screen, close modal
-        if (data.screen !== 1 && selectedDrinkForConfirm) {
-          setSelectedDrinkForConfirm(null);
+        if (data.screen !== 1 && selectedCocktailForConfirm) {
+          setSelectedCocktailForConfirm(null);
         }
 
         if (data.serving) {
@@ -60,7 +47,7 @@ export const useDrinksPage = () => {
         }
       }
     }
-  }, [lastJsonMessage, drinks, selectedDrinkForConfirm]);
+  }, [lastJsonMessage, cocktails, selectedCocktailForConfirm]);
 
   // Reset ESP8266 state when entering the page
   useEffect(() => {
@@ -71,28 +58,28 @@ export const useDrinksPage = () => {
     setActiveTab(tab);
   };
 
-  const selectDrink = (drink: Drink) => {
-    setSelectedDrinkForConfirm(drink);
+  const selectCocktail = (cocktail: Cocktail) => {
+    setSelectedCocktailForConfirm(cocktail);
     // Send command to jump to this index on ESP
-    drinksService.sendControlCommand(`goto:${drink.id}`);
+    drinksService.sendControlCommand(`goto:${cocktail.id}`);
   };
 
-  const confirmDrink = async () => {
-    if (selectedDrinkForConfirm) {
+  const confirmCocktail = async () => {
+    if (selectedCocktailForConfirm) {
       await sendCommand("accept");
-      setSelectedDrinkForConfirm(null);
+      setSelectedCocktailForConfirm(null);
     }
   };
 
-  const cancelDrinkSelection = async () => {
+  const cancelCocktailSelection = async () => {
     await sendCommand("back");
-    setSelectedDrinkForConfirm(null);
+    setSelectedCocktailForConfirm(null);
   };
 
   const updatePump = async (id: number, data: { pwm: number; timeCalibration: number }) => {
     try {
       // Direct update of local state
-      setPumps(prev => prev.map(p =>
+      setBottles(prev => prev.map(p =>
         p.id === id ? { ...p, pwm: data.pwm, timeCalibration: data.timeCalibration } : p
       ));
 
@@ -128,19 +115,19 @@ export const useDrinksPage = () => {
 
   return {
     activeTab,
-    pumps,
-    drinks,
+    bottles,
+    cocktails,
     message,
     showMessage,
     setShowMessage,
     handleTabChange,
-    selectDrink,
+    selectCocktail,
     updatePump,
     sendPumpCommand,
     sendCommand,
     selectedIndex,
-    selectedDrinkForConfirm,
-    confirmDrink,
-    cancelDrinkSelection,
+    selectedCocktailForConfirm,
+    confirmCocktail,
+    cancelCocktailSelection,
   };
 };
