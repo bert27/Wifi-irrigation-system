@@ -42,3 +42,4 @@ server/firmware/serverEspReact/secrets.h
 # Legacy
 Robot-Core2026/
 .vscode/
+**/secrets.h
