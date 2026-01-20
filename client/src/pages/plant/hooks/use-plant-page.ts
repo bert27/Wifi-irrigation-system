@@ -22,6 +22,7 @@ const withTimeout = <T,>(promise: Promise<T>, timeoutMs: number = 10000): Promis
 };
 
 import { useTranslation } from "react-i18next";
+import { isSimulationMode } from "@/utils/simulation";
 
 export const usePlantPage = () => {
   const { t } = useTranslation();
@@ -33,8 +34,7 @@ export const usePlantPage = () => {
   const [errorGet, setErrorGet] = useState<string | null>(null);
   const [isOpenModalConfig, setIsOpenModalConfig] = useState(false);
 
-  const isMock = import.meta.env.VITE_MOCK_SERVER === 'true' ||
-    (window.location.protocol === 'https:' && directionWebIrrigation.startsWith('http:'));
+  const isMock = isSimulationMode();
 
   const [days, setDays] = useState<Day[]>([
     { name: "L", state: false },

@@ -8,13 +8,14 @@ import { useCocktails } from "./use-cocktails";
 import { usePumpManager } from "./use-pump-manager";
 import { useSocketSync } from "./use-socket-sync";
 
+import { isSimulationMode } from "@/utils/simulation";
+
 export const useDrinksPage = () => {
   const [activeTab, setActiveTab] = useState<TabType>("drinks");
   const [selectedCocktailForConfirm, setSelectedCocktailForConfirm] = useState<Cocktail | null>(null);
 
   // Simulation Mode Detection
-  const isMock = import.meta.env.VITE_MOCK_SERVER === 'true' ||
-    (window.location.protocol === 'https:' && directionWebDrinks.startsWith('http:'));
+  const isMock = isSimulationMode();
   const {
     cocktails,
     updateCocktail,

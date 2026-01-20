@@ -1,5 +1,6 @@
 import React from 'react';
 import { Alert, SxProps, Theme } from '@mui/material';
+import { SIMULATION_MESSAGE } from '@/utils/simulation';
 
 interface SimulationAlertProps {
     isMock: boolean;
@@ -23,7 +24,7 @@ export const SimulationAlert: React.FC<SimulationAlertProps> = ({ isMock, sx }) 
                 ...sx
             }}
         >
-            Modo Simulación Activado: Navegando en Vercel (HTTPS). Conexión real deshabilitada por seguridad.
+            {SIMULATION_MESSAGE}
         </Alert>
     );
 };

@@ -5,8 +5,10 @@ import {
     handleResponse,
     getRequestOptions
 } from "../config/api.config";
+import { isSimulationMode } from "../utils/simulation";
+import { availableCocktails } from "../pages/drinks/data/cocktails.data";
 
-const USE_MOCK = import.meta.env.VITE_MOCK_SERVER === 'true';
+const USE_MOCK = isSimulationMode();
 
 export const drinksService = {
     /**
@@ -23,7 +25,18 @@ export const drinksService = {
     },
 
     getCocktails: async (): Promise<any> => {
-        if (USE_MOCK) return [];
+        if (USE_MOCK) {
+            // Map the recipe structure to match hardware response format
+            // hardware expects { name, ingredients: [{ name, quantity }] }
+            // availableCocktails has { name, recipe: [{ liquid, quantity }] }
+            return availableCocktails.map(c => ({
+                name: c.name,
+                ingredients: (c.recipe || []).map(r => ({
+                    name: r.liquid,
+                    quantity: r.quantity
+                }))
+            }));
+        }
         const response = await axios.get(`${directionWebDrinks}/drinks/cocktails`);
         return handleResponse(response);
     },
