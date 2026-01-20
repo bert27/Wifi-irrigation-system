@@ -91,25 +91,22 @@ export const useDrinksPage = () => {
 
   const updatePump = async (id: number, data: { pwm: number; timeCalibration: number }) => {
     try {
-      const response = await irrigationService.getWaterPump1OnOFF({
-        id,
-        pwm: data.pwm,
-        timeCalibration: data.timeCalibration,
-      });
+      // Direct update of local state
+      setPumps(prev => prev.map(p =>
+        p.id === id ? { ...p, pwm: data.pwm, timeCalibration: data.timeCalibration } : p
+      ));
 
-      if (response.status === true) {
-        setPumps(prev => prev.map(p =>
-          p.id === id ? { ...p, pwm: data.pwm, timeCalibration: data.timeCalibration } : p
-        ));
-        setMessage("Pump updated successfully");
-        setShowMessage(true);
-        setTimeout(() => {
-          setShowMessage(false);
-          setMessage(undefined);
-        }, 2000);
-      }
+      // Sync with hardware: use pump:id:pwm:time format
+      await drinksService.sendControlCommand(`pump:${id}:${data.pwm}:${data.timeCalibration}`);
+
+      setMessage("Pump updated successfully");
+      setShowMessage(true);
+      setTimeout(() => {
+        setShowMessage(false);
+        setMessage(undefined);
+      }, 2000);
     } catch (error) {
-      setMessage("Error updating pump");
+      setMessage("Error syncing with hardware");
       setShowMessage(true);
       setTimeout(() => setShowMessage(false), 2000);
     }

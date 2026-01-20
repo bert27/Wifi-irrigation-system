@@ -87,6 +87,18 @@ public:
                 int index = cmd.substring(5).toInt();
                 actionGoto(index);
             }
+            else if (cmd.startsWith("pump:")) {
+                // Format: pump:id:pwm:time
+                int firstColon = cmd.indexOf(':');
+                int secondColon = cmd.indexOf(':', firstColon + 1);
+                int thirdColon = cmd.indexOf(':', secondColon + 1);
+                
+                int pumpId = cmd.substring(firstColon + 1, secondColon).toInt();
+                int pwm = cmd.substring(secondColon + 1, thirdColon).toInt();
+                int time = cmd.substring(thirdColon + 1).toInt();
+                
+                actionUpdatePump(pumpId, pwm, time);
+            }
             else if (cmd == "next" ) actionNext();
             else if (cmd == "prev") actionPrev();
             else if (cmd == "select") actionSelect();
@@ -179,6 +191,24 @@ public:
     void actionCancel() {
         Serial.println("Action: Reset All");
         resetMenu();
+    }
+
+    void actionUpdatePump(int pumpId, int pwm, int time) {
+        Serial.printf("Action: Update Pump %d | PWM: %d | Time: %ds\n", pumpId, pwm, time);
+        
+        String liquidName = "Info";
+        String targetPumpId = "pump" + String(pumpId);
+        for (const auto& d : drinks) {
+            if (d.pumpId == targetPumpId) {
+                liquidName = d.nameLiquid;
+                break;
+            }
+        }
+
+        extern void SetScreen(String, String, int);
+        SetScreen("Bomba " + String(pumpId) + ": " + liquidName, "PWM:" + String(pwm) + " T:" + String(time) + "s", 1);
+        
+        broadcastState();
     }
 
     // --- Remote Control ---
