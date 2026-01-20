@@ -1,5 +1,6 @@
 #include <ArduinoJson.h> // Include FIRST to ensure correct version/flags if possible
 #include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
 #include <AsyncPrinter.h>
 #include <async_config.h>
 #include <ESPAsyncTCP.h>
@@ -50,7 +51,13 @@ void setup() {
 
   // 1. WiFi & Network
   ConnectWiFi_STA();
-  setupRemoteHub();
+  ConnectWiFi_STA();
+  // setupRemoteHub(); // DISABLED: ESP-NOW causes WiFi Channel conflict/packet loss
+
+  if (MDNS.begin("drinks-machine")) {
+    MDNS.addService("http", "tcp", 80);
+    Serial.println("MDNS started: drinks-machine.local");
+  }
 
   // 2. Server Initialization
   #ifdef ENABLE_IRRIGATION_SYSTEM
@@ -61,6 +68,22 @@ void setup() {
   #else
       Serial.println("System: Standalone Server Mode");
       globalServer = &standaloneServer;
+      
+      // CORS Config
+      DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+      DefaultHeaders::Instance().addHeader("Access-Control-Allow-Private-Network", "true");
+      DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+      DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "*");
+      
+      // Handle Preflight OPTIONS requests for any route
+      standaloneServer.onNotFound([](AsyncWebServerRequest *request) {
+        if (request->method() == HTTP_OPTIONS) {
+          request->send(200);
+        } else {
+          request->send(404);
+        }
+      });
+
       standaloneServer.begin();
   #endif
 
@@ -95,4 +118,7 @@ void loop() {
   #ifdef ENABLE_ROBOT_CAR
       CarController::getInstance().loop();
   #endif
+  
+  MDNS.update(); // Maintain mDNS response
+  delay(1);      // CRITICAL: Yield to WiFi stack (prevents packet loss)
 }

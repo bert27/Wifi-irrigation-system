@@ -72,7 +72,14 @@ public:
         });
     }
 
+    // Non-blocking Polling Interval (20ms = 50Hz) - More than enough for human reaction
+    unsigned long lastPollTime = 0;
+    const unsigned long POLL_INTERVAL = 20;
+
     void loop() {
+        if (millis() - lastPollTime < POLL_INTERVAL) return;
+        lastPollTime = millis();
+
         // Poll Encoder Button
         btn.read();
         
@@ -303,29 +310,38 @@ private:
         broadcastState();
     }
 
+    bool wasServing = false; // State tracking to avoid I2C flooding
+
     void handlePumpLogic() {
         if (!insideMenuDrink) return;
         if (counter <= 0 || counter > (int)drinks.size()) return;
 
         const auto& currentDrink = drinks[counter - 1];
-        extern void SetScreen(String, String, int);
-
-        // Check BOTH Analog Select AND Encoder Button
+        
+        // Check inputs
         int reading = analogRead(A0);
         KeypadButton aBtn = getButtonFromAnalog(reading);
-        bool encoderPressed = (digitalRead(PIN_ENC_BTN) == LOW); // LOW = Pressed
+        bool encoderPressed = (digitalRead(PIN_ENC_BTN) == LOW); 
         bool analogPressed = (aBtn == BTN_SELECT);
+        bool isServing = (encoderPressed || analogPressed);
 
-        // Serve if EITHER is pressed
-        if (encoderPressed || analogPressed) {
+        if (isServing) {
+            if (!wasServing) { // Only update screen ONCE when starting to serve
+                extern void SetScreen(String, String, int);
+                SetScreen("Sirviendo", currentDrink.nameLiquid, 2);
+                wasServing = true;
+            }
             pinMode(currentDrink.gpio, OUTPUT);
-            SetScreen("Sirviendo", currentDrink.nameLiquid, 2);
             digitalWrite(currentDrink.gpio, 1);
         } else {
-            // Stop if BOTH released
-             pinMode(currentDrink.gpio, OUTPUT);
-             SetScreen("Sirvete", currentDrink.nameLiquid, 2);
-             offAllPumps(); 
+            if (wasServing) { // Only update screen ONCE when stopping
+                extern void SetScreen(String, String, int);
+                SetScreen("Sirvete", currentDrink.nameLiquid, 2);
+                wasServing = false;
+                offAllPumps(); 
+            }
+            // Ensure pumps stay off (optional redundant safety, but cheap)
+            // offAllPumps(); 
         }
     }
 };
