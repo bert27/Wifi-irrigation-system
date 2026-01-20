@@ -6,11 +6,12 @@ import { drinksService } from "../../../services/drinks.service";
 import { directionWebDrinks } from "../../../config/api.config";
 
 import { initialBottles } from "../data/bottles.data";
+import { availableCocktails } from "../data/cocktails.data";
 
 export const useDrinksPage = () => {
   const [activeTab, setActiveTab] = useState<TabType>("drinks");
   const [bottles, setBottles] = useState<Bottle[]>(initialBottles);
-  const [cocktails, setCocktails] = useState<Cocktail[]>([]);
+  const [cocktails, setCocktails] = useState<Cocktail[]>(availableCocktails);
 
   // Fetch cocktails from ESP32 on mount
   useEffect(() => {
@@ -18,12 +19,12 @@ export const useDrinksPage = () => {
       try {
         const data = await drinksService.getCocktails();
         if (data && Array.isArray(data)) {
+          console.log("Hardware Cocktails:", data);
           // Map firmware format to frontend if needed
           const mapped: Cocktail[] = data.map((c: any, idx: number) => ({
             id: String(idx + 1),
             name: c.name,
             recipe: c.ingredients.map((ing: any) => ({
-              pumpId: bottles.find(b => b.liquid === ing.name)?.id || 0,
               liquid: ing.name,
               quantity: ing.quantity
             }))

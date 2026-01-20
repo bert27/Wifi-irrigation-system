@@ -105,6 +105,10 @@
         "grid": {
             "tapToMix": "Toca para Mezclar"
         },
+        "recipe": {
+            "editTitle": "Editar Receta: {{name}}",
+            "helpText": "Ajusta las cantidades de cada ingrediente para este cóctel."
+        },
         "messages": {
             "preparing": "Preparando {{name}}...",
             "pumpUpdated": "Bomba actualizada con éxito",

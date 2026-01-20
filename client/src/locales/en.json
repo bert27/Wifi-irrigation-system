@@ -105,6 +105,10 @@
         "grid": {
             "tapToMix": "Tap to Mix"
         },
+        "recipe": {
+            "editTitle": "Edit Recipe: {{name}}",
+            "helpText": "Adjust the quantities for each ingredient in this cocktail."
+        },
         "messages": {
             "preparing": "Preparing {{name}}...",
             "pumpUpdated": "Pump updated successfully",

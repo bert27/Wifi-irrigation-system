@@ -60,12 +60,16 @@ void setupDrinksAPI(AsyncWebServer& server) {
     });
 
     server.on("/drinks/save-cocktail", HTTP_POST, [](AsyncWebServerRequest *request) {
-        // We'll handle body in the onBody callback or use this if it's small? 
-        // For simplicity with AsyncWebServer POST JSON:
+        // No-op
     }, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
-        if (index == 0 && total > 0) {
+        static String bodyStr = "";
+        if (index == 0) bodyStr = "";
+        
+        for (size_t i = 0; i < len; i++) bodyStr += (char)data[i];
+
+        if (index + len == total) {
             JsonDocument doc;
-            DeserializationError error = deserializeJson(doc, data, len);
+            DeserializationError error = deserializeJson(doc, bodyStr);
             if (!error) {
                 String name = doc["name"].as<String>();
                 JsonArray ings = doc["ingredients"].as<JsonArray>();
@@ -78,6 +82,7 @@ void setupDrinksAPI(AsyncWebServer& server) {
             } else {
                 request->send(400, "text/plain", "Invalid JSON");
             }
+            bodyStr = ""; // Reset
         }
     });
 }

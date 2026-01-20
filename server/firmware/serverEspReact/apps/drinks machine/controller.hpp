@@ -317,11 +317,7 @@ private:
 
     void refreshMenu() {
         menu.clear();
-        // 1. Add individual bottles
-        for (int i = 0; i < (int)bottles.size(); i++) {
-            menu.push_back({ bottles[i].name, false, i });
-        }
-        // 2. Add cocktails
+        // Only add cocktails to the main selection menu to match frontend
         for (int i = 0; i < (int)cocktails.size(); i++) {
             menu.push_back({ cocktails[i].name, true, i });
         }
@@ -331,7 +327,16 @@ private:
     void loadCocktails() {
         if (!LittleFS.exists("/cocktails.json")) {
             Serial.println("No cocktails file found, using defaults");
-            saveCocktails(); // Create initial file
+            // Populate with 6 standard drinks
+            cocktails = {
+                { "Cocacola", {{ "Cocacola", 200 }} },
+                { "Sex on the beach", {{ "Vodka", 50 }, { "Zumo de Naranja", 150 }} },
+                { "Zumo de naranja", {{ "Zumo de Naranja", 200 }} },
+                { "Vodka con cocacola", {{ "Vodka", 50 }, { "Cocacola", 150 }} },
+                { "Granadina", {{ "Granadina", 50 }} },
+                { "Vodka", {{ "Vodka", 50 }} }
+            };
+            saveCocktails();
             return;
         }
 
@@ -362,7 +367,7 @@ private:
             cocktails.push_back(c);
         }
         refreshMenu();
-        Serial.printf("Loaded %d cocktails\n", (int)cocktails.size());
+        Serial.printf("Loaded %d cocktails from LittleFS\n", (int)cocktails.size());
     }
 
     void saveCocktails() {

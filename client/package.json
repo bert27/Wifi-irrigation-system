@@ -42,7 +42,9 @@
     "dev": "lsof -ti:3000 | xargs kill -9 || true && vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "lsof -ti:3000 | xargs kill -9 || true && vite"
+    "start": "lsof -ti:3000 | xargs kill -9 || true && vite",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {
@@ -71,6 +73,12 @@
     "@types/three": "^0.182.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
+    "vitest": "^3.0.0",
+    "jsdom": "^26.0.0",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/user-event": "^14.5.2",
+    "@vitest/ui": "^3.0.0",
     "vite-plugin-svgr": "^4.5.0",
     "vite-tsconfig-paths": "^6.0.4"
   }

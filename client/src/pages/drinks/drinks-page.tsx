@@ -23,6 +23,7 @@ export const DrinksPage = () => {
     handleTabChange,
     selectCocktail,
     updatePump,
+    updateCocktail,
     sendPumpCommand,
     sendCommand,
     selectedIndex,

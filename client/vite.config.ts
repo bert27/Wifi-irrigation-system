@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -6,6 +7,11 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+  },
   plugins: [
     react({
       babel: {
@@ -13,7 +19,7 @@ export default defineConfig({
           ["babel-plugin-react-compiler", {}],
         ],
       },
-    }), 
+    }),
     tsconfigPaths(),
     svgr({
       include: '**/*.svg',
