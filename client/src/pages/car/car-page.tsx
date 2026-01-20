@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Box, useTheme, useMediaQuery, Theme, Alert } from "@mui/material";
 import "@/pages/car/styles.css";
 import { useRobotControl } from "./hooks/use-robot-control";
+import { SimulationAlert } from "@/components/simulation-alert/simulation-alert";
 
 // Atomic Components
 import { CarHeader } from "./components/car-header";
@@ -62,11 +63,7 @@ export const CarPage: React.FC = () => {
       boxSizing: 'border-box'
     }}>
 
-      {isMock && (
-        <Alert severity="info" sx={{ mb: 2 }}>
-          Modo Simulación Activado: Navegando en Vercel (HTTPS). Conexión real deshabilitada por seguridad.
-        </Alert>
-      )}
+      <SimulationAlert isMock={isMock} />
 
       {!isMock && connectionError && (
         <Alert severity="error" sx={{ mb: 2 }}>

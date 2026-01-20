@@ -13,46 +13,66 @@ vi.mock('react-router-dom', () => ({
     useNavigate: () => vi.fn(),
 }));
 
+// Mock connectivity context
+vi.mock('@/context/connectivity-context', () => ({
+    useConnectivity: () => ({
+        setConnectionStatus: vi.fn(),
+        getConnectionStatus: vi.fn(() => ({ status: 'connected' })),
+    }),
+}));
+
 describe('useDrinksPage hook', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        // Setup default successful fetch to avoid unhandled promises
+        mockedDrinksService.getCocktails.mockResolvedValue([]);
     });
 
-    it('should initialize with default cocktails', () => {
+    it('should initialize and fetch cocktails on mount', async () => {
+        const hardwareCocktails = [
+            { name: 'Hardware Mojito', ingredients: [{ name: 'Mint', quantity: 10 }] }
+        ];
+        const expectedCocktails = [
+            { id: '1', name: 'Hardware Mojito', recipe: [{ liquid: 'Mint', quantity: 10 }] }
+        ];
+        mockedDrinksService.getCocktails.mockResolvedValueOnce(hardwareCocktails);
+
         const { result } = renderHook(() => useDrinksPage());
-        expect(result.current.cocktails).toEqual(availableCocktails);
+
+        // Wait for fetching to complete
+        await waitFor(() => {
+            expect(result.current.loading).toBe(false);
+        });
+
+        expect(result.current.cocktails).toEqual(expectedCocktails);
     });
 
-    it('should fetch cocktails from hardware on mount', async () => {
+    it('should handle drink selection', async () => {
         const hardwareCocktails = [
             { name: 'Hardware Mojito', ingredients: [{ name: 'Mint', quantity: 10 }] }
         ];
         mockedDrinksService.getCocktails.mockResolvedValueOnce(hardwareCocktails);
 
-        renderHook(() => useDrinksPage());
-
-        await waitFor(() => {
-            expect(mockedDrinksService.getCocktails).toHaveBeenCalled();
-        });
-    });
-
-    it('should handle drink selection', async () => {
         const { result } = renderHook(() => useDrinksPage());
-        const firstCocktail = availableCocktails[0];
+
+        await waitFor(() => expect(result.current.loading).toBe(false));
 
         act(() => {
-            result.current.selectCocktail(firstCocktail);
+            result.current.selectCocktail(result.current.cocktails[0]);
         });
 
-        expect(result.current.selectedCocktailForConfirm).toEqual(firstCocktail);
+        expect(result.current.selectedCocktailForConfirm).toEqual(result.current.cocktails[0]);
         expect(mockedDrinksService.sendControlCommand).toHaveBeenCalledWith(`goto:1`);
     });
 
     it('should update cocktail and re-fetch list', async () => {
         mockedDrinksService.saveCocktail.mockResolvedValueOnce({ success: true });
-        mockedDrinksService.getCocktails.mockResolvedValueOnce([]); // Re-fetch mock
+        mockedDrinksService.getCocktails.mockResolvedValueOnce([]); // Initial fetch
+        mockedDrinksService.getCocktails.mockResolvedValueOnce([]); // Re-fetch after save
 
         const { result } = renderHook(() => useDrinksPage());
+
+        await waitFor(() => expect(result.current.loading).toBe(false));
 
         await act(async () => {
             await result.current.updateCocktail('Some Drink', [{ name: 'Ingredient', quantity: 50 }]);

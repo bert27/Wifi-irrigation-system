@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { irrigationService } from "../../../services/irrigation.service";
 import { Day } from "../../../components/days/models/day.model";
 import { IScheduledTask, ITemperature } from "../models/plant-model";
+import { directionWebIrrigation } from "@/config/api.config";
 
 const getDayLetterWeek = (dayTmp: string): string => {
   const mapping: Record<string, string> = {
@@ -31,6 +32,9 @@ export const usePlantPage = () => {
   const [errorCreateTask, setErrorCreateTask] = useState<string | null>(null);
   const [errorGet, setErrorGet] = useState<string | null>(null);
   const [isOpenModalConfig, setIsOpenModalConfig] = useState(false);
+
+  const isMock = import.meta.env.VITE_MOCK_SERVER === 'true' ||
+    (window.location.protocol === 'https:' && directionWebIrrigation.startsWith('http:'));
 
   const [days, setDays] = useState<Day[]>([
     { name: "L", state: false },
@@ -159,6 +163,7 @@ export const usePlantPage = () => {
     saveDays,
     saveTimeSelect,
     createTask,
-    eliminateTask
+    eliminateTask,
+    isMock
   };
 };
