@@ -1,14 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { IDashboardState } from '@/pages/car/models/model';
 import { robotService } from '@/services/robot.service';
-import { directionWebRobot, directionWebRemote } from "@/config/api.config";
+import { directionWebRobot } from "@/config/api.config";
+import { useRemoteControl } from '@/context/remote-control-context';
 
 export const useRobotControl = () => {
   // Convert http/https to ws/wss
   const urlRobot = directionWebRobot.replace(/^http/, 'ws') + '/ws';
-  const urlRemote = directionWebRemote.replace(/^http/, 'ws') + '/ws';
 
-  console.log('[useRobotControl] URLs:', { urlRobot, urlRemote });
+  // Use Global Remote Context
+  const { remoteState, connectedRemote } = useRemoteControl();
+
+  console.log('[useRobotControl] URLs:', { urlRobot });
 
   const [dashboardState, setDashboardState] = useState<IDashboardState>({
     robot: {
@@ -23,8 +26,23 @@ export const useRobotControl = () => {
     }
   });
 
+  // Sync Global Remote State to Local Dashboard State
+  useEffect(() => {
+    setDashboardState(prev => ({
+      ...prev,
+      remote: {
+        ...prev.remote,
+        joystickDirection: remoteState.joystickDirection,
+        buttonJostick: remoteState.buttonJostick,
+        remoteGyroscopeValues: remoteState.remoteGyroscopeValues,
+        temperature: remoteState.temperature,
+        altitude: remoteState.altitude,
+        remoteGyroscope: remoteState.remoteGyroscope
+      }
+    }));
+  }, [remoteState]);
+
   const [connectedRobot, setConnectedRobot] = useState(false);
-  const [connectedRemote, setConnectedRemote] = useState(false);
   const [wsRobot, setWsRobot] = useState<WebSocket | null>(null);
   const [color, setColor] = useState("#00d2ff");
   const [lastCmd, setLastCmd] = useState<string>("");
@@ -116,7 +134,6 @@ export const useRobotControl = () => {
     if (!isMock) return;
 
     setConnectedRobot(true);
-    setConnectedRemote(true);
     setConnectionError(null);
 
     const interval = setInterval(() => {
@@ -130,15 +147,10 @@ export const useRobotControl = () => {
             Math.cos(time * 0.5) * 10,
             0
           ]
-        },
-        remote: {
-          ...prev.remote,
-          remoteGyroscopeValues: [
-            Math.sin(time * 0.8) * 10,
-            Math.cos(time * 0.8) * 10,
-            0
-          ]
         }
+        // Remote is now handled by context even in mock?
+        // Context mock logic should be in Context provider if needed,
+        // but for now let's assume Context handles its own mock or connection.
       }));
     }, 100);
 
@@ -167,51 +179,6 @@ export const useRobotControl = () => {
     );
     return cleanup;
   }, [urlRobot, setupSocket]);
-
-  // Remote Socket
-  useEffect(() => {
-    const { cleanup } = setupSocket(
-      urlRemote,
-      () => setConnectedRemote(true),
-      () => setConnectedRemote(false),
-      (data) => {
-        setDashboardState(prev => {
-          const remoteUpdate = { ...prev.remote };
-          let hasChanges = false;
-
-          if (data.direction !== undefined) {
-            remoteUpdate.joystickDirection = (data.direction === "Sin Movimiento") ? "IDLE" : data.direction;
-            hasChanges = true;
-          }
-          if (data.gx !== undefined || data.gy !== undefined) {
-            remoteUpdate.remoteGyroscopeValues = [data.gx || 0, data.gy || 0, 0];
-            hasChanges = true;
-          }
-          if (data.button !== undefined) {
-            remoteUpdate.buttonJostick = data.button;
-            hasChanges = true;
-          }
-          if (data.temp !== undefined) {
-            remoteUpdate.temperature = data.temp;
-            hasChanges = true;
-          }
-          if (data.altitude !== undefined) {
-            remoteUpdate.altitude = data.altitude;
-            hasChanges = true;
-          }
-          if (data.gyro_direction !== undefined) {
-            remoteUpdate.remoteGyroscope = data.gyro_direction;
-            hasChanges = true;
-          }
-
-          if (!hasChanges) return prev;
-
-          return { ...prev, remote: remoteUpdate };
-        });
-      },
-    );
-    return cleanup;
-  }, [urlRemote, setupSocket]);
 
   // Actions
   const handleColorChange = useCallback(async (newColor: string) => {

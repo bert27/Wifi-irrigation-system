@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ConsoleComponent } from "./console-component";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { Typography } from "@mui/material";
-import { directionWeb } from "@/config/api.config";
+import { directionWebRobot } from "@/config/api.config";
 
-const urlEsp8266 = directionWeb.replace(/^http/, 'ws') + '/ws/remote';
+const urlEsp8266 = directionWebRobot.replace(/^http/, 'ws') + '/ws/remote';
 
 interface Message {
   data: string;

@@ -1,6 +1,6 @@
 import { IWaterPumpStatus, ITemperature, IAddTask } from "../pages/plant/models/plant-model";
 import axios, { AxiosResponse } from "axios";
-import { directionWeb, handleResponse } from "../config/api.config";
+import { directionWebIrrigation, handleResponse } from "../config/api.config";
 
 const USE_MOCK = import.meta.env.VITE_MOCK_SERVER === 'true';
 
@@ -28,7 +28,7 @@ export const irrigationService = {
 
             return { status: mockState.waterPump1 };
         }
-        const response = await axios.get(`${directionWeb}/waterPump1OnOFF`, { params: data });
+        const response = await axios.get(`${directionWebIrrigation}/waterPump1OnOFF`, { params: data });
         const resData = handleResponse(response);
         let status = false;
         if (typeof resData === 'string') {
@@ -47,7 +47,7 @@ export const irrigationService = {
             ).join('/');
             return formattedTasks;
         }
-        const response = await axios.get(`${directionWeb}/getList`);
+        const response = await axios.get(`${directionWebIrrigation}/getList`);
         const data = handleResponse(response);
         if (Array.isArray(data)) {
             return data.flatMap((t: any) =>
@@ -64,7 +64,7 @@ export const irrigationService = {
             mockState.tasks.push({ hour: String(hour), minutes: String(minutes), days: newDays as any });
             return { success: true, message: "Task added (Mock)" };
         }
-        const response = await axios.get(`${directionWeb}/addTaskEsp`, {
+        const response = await axios.get(`${directionWebIrrigation}/addTaskEsp`, {
             params: { hour, minutes, days }
         });
         return handleResponse(response);
@@ -79,7 +79,7 @@ export const irrigationService = {
                 humidity: mockState.humidity
             };
         }
-        const response = await axios.get(`${directionWeb}/getTemperature`);
+        const response = await axios.get(`${directionWebIrrigation}/getTemperature`);
         return handleResponse(response);
     },
 
@@ -89,7 +89,7 @@ export const irrigationService = {
             const now = new Date();
             return now.toLocaleTimeString();
         }
-        const response = await axios.get(`${directionWeb}/getClock`);
+        const response = await axios.get(`${directionWebIrrigation}/getClock`);
         return handleResponse(response);
     }
 };

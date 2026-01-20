@@ -1,12 +1,12 @@
 import axios from "axios";
 import { IColorData } from "../pages/car/models/model";
-import { directionWeb, getRequestOptions } from "../config/api.config";
+import { directionWebRobot, getRequestOptions } from "../config/api.config";
 import { OutputDataInterface } from "../pages/car/components/card-outputs";
 import { ColumnInterface } from "../pages/car/components/table-outputs";
 
 const axiosGet = async (params: any, endpoint: string) => {
   try {
-    const response = await axios.get(`${directionWeb}/${endpoint}`, {
+    const response = await axios.get(`${directionWebRobot}/${endpoint}`, {
       params,
       ...getRequestOptions("GET"),
     });
@@ -23,7 +23,7 @@ export const robotService = {
   },
 
   toggleLED: async () => {
-    const response = await axios.get(`${directionWeb}/toggleLED`);
+    const response = await axios.get(`${directionWebRobot}/toggleLED`);
     return response.data;
   },
 

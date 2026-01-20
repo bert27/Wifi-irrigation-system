@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
     directionWeb,
+    directionWebDrinks,
     handleResponse,
     getRequestOptions
 } from "../config/api.config";
@@ -18,7 +19,7 @@ export const drinksService = {
             return { success: true };
         }
         // Firmware expects GET /drinks/navigation?direction=...
-        const response = await axios.get(`${directionWeb}/drinks/navigation`, { params: { direction } });
+        const response = await axios.get(`${directionWebDrinks}/drinks/navigation`, { params: { direction } });
         return handleResponse(response);
     }
 };

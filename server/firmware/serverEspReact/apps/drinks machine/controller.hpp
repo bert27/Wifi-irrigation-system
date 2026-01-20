@@ -53,6 +53,12 @@ public:
     std::vector<Drink> drinks;
 
     void begin() {
+        Serial.println("Welcome to Drink Machine");
+        Serial.print("IP Address: ");
+        Serial.println(WiFi.localIP());
+        Serial.print("MAC Address: ");
+        Serial.println(WiFi.macAddress());
+
         // Setup Encoder Pins
         setupEncoderPins();
         setupEncoderButton();
@@ -84,6 +90,7 @@ public:
 
     void actionNext() {
         if (insideMenuDrink) return; 
+        Serial.println("Action: Next");
         counter++;
         clampCounter();
         updateScreen();
@@ -92,6 +99,7 @@ public:
 
     void actionPrev() {
         if (insideMenuDrink) return;
+        Serial.println("Action: Prev");
         if (counter > 0) counter--;
         clampCounter();
         updateScreen();
@@ -99,6 +107,7 @@ public:
     }
 
     void actionSelect() {
+        Serial.println("Action: Select");
         if (actualScreen == 1) {
             insideMenuDrink = true;
             actualScreen = 2;
@@ -113,6 +122,7 @@ public:
     }
 
     void actionCancel() {
+        Serial.println("Action: Cancel");
         resetMenu();
     }
 
@@ -203,7 +213,7 @@ private:
     }
 
     // --- Analog Logic ---
-    #define DEBUG_ANALOG // Uncomment to debug analog values
+    // #define DEBUG_ANALOG // Uncomment to debug analog values
 
     void handleAnalogInput() {
         if ((millis() - lastDebounceTime) < debounceDelay) return;

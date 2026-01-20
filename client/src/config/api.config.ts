@@ -5,8 +5,10 @@
 
 export const directionWebRemote = import.meta.env.VITE_REMOTE_IP || import.meta.env.REACT_APP_REMOTE_IP || "";
 export const directionWebRobot = import.meta.env.VITE_ROBOT_IP || import.meta.env.REACT_APP_ROBOT_IP || "";
+export const directionWebDrinks = import.meta.env.VITE_DRINKS_IP || import.meta.env.REACT_APP_DRINKS_IP || "";
+export const directionWebIrrigation = import.meta.env.VITE_IRRIGATION_IP || import.meta.env.REACT_APP_IRRIGATION_IP || "";
 
-// Default direction for generic calls (backward compatibility)
+// Default direction for generic calls (backward compatibility - prefer specific exports)
 export const directionWeb = directionWebRobot;
 
 export const getRequestOptions = (method: string) => {

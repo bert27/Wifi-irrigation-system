@@ -1,10 +1,14 @@
-# RobotCore - Sistema de Riego Inteligente & Cocktelería Automática (ESP8266 + React)
+# RobotCore - Ecosistema Modular IoT (ESP8266 / ESP32 + React)
 
 ## 🌟 Descripción del Proyecto
 
-Este ecosistema de software y hardware permite el control avanzado del microcontrolador **ESP8266** (NodeMCU, Wemos D1 Mini, etc.) a través de una interfaz web moderna construida con **React**. 
+Este proyecto es un **ecosistema multi-aplicación** que integra hardware y software para el control unificado de dispositivos IoT mediante una interfaz web moderna en **React**.
 
-Orientado originalmente al riego automatizado, el proyecto ha evolucionado hacia la creación de una **máquina de cocktelería ultra compacta**, aprovechando la conectividad Wi-Fi nativa del ESP8266 para gestionar múltiples bombas de agua con precisión PWM (Pulse Width Modulation).
+Desarrollado con una arquitectura híbrida, combina la eficiencia de los chips **ESP8266** (para los dispositivos de actuación) con la potencia del **ESP32** (para el Mando Físico), permitiendo gestionar **múltiples aplicaciones** independientes desde un mismo código base:
+
+1.  **Robot Car**: Vehículo teledirigido con telemetría.
+2.  **Cocktail Machine**: Dispensador automático de bebidas.
+3.  **Irrigation System**: Control de riego inteligente.
 
 > **🌐 [Visita RobotCore](https://robot-core.vercel.app/)**
 
@@ -97,14 +101,38 @@ Ejemplo para activar **solo la Máquina de Bebidas**:
 
 **⚠️ Nota Importante**: Si intentas activar todos los módulos a la vez, podrías tener errores de compilación debido a conflictos de versiones de librerías (especialmente ArduinoJson). Se recomienda compilar y subir **un solo módulo activo** cada vez.
 
+## 🎮 Arquitectura de Red y Control Multi-Dispositivo
 
-## 🎮 Control Dual y Modo Offline (ESP-NOW)
+Este sistema no se conecta a un solo servidor, sino que orquesta una red de dispositivos distribuidos, combinando tecnologías según la naturaleza de los datos:
 
-Este sistema destaca por su versatilidad en la conectividad:
+### 📡 WebSockets vs HTTP (Endpoints)
 
-- **Modo Offline (Barrio)**: El mando y el robot se comunican mediante **ESP-NOW** (señal de radio directa). No requieren WiFi ni router para funcionar. Ideal para presentaciones en exteriores.
-- **Modo Online (Dashboard)**: Conexión vía WiFi para telemetría avanzada. Cada módulo actúa como su propio servidor de **WebSockets**, enviando datos en tiempo real al dashboard de React.
-- **Arquitectura Desacoplada**: El mando físico y el dashboard web pueden convivir; el robot procesa órdenes de ambas fuentes simultáneamente sin conflictos.
+El Frontend de React utiliza una arquitectura híbrida:
+
+1.  **WebSockets (Telemetría en Tiempo Real)**
+    *   **¿Por qué?** Para datos de flujo continuo y crítico como el **Giroscopio (Joystick/Robot)**.
+    *   **Funcionamiento**: Se abre un "tubo" permanente. El ESP32 "empuja" miles de datos por segundo sin que el navegador tenga que pedirlo.
+    *   **Latencia**: Mínima (<10ms), permitiendo ver gráficos fluidos que reaccionan al milisegundo.
+    *   **Implementación**: `RemoteControlContext` mantiene una conexión global para que el mando físico funcione en cualquier pantalla.
+
+2.  **HTTP/REST (Comandos)**
+    *   **¿Por qué?** Para acciones puntuales y confirmadas como **"Encender Bomba"**, **"Cambiar Color"** o **"Guardar Configuración"**.
+    *   **Funcionamiento**: El navegador hace una petición puntual (GET/POST) y espera confirmación ("OK").
+    *   **Seguridad**: Asegura que una orden (ej: regar) se ha recibido y procesado correctamente.
+
+### 🔗 Mapa de Conexiones
+
+El sistema gestiona 4 IPs simultáneas, permitiendo que cada módulo tenga su propio cerebro pero opere bajo una misma interfaz unificada:
+
+| Dispositivo | Variable `.env` | Función Principal | Protocolo |
+| :--- | :--- | :--- | :--- |
+| **Robot Car** | `REACT_APP_ROBOT_IP` | Movimiento, Motores, Luces | HTTP + WebSocket |
+| **Mando Remoto** | `REACT_APP_REMOTE_IP` | Joystick Físico, Giroscopio externo | WebSocket Global |
+| **Máquina Bebidas**| `REACT_APP_DRINKS_IP`| Bombas peristálticas, Pantalla OLED | HTTP + WebSocket |
+| **Sistema Riego** | `REACT_APP_IRRIGATION_IP`| Gestión hídrica, Calendario | HTTP |
+
+### 📶 Comunicación Híbrida (ESP-NOW)
+Además del WiFi, el **Mando Remoto** habla directamente con el **Robot** usando **ESP-NOW** (protocolo de radio directo de Espressif). Esto permite controlar el robot en exteriores sin necesidad de Router ni WiFi, mientras que si hay WiFi disponible, ambos dispositivos reportan sus datos a la web simultáneamente.
 
 ---
 
@@ -155,26 +183,25 @@ Si el frontend no conecta con el ESP32 (error `ws: connection failed` o `No rout
 ## 📋 Características Implementadas
 
 ### Dashboard & Mando Físico
-- [x] Control inalámbrico de largo alcance (ESP-NOW)
-- [x] Telemetría directa desde el mando a la Web (WebSocket `/ws/remote`)
-- [x] Visualización 3D del giroscopio del mando en tiempo real
-- [x] Control híbrido Web/Físico sin interrupciones
+- Control inalámbrico de largo alcance (ESP-NOW)
+- Telemetría directa desde el mando a la Web (WebSocket `/ws/remote`)
+- Visualización 3D del giroscopio del mando en tiempo real
+- Control híbrido Web/Físico sin interrupciones
 
 ### Módulo Robot Car
-- [x] Control de motores de alta frecuencia
-- [x] Telemetría interna de inclinación (Pitch/Roll)
-- [x] Efectos de iluminación RGB sincronizados
+- Control de motores de alta frecuencia
+- Telemetría interna de inclinación (Pitch/Roll)
+- Efectos de iluminación RGB sincronizados
+- Comunicación directa con Mando Remoto (ESP-NOW)
 
 ### Cocktail Mixer & Drinks
-- [x] Interfaz física en pantalla OLED (Menú autónomo)
-- [x] Selección de bebidas desde el mando (Joystick Up/Down/Accept)
-- [x] API de control remoto y visualización en dashboard
+- Interfaz física en pantalla OLED (Menú autónomo)
+- Selección de bebidas desde el mando (Joystick Up/Down/Accept)
+- API de control remoto y visualización en dashboard
 
----
-
-## 🎯 Próximas Mejoras
-- [ ] Gestión de recetas personalizadas persistentes
-- [ ] Soporte para múltiples mandos simultáneos
-- [ ] Integración de cámara ESP32-Cam para streaming en tiempo real
-- [ ] Modo de aprendizaje de rutas (Gravedad asistida)
+### Sistema de Riego Inteligente
+- Control manual de bombas de agua (ON/OFF)
+- Programación de tareas de riego por días y horas
+- Telemetría de humedad y temperatura DHT22 simulada/real
+- Sincronización horaria automática (NTP)
 
