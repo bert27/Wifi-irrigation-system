@@ -13,6 +13,9 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/.{idea,git,cache,output,temp}/**', '**/._*'],
   },
+  esbuild: {
+    drop: ['console', 'debugger'],
+  },
   plugins: [
     react({
       babel: {
