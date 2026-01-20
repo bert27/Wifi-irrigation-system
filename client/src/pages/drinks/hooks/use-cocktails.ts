@@ -24,13 +24,14 @@ export const useCocktails = () => {
                     }))
                 }));
                 setCocktails(mapped);
-            } else if (import.meta.env.VITE_MOCK_SERVER === 'true') {
+            } else if (import.meta.env.VITE_MOCK_SERVER === 'true' || window.location.protocol === 'https:') {
                 setCocktails(availableCocktails);
             }
         } catch (err) {
             console.error("Failed to fetch cocktails", err);
-            // Fallback for demo/offline
-            // setCocktails(availableCocktails); 
+            if (import.meta.env.VITE_MOCK_SERVER === 'true' || window.location.protocol === 'https:') {
+                setCocktails(availableCocktails);
+            }
         } finally {
             setLoading(false);
         }

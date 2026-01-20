@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Box, Alert, Snackbar } from "@mui/material";
 import { useDrinksPage } from "./hooks/use-drinks-page";
+import { SimulationAlert } from "@/components/simulation-alert/simulation-alert";
 import { useKeyboardNavigation } from "./hooks/use-keyboard-navigation";
 import { DrinksHeader } from "./components/layout/drinks-header";
 import { DrinksBackground } from "./components/layout/drinks-background";
@@ -29,6 +30,7 @@ export const DrinksPage = () => {
     selectedCocktailForConfirm,
     confirmCocktail,
     cancelCocktailSelection,
+    isMock
   } = useDrinksPage();
 
   useEffect(() => {
@@ -58,6 +60,8 @@ export const DrinksPage = () => {
       <Box sx={{ position: "relative", zIndex: 1, maxWidth: "1400px", mx: "auto" }}>
 
         <DrinksHeader />
+
+        <SimulationAlert isMock={isMock} sx={{ mb: 3 }} />
 
         <DrinksTabs activeTab={activeTab} onTabChange={handleTabChange} />
 

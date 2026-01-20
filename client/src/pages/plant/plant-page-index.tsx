@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Alert, Grid, Typography } from "@mui/material";
 import { usePlantPage } from "./hooks/use-plant-page";
+import { SimulationAlert } from "@/components/simulation-alert/simulation-alert";
 import { StatusCard } from "./components/status-card";
 import { ScheduleCard } from "./components/schedule-card";
 import { ConfigCard } from "./components/config-card";
@@ -28,7 +29,8 @@ export const Plant: React.FC = () => {
     saveDays,
     saveTimeSelect,
     createTask,
-    eliminateTask
+    eliminateTask,
+    isMock
   } = usePlantPage();
 
   useEffect(() => {
@@ -39,37 +41,38 @@ export const Plant: React.FC = () => {
 
   return (
     <div className="pagePlant">
+      <SimulationAlert isMock={isMock} />
       {errorGet && <Alert severity="error" sx={{ mb: 2 }}>{t('plant.getError')}</Alert>}
-      
+
       <Typography className="title_plant">{t('plant.title')}</Typography>
 
       <Grid container spacing={4} sx={{ width: '100%', maxWidth: '1200px' }}>
-        
+
         <Grid size={{ xs: 12, md: 6 }}>
-            <StatusCard 
-                temperature={temperature}
-                clock={clock}
-                stateWaterPump={stateWaterPump}
-            />
+          <StatusCard
+            temperature={temperature}
+            clock={clock}
+            stateWaterPump={stateWaterPump}
+          />
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>
-            <ConfigCard 
-                days={days}
-                saveDays={saveDays}
-                dataForNewTask={dataForNewTask}
-                saveTimeSelect={saveTimeSelect}
-                setIsOpenModalConfig={setIsOpenModalConfig}
-                createTask={createTask}
-                errorCreateTask={errorCreateTask}
-            />
+          <ConfigCard
+            days={days}
+            saveDays={saveDays}
+            dataForNewTask={dataForNewTask}
+            saveTimeSelect={saveTimeSelect}
+            setIsOpenModalConfig={setIsOpenModalConfig}
+            createTask={createTask}
+            errorCreateTask={errorCreateTask}
+          />
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-            <ScheduleCard 
-                listTasks={listTasks}
-                eliminateTask={eliminateTask}
-            />
+          <ScheduleCard
+            listTasks={listTasks}
+            eliminateTask={eliminateTask}
+          />
         </Grid>
 
       </Grid>

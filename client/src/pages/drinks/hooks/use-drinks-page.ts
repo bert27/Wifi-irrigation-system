@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Cocktail, TabType } from "@/pages/drinks/models/drinks-model";
 import { drinksService } from "@/services/drinks.service";
+import { directionWebDrinks } from "@/config/api.config";
 
 // Sub-hooks
 import { useCocktails } from "./use-cocktails";
@@ -11,7 +12,9 @@ export const useDrinksPage = () => {
   const [activeTab, setActiveTab] = useState<TabType>("drinks");
   const [selectedCocktailForConfirm, setSelectedCocktailForConfirm] = useState<Cocktail | null>(null);
 
-  // 1. Data Management
+  // Simulation Mode Detection
+  const isMock = import.meta.env.VITE_MOCK_SERVER === 'true' ||
+    (window.location.protocol === 'https:' && directionWebDrinks.startsWith('http:'));
   const {
     cocktails,
     updateCocktail,
@@ -115,6 +118,7 @@ export const useDrinksPage = () => {
     selectedCocktailForConfirm,
     confirmCocktail,
     cancelCocktailSelection,
-    loading
+    loading,
+    isMock
   };
 };
