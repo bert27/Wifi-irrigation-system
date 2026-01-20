@@ -3,6 +3,7 @@ import { IDashboardState } from '@/pages/car/models/model';
 import { robotService } from '@/services/robot.service';
 import { directionWebRobot } from "@/config/api.config";
 import { useRemoteControl } from '@/context/remote-control-context';
+import { isSimulationMode } from '@/utils/simulation';
 
 export const useRobotControl = () => {
   // Convert http/https to ws/wss
@@ -47,7 +48,7 @@ export const useRobotControl = () => {
   const [color, setColor] = useState("#00d2ff");
   const [lastCmd, setLastCmd] = useState<string>("");
   const [connectionError, setConnectionError] = useState<string | null>(null);
-  const [isMock, setIsMock] = useState(import.meta.env.VITE_MOCK_SERVER === 'true');
+  const [isMock, setIsMock] = useState(isSimulationMode());
 
   // Generic Socket Connector
   const setupSocket = useCallback((
@@ -58,8 +59,8 @@ export const useRobotControl = () => {
     setSocketCallback?: (socket: WebSocket | null) => void
   ) => {
     // Mixed Content / HTTPS Detection
-    if ((window.location.protocol === 'https:' && url.startsWith('ws:')) || import.meta.env.VITE_MOCK_SERVER === 'true') {
-      console.warn(`[MockMode] Activation Request. Secure: ${window.location.protocol === 'https:'}, Env: ${import.meta.env.VITE_MOCK_SERVER}`);
+    if ((window.location.protocol === 'https:' && url.startsWith('ws:')) || isSimulationMode()) {
+      console.warn(`[MockMode] Activation Request. Secure: ${window.location.protocol === 'https:'}, Simulation: ${isSimulationMode()}`);
       setIsMock(true);
       return { cleanup: () => { } };
     }

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Cocktail } from "@/pages/drinks/models/drinks-model";
 import { drinksService } from "@/services/drinks.service";
 import { availableCocktails } from "@/pages/drinks/data/cocktails.data";
+import { isSimulationMode } from "@/utils/simulation";
 
 export const useCocktails = () => {
     const [cocktails, setCocktails] = useState<Cocktail[]>([]);
@@ -24,12 +25,12 @@ export const useCocktails = () => {
                     }))
                 }));
                 setCocktails(mapped);
-            } else if (import.meta.env.VITE_MOCK_SERVER === 'true' || window.location.protocol === 'https:') {
+            } else if (isSimulationMode()) {
                 setCocktails(availableCocktails);
             }
         } catch (err) {
             console.error("Failed to fetch cocktails", err);
-            if (import.meta.env.VITE_MOCK_SERVER === 'true' || window.location.protocol === 'https:') {
+            if (isSimulationMode()) {
                 setCocktails(availableCocktails);
             }
         } finally {

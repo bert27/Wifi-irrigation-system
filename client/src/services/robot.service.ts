@@ -3,8 +3,12 @@ import { IColorData } from "../pages/car/models/model";
 import { directionWebRobot, getRequestOptions } from "../config/api.config";
 import { OutputDataInterface } from "../pages/car/components/card-outputs";
 import { ColumnInterface } from "../pages/car/components/table-outputs";
+import { activateReactiveSimulation, isSimulationMode } from "../utils/simulation";
+
+const USE_MOCK = isSimulationMode();
 
 const axiosGet = async (params: any, endpoint: string) => {
+  if (USE_MOCK) return { success: true };
   try {
     const response = await axios.get(`${directionWebRobot}/${endpoint}`, {
       params,
@@ -12,6 +16,8 @@ const axiosGet = async (params: any, endpoint: string) => {
     });
     return response.data;
   } catch (error: any) {
+    console.error(`Robot service error on ${endpoint}:`, error);
+    activateReactiveSimulation();
     const errorMessage = error.message ?? "Unknown error";
     return { type: "error", message: errorMessage };
   }
@@ -23,8 +29,15 @@ export const robotService = {
   },
 
   toggleLED: async () => {
-    const response = await axios.get(`${directionWebRobot}/toggleLED`);
-    return response.data;
+    if (USE_MOCK) return { success: true };
+    try {
+      const response = await axios.get(`${directionWebRobot}/toggleLED`);
+      return response.data;
+    } catch (error) {
+      console.error("Robot toggleLED error:", error);
+      activateReactiveSimulation();
+      throw error;
+    }
   },
 
   sendDataOutputSelectedToServer: async (outputSelected: OutputDataInterface) => {
@@ -33,6 +46,10 @@ export const robotService = {
 
   sendRowTableOutputsMotors: async (rowSelected: ColumnInterface) => {
     return await axiosGet(rowSelected, "outputsRowTableRobot");
+  },
+
+  sendRowTableOutputsStatusUpdate: async (rowSelected: ColumnInterface) => {
+    return await axiosGet(rowSelected, "outputsRowTableRobotUpdate");
   },
 
   sendOutputRobotUI: async (data: { name: string }) => {
