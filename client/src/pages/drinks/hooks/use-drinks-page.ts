@@ -73,8 +73,8 @@ export const useDrinksPage = () => {
 
   const selectDrink = (drink: Drink) => {
     setSelectedDrinkForConfirm(drink);
-    // Ideally here we could send a command to jump to this index on ESP
-    // sendCommand(`goto?index=${drink.id}`); 
+    // Send command to jump to this index on ESP
+    drinksService.sendControlCommand(`goto:${drink.id}`);
   };
 
   const confirmDrink = async () => {

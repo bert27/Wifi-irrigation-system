@@ -18,6 +18,11 @@ void controlCocktail(AsyncWebServerRequest *request) {
             DrinksInputManager::getInstance().enqueueCommand("back");
         } else if (direction == "cancel") {
             DrinksInputManager::getInstance().enqueueCommand("cancel");
+        } else if (direction.startsWith("goto:")) {
+            DrinksInputManager::getInstance().enqueueCommand(direction);
+        } else if (direction == "goto" && request->hasParam("index")) {
+            String index = request->getParam("index")->value();
+            DrinksInputManager::getInstance().enqueueCommand("goto:" + index);
         }
     }
     request->send(200, "text/plain", "Command: " + direction);

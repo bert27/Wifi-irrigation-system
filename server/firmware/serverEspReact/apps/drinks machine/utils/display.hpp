@@ -105,6 +105,23 @@ public:
         delay(50);
     }
 
+    void drawProgress(const String& label, int progress) {
+        display.clearDisplay();
+        display.setRotation(2);
+        display.setTextSize(2);
+        display.setTextColor(SSD1306_WHITE);
+        display.setCursor(10, 5);
+        display.println(label);
+        
+        // Progress bar background
+        display.drawRect(5, 45, 118, 15, SSD1306_WHITE);
+        // Progress fill
+        int fillWidth = map(progress, 0, 100, 0, 114);
+        display.fillRect(7, 47, fillWidth, 11, SSD1306_WHITE);
+        
+        display.display();
+    }
+
     void setImage() {
         display.clearDisplay();
         display.drawBitmap(
@@ -210,6 +227,10 @@ inline void StartDisplay() {
 }
 
 
+
+inline void SetProgress(String label, int progress) {
+    DisplayManager::getInstance().drawProgress(label, progress);
+}
 
 inline void loopDisplay() {
     DisplayManager::getInstance().loop();

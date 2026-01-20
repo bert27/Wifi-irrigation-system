@@ -82,7 +82,12 @@ public:
         if (pendingCommand != "") {
             String cmd = pendingCommand;
             pendingCommand = ""; // Clear first
-            if (cmd == "next" ) actionNext();
+            
+            if (cmd.startsWith("goto:")) {
+                int index = cmd.substring(5).toInt();
+                actionGoto(index);
+            }
+            else if (cmd == "next" ) actionNext();
             else if (cmd == "prev") actionPrev();
             else if (cmd == "select") actionSelect();
             else if (cmd == "back") actionBack();
@@ -134,6 +139,7 @@ public:
         if (actualScreen == 1) {
             insideMenuDrink = true;
             actualScreen = 2;
+            servingStartTime = millis(); // Start 2-second timer
             extern void SetScreen(String, String, int);
             SetScreen("Sirviendo...", drinks[counter - 1].nameLiquid, 2);
         } else if (actualScreen == 0) {
@@ -144,6 +150,19 @@ public:
              }
         }
         broadcastState();
+    }
+
+    void actionGoto(int index) {
+        if (index > 0 && index <= (int)drinks.size()) {
+            Serial.print("Action: Goto ");
+            Serial.println(index);
+            counter = index;
+            actualScreen = 1; // Direct to confirmation screen
+            insideMenuDrink = false;
+            extern void SetScreen(String, String, int);
+            SetScreen("Aceptar?", drinks[counter - 1].nameLiquid, 2);
+            broadcastState();
+        }
     }
 
     void actionBack() {
@@ -345,38 +364,57 @@ private:
         broadcastState();
     }
 
-    bool wasServing = false; // State tracking to avoid I2C flooding
+    bool wasServing = false; 
+    unsigned long servingStartTime = 0;
+    const unsigned long SERVING_DURATION = 2000; // 2 seconds
 
     void handlePumpLogic() {
         if (!insideMenuDrink) return;
         if (counter <= 0 || counter > (int)drinks.size()) return;
 
-        const auto& currentDrink = drinks[counter - 1];
+        unsigned long elapsed = millis() - servingStartTime;
+        bool isTimedServing = (actualScreen == 2 && elapsed < SERVING_DURATION);
         
-        // Check inputs
+        // Input based serving
         int reading = analogRead(A0);
         KeypadButton aBtn = getButtonFromAnalog(reading);
         bool encoderPressed = (digitalRead(PIN_ENC_BTN) == LOW); 
         bool analogPressed = (aBtn == BTN_SELECT);
-        bool isServing = (encoderPressed || analogPressed);
+        bool isManualServing = (encoderPressed || analogPressed);
+
+        bool isServing = isTimedServing || isManualServing;
 
         if (isServing) {
-            if (!wasServing) { // Only update screen ONCE when starting to serve
-                extern void SetScreen(String, String, int);
-                SetScreen("Sirviendo", currentDrink.nameLiquid, 2);
+            if (!wasServing) { 
                 wasServing = true;
+                // If manual started it, reset start time for progress bar
+                if (!isTimedServing) servingStartTime = millis(); 
             }
-            pinMode(currentDrink.gpio, OUTPUT);
-            digitalWrite(currentDrink.gpio, 1);
+            
+            // Update Progress Bar on OLED
+            if (isTimedServing) {
+                int progress = map(elapsed, 0, SERVING_DURATION, 0, 100);
+                extern void SetProgress(String, int);
+                SetProgress(drinks[counter - 1].nameLiquid, progress);
+            }
+
+            pinMode(drinks[counter - 1].gpio, OUTPUT);
+            digitalWrite(drinks[counter - 1].gpio, 1);
         } else {
-            if (wasServing) { // Only update screen ONCE when stopping
+            if (wasServing) {
                 extern void SetScreen(String, String, int);
-                SetScreen("Sirvete", currentDrink.nameLiquid, 2);
+                SetScreen("Sirvete", drinks[counter - 1].nameLiquid, 2);
                 wasServing = false;
+                
+                // If it was a timed serve, return to selection automatically
+                if (actualScreen == 2) {
+                    actualScreen = 0;
+                    insideMenuDrink = false;
+                }
+                
                 offAllPumps(); 
+                broadcastState();
             }
-            // Ensure pumps stay off (optional redundant safety, but cheap)
-            // offAllPumps(); 
         }
     }
 };
