@@ -13,7 +13,9 @@
         "off": "OFF",
         "ping": "PING",
         "online": "SYSTEM ONLINE",
-        "offline": "SYSTEM OFFLINE"
+        "offline": "SYSTEM OFFLINE",
+        "cancel": "CANCEL",
+        "save": "SAVE"
     },
     "car": {
         "title": "RobotCore",

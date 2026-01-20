@@ -13,7 +13,9 @@
         "off": "OFF",
         "ping": "PING",
         "online": "SISTEMA ONLINE",
-        "offline": "SISTEMA OFFLINE"
+        "offline": "SISTEMA OFFLINE",
+        "cancel": "CANCELAR",
+        "save": "GUARDAR"
     },
     "car": {
         "title": "Núcleo Robot",
