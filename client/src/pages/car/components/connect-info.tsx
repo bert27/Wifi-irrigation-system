@@ -1,37 +1,45 @@
 import { Box, Typography } from "@mui/material";
-import WifiIcon from '@mui/icons-material/Wifi';
-import SensorsOffIcon from '@mui/icons-material/SensorsOff';
 import { useTranslation } from "react-i18next";
 
 interface ConnectInfoProps {
   connectedRobot: boolean;
   connectedRemote: boolean;
+  isMock?: boolean;
 }
 
-export const ConnectInfo = ({ connectedRobot, connectedRemote }: ConnectInfoProps) => {
+export const ConnectInfo = ({ connectedRobot, connectedRemote, isMock }: ConnectInfoProps) => {
   const { t } = useTranslation();
 
-  const StatusBadge = ({ label, active }: { label: string, active: boolean }) => (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      <Box
-        className={active ? "status-pulse" : ""}
-        sx={{
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          backgroundColor: active ? 'var(--success)' : 'var(--error)',
-          boxShadow: `0 0 8px ${active ? 'var(--success-glow)' : 'var(--error-glow)'}`,
-        }}
-      />
-      <Typography sx={{
-        fontSize: '0.7rem',
-        fontWeight: 700,
-        color: active ? 'var(--text-main)' : 'var(--text-muted)'
-      }}>
-        {label}
-      </Typography>
-    </Box>
-  );
+  const StatusBadge = ({ label, active, simulated }: { label: string, active: boolean, simulated?: boolean }) => {
+    // If simulated, it should look disconnected (Red/Offline) as per user request
+    const isActuallyConnected = active && !simulated;
+
+    const color = isActuallyConnected ? 'var(--success)' : 'var(--error)';
+    const glow = isActuallyConnected ? 'var(--success-glow)' : 'var(--error-glow)';
+    const textLabel = isActuallyConnected ? label : "OFFLINE";
+
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box
+          className={isActuallyConnected ? "status-pulse" : ""}
+          sx={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            backgroundColor: color,
+            boxShadow: `0 0 8px ${glow}`,
+          }}
+        />
+        <Typography sx={{
+          fontSize: '0.7rem',
+          fontWeight: 700,
+          color: isActuallyConnected ? 'var(--text-main)' : 'var(--text-muted)'
+        }}>
+          {textLabel}
+        </Typography>
+      </Box>
+    );
+  };
 
   return (
     <Box
@@ -46,9 +54,9 @@ export const ConnectInfo = ({ connectedRobot, connectedRemote }: ConnectInfoProp
         background: `rgba(0,0,0,0.2)`,
       }}
     >
-      <StatusBadge label="ROBOT" active={connectedRobot} />
+      <StatusBadge label="ROBOT" active={connectedRobot} simulated={isMock} />
       <Box sx={{ width: '1px', height: '12px', background: 'rgba(255,255,255,0.1)' }} />
-      <StatusBadge label="REMOTE" active={connectedRemote} />
+      <StatusBadge label="REMOTE" active={connectedRemote} simulated={isMock} />
     </Box>
   );
 };

@@ -50,6 +50,10 @@ export const useDrinksPage = () => {
 
   // Reset ESP8266 state when entering the page
   useEffect(() => {
+    if (isMock) {
+      console.log("[useDrinksPage] Skipping ESP reset in simulation mode");
+      return;
+    }
     const resetEsp = async () => {
       try {
         await drinksService.sendControlCommand("cancel");
@@ -58,7 +62,7 @@ export const useDrinksPage = () => {
       }
     };
     resetEsp();
-  }, []);
+  }, [isMock]);
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { IDashboardState } from '@/pages/car/models/model';
 import { robotService } from '@/services/robot.service';
 import { directionWebRobot } from "@/config/api.config";
@@ -6,13 +6,11 @@ import { useRemoteControl } from '@/context/remote-control-context';
 import { isSimulationMode } from '@/utils/simulation';
 
 export const useRobotControl = () => {
-  // Convert http/https to ws/wss
-  const urlRobot = directionWebRobot.replace(/^http/, 'ws') + '/ws';
+  // Convert http/https to ws/wss - memoized to prevent infinite loops
+  const urlRobot = useMemo(() => directionWebRobot.replace(/^http/, 'ws') + '/ws', []);
 
   // Use Global Remote Context
   const { remoteState, connectedRemote } = useRemoteControl();
-
-  console.log('[useRobotControl] URLs:', { urlRobot });
 
   const [dashboardState, setDashboardState] = useState<IDashboardState>({
     robot: {
@@ -60,8 +58,8 @@ export const useRobotControl = () => {
   ) => {
     // Mixed Content / HTTPS Detection
     if ((window.location.protocol === 'https:' && url.startsWith('ws:')) || isSimulationMode()) {
-      console.warn(`[MockMode] Activation Request. Secure: ${window.location.protocol === 'https:'}, Simulation: ${isSimulationMode()}`);
-      setIsMock(true);
+      console.warn(`[MockMode] WebSocket Setup Blocked. Protocol: ${window.location.protocol}, Mock: ${isSimulationMode()}`);
+      setConnectedRobot(true);
       return { cleanup: () => { } };
     }
 
@@ -179,7 +177,7 @@ export const useRobotControl = () => {
       setWsRobot
     );
     return cleanup;
-  }, [urlRobot, setupSocket]);
+  }, [urlRobot, setupSocket, isMock]);
 
   // Actions
   const handleColorChange = useCallback(async (newColor: string) => {

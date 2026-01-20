@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { directionWebDrinks } from "@/config/api.config";
+import { isSimulationMode } from "@/utils/simulation";
 import { Cocktail } from "@/pages/drinks/models/drinks-model";
 import { useConnectivity } from "@/context/connectivity-context";
 
@@ -25,6 +26,13 @@ export const useSocketSync = ({
     const [socketUrl, setSocketUrl] = useState<string | null>(null);
 
     useEffect(() => {
+        // CRITICAL: Never attempt WebSocket connection in simulation mode
+        if (isSimulationMode()) {
+            console.log("[useSocketSync] Simulation mode detected, skipping WebSocket setup");
+            setConnectionStatus('drinks', 'disconnected', 'Offline');
+            return;
+        }
+
         if (!loading) {
             console.log("Starting WS Connection Sequence...");
             const timer = setTimeout(() => {
@@ -33,7 +41,6 @@ export const useSocketSync = ({
                 setSocketUrl(url);
 
                 // Step 2: "Nudge" the ESP network stack to force event loop processing
-                // We use a dedicated /drinks/ping endpoint to force the ESP event loop to cycle
                 console.log("Step 2: Nudging ESP network stack (ping)...");
                 [100, 400, 800].forEach(delay => {
                     setTimeout(() => {
@@ -46,7 +53,7 @@ export const useSocketSync = ({
         } else {
             setSocketUrl(null);
         }
-    }, [loading]);
+    }, [loading, setConnectionStatus]);
 
     const socketOptions = useMemo(() => ({
         shouldReconnect: () => true,

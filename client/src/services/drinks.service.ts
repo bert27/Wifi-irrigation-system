@@ -3,7 +3,7 @@ import {
     directionWebDrinks,
     handleResponse,
 } from "../config/api.config";
-import { isSimulationMode, activateReactiveSimulation } from "../utils/simulation";
+import { isSimulationMode, activateReactiveSimulation, withTimeout } from "../utils/simulation";
 import { availableCocktails } from "../pages/drinks/data/cocktails.data";
 
 const USE_MOCK = isSimulationMode();
@@ -19,7 +19,10 @@ export const drinksService = {
             return { success: true };
         }
         try {
-            const response = await axios.get(`${directionWebDrinks}/drinks/navigation`, { params: { direction } });
+            const response = await withTimeout(
+                axios.get(`${directionWebDrinks}/drinks/navigation`, { params: { direction } }),
+                2000
+            );
             return handleResponse(response);
         } catch (error) {
             console.error("Drinks navigation error, triggering simulation fallback:", error);
@@ -39,7 +42,10 @@ export const drinksService = {
             }));
         }
         try {
-            const response = await axios.get(`${directionWebDrinks}/drinks/cocktails`);
+            const response = await withTimeout(
+                axios.get(`${directionWebDrinks}/drinks/cocktails`),
+                3000
+            );
             return handleResponse(response);
         } catch (error) {
             console.error("Failed to fetch cocktails, triggering simulation mode:", error);
@@ -51,10 +57,13 @@ export const drinksService = {
     saveCocktail: async (name: string, ingredients: any[]): Promise<any> => {
         if (USE_MOCK) return { success: true };
         try {
-            const response = await axios.post(`${directionWebDrinks}/drinks/save-cocktail`, {
-                name,
-                ingredients
-            });
+            const response = await withTimeout(
+                axios.post(`${directionWebDrinks}/drinks/save-cocktail`, {
+                    name,
+                    ingredients
+                }),
+                5000
+            );
             return handleResponse(response);
         } catch (error) {
             console.error("Failed to save cocktail, triggering simulation mode:", error);

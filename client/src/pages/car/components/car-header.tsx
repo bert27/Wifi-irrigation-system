@@ -6,13 +6,22 @@ import { useTranslation } from "react-i18next";
 interface HeaderProps {
   connectedRobot: boolean;
   connectedRemote: boolean;
+  isMock: boolean;
   ledState: boolean;
   onToggleLed: () => void;
   onPing: () => void;
   height: string;
 }
 
-export const CarHeader: React.FC<HeaderProps> = ({ connectedRobot, connectedRemote, ledState, onToggleLed, onPing, height }) => {
+export const CarHeader: React.FC<HeaderProps> = ({
+  connectedRobot,
+  connectedRemote,
+  isMock,
+  ledState,
+  onToggleLed,
+  onPing,
+  height
+}) => {
   const { t } = useTranslation();
   return (
     <Box
@@ -30,7 +39,7 @@ export const CarHeader: React.FC<HeaderProps> = ({ connectedRobot, connectedRemo
         <Typography variant="h4" className="tech-text neon-glow" sx={{ fontWeight: 800, color: 'var(--text-main)', lineHeight: 1 }}>
           {t('car.header.title')}<span style={{ color: 'var(--primary)' }}>CORE</span>
         </Typography>
-        <ConnectInfo connectedRobot={connectedRobot} connectedRemote={connectedRemote} />
+        <ConnectInfo connectedRobot={connectedRobot} connectedRemote={connectedRemote} isMock={isMock} />
       </Box>
 
       <Box display="flex" gap={2}>

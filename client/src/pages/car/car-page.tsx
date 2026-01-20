@@ -74,6 +74,7 @@ export const CarPage: React.FC = () => {
       <CarHeader
         connectedRobot={connectedRobot}
         connectedRemote={connectedRemote}
+        isMock={isMock}
         ledState={dashboardState.robot.ledState || false}
         onToggleLed={toggleLED}
         onPing={() => sendWSMessage("ping")}

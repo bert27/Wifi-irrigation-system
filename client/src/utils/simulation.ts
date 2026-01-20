@@ -5,50 +5,76 @@ import { directionWebDrinks, directionWebRobot, directionWebIrrigation } from "@
  */
 export const isSimulationMode = (): boolean => {
     // 1. Env Var Force
-    const envForce = import.meta.env.VITE_MOCK_SERVER === 'true';
-    if (envForce) return true;
-
-    // 2. Reactive Fallback (Address Unreachable or Mixed Content)
-    const reactiveForce = window.localStorage.getItem('simulation_mode_active') === 'true';
-    if (reactiveForce) return true;
-
-    // 3. HTTPS to HTTP Fallback (Mixed Content Prevention)
-    const isHttps = window.location.protocol === 'https:';
-
-    // We check if any of the configured IPs are pure HTTP
-    const hasHttpHardware = [directionWebDrinks, directionWebRobot, directionWebIrrigation]
-        .some(url => url && url.startsWith('http:'));
-
-    const mixedContentFallback = isHttps && hasHttpHardware;
-
-    if (mixedContentFallback) {
-        console.warn("[SimulationMode] Active due to HTTPS + Local Hardware (Mixed Content)");
+    if (import.meta.env.VITE_MOCK_SERVER === 'true') {
+        console.log("[SimulationMode] Activated by VITE_MOCK_SERVER");
+        return true;
     }
 
-    return mixedContentFallback;
+    // 2. Reactive Fallback (Address Unreachable)
+    if (typeof window !== 'undefined' && window.localStorage.getItem('simulation_mode_active') === 'true') {
+        console.log("[SimulationMode] Activated by localStorage flag");
+        return true;
+    }
+
+    // 3. HTTPS Environment Detection (Vercel/Production)
+    if (typeof window !== 'undefined') {
+        const isHttps = window.location.protocol === 'https:';
+
+        // If on HTTPS (like Vercel), we need simulation mode since we can't reach local HTTP hardware
+        if (isHttps) {
+            const hardwareUrls = [directionWebDrinks, directionWebRobot, directionWebIrrigation];
+
+            // Check if any hardware URL is missing or not HTTPS
+            const needsSimulation = hardwareUrls.some(url => {
+                if (!url) return true; // Empty URL = needs simulation
+                if (!url.startsWith('https:')) return true; // HTTP or WS = needs simulation
+                return false;
+            });
+
+            if (needsSimulation) {
+                console.log("[SimulationMode] Activated for HTTPS environment with insecure/missing hardware URLs");
+                return true;
+            }
+        }
+    }
+
+    return false;
 };
 
 /**
  * Call this when a network error indicates the hardware is unreachable.
  */
 export const activateReactiveSimulation = () => {
-    if (window.localStorage.getItem('simulation_mode_active') !== 'true') {
-        console.error("[SimulationMode] Reactive activation triggered due to connection failure.");
+    if (typeof window !== 'undefined' && window.localStorage.getItem('simulation_mode_active') !== 'true') {
+        console.error("[SimulationMode] Connection failed. Activating Reactive Mock Mode.");
         window.localStorage.setItem('simulation_mode_active', 'true');
-        // Force a reload to ensure all hooks and services pick up the change
         window.location.reload();
     }
 };
 
 /**
- * Call this to reset simulation mode if needed.
+ * Utility to wrap a promise with a timeout.
+ */
+export const withTimeout = <T,>(promise: Promise<T>, timeoutMs: number = 3000): Promise<T> => {
+    return Promise.race([
+        promise,
+        new Promise<T>((_, reject) =>
+            setTimeout(() => reject(new Error('IP unreachable or request timeout')), timeoutMs)
+        )
+    ]);
+};
+
+/**
+ * Call this to reset simulation mode.
  */
 export const resetSimulationMode = () => {
-    window.localStorage.removeItem('simulation_mode_active');
-    window.location.reload();
+    if (typeof window !== 'undefined') {
+        window.localStorage.removeItem('simulation_mode_active');
+        window.location.reload();
+    }
 };
 
 /**
  * Common text for the simulation alert.
  */
-export const SIMULATION_MESSAGE = "Error de IP: No se pudo contactar con el hardware local. Activando Modo Simulación para permitir la navegación.";
+export const SIMULATION_MESSAGE = "Error de IP: El hardware local no es accesible desde entornos seguros (HTTPS/Vercel) o ha fallado la conexión. Usando Modo Simulación.";

@@ -11,6 +11,7 @@ import { NavItem } from "./models/navigation-model";
 import { useConnectivity } from "@/context/connectivity-context";
 import { Chip } from "@mui/material";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { isSimulationMode } from "@/utils/simulation";
 
 const iconsPages = [
   { name: "menu.robot", linkTo: "/", icon: <SmartToyIcon /> },
@@ -33,7 +34,10 @@ export const SideNavBar = (): React.ReactElement => {
   };
 
   const connectionInfo = getContextInfo();
-  const isConnected = connectionInfo.status === 'connected';
+  // Force disconnected style if in simulation mode, as simulation has its own alert
+  const isSimulated = isSimulationMode();
+  const isConnected = connectionInfo.status === 'connected' && !isSimulated;
+  const displayLabel = isSimulated ? "Offline" : (connectionInfo.ip || "Offline");
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -81,7 +85,7 @@ export const SideNavBar = (): React.ReactElement => {
         >
           <Chip
             icon={<FiberManualRecordIcon style={{ fontSize: '0.8rem', color: isConnected ? '#4caf50' : '#f44336' }} />}
-            label={connectionInfo.ip || "Offline"}
+            label={displayLabel}
             sx={{
               backgroundColor: 'rgba(255, 255, 255, 0.05)',
               color: 'var(--text-color)',
