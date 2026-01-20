@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PumpConfig, Drink, TabType } from "../models/drinks-model";
-import { plantaService } from "../../../services/planta.service";
+import { irrigationService } from "../../../services/irrigation.service";
+import { drinksService } from "../../../services/drinks.service";
 
 const initialPumps: PumpConfig[] = [
   { id: 1, title: "Water pump 1", liquid: "water", pwm: 20, timeCalibration: 0 },
@@ -40,14 +41,14 @@ export const useDrinksPage = () => {
 
   const updatePump = async (id: number, data: { pwm: number; timeCalibration: number }) => {
     try {
-      const response = await plantaService.getWaterPump1OnOFF({
+      const response = await irrigationService.getWaterPump1OnOFF({
         id,
         pwm: data.pwm,
         timeCalibration: data.timeCalibration,
       });
 
       if (response.status === true) {
-        setPumps(prev => prev.map(p => 
+        setPumps(prev => prev.map(p =>
           p.id === id ? { ...p, pwm: data.pwm, timeCalibration: data.timeCalibration } : p
         ));
         setMessage("Pump updated successfully");
@@ -70,6 +71,14 @@ export const useDrinksPage = () => {
     setTimeout(() => setShowMessage(false), 1500);
   };
 
+  const sendCommand = async (direction: string) => {
+    try {
+      await drinksService.sendControlCommand(direction);
+    } catch (e) {
+      console.error("Error sending command", e);
+    }
+  };
+
   return {
     activeTab,
     pumps,
@@ -81,5 +90,6 @@ export const useDrinksPage = () => {
     selectDrink,
     updatePump,
     sendPumpCommand,
+    sendCommand,
   };
 };

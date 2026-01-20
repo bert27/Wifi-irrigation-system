@@ -1,5 +1,5 @@
 import { Alert, Grid, Paper, Snackbar, Typography } from "@mui/material";
-import { plantaService } from "../../../../services/planta.service";
+import { irrigationService } from "../../../../services/irrigation.service";
 import swal from "sweetalert";
 
 import { CardConfigTab } from "./card-config-tab";
@@ -54,7 +54,7 @@ export const ConfigTabDrinks = () => {
     data: { pwm: number; timeCalibration: number },
     id: number
   ): Promise<boolean> => {
-    const responseStateServer = await plantaService.getWaterPump1OnOFF({
+    const responseStateServer = await irrigationService.getWaterPump1OnOFF({
       id,
       pwm: data.pwm,
       timeCalibration: data.timeCalibration,
@@ -74,7 +74,7 @@ export const ConfigTabDrinks = () => {
         setOpenSnackbar(false);
         setMessageUi(undefined);
       }, 2000);
-      
+
       const cardsResponseCopy = [...cardsResponse];
       cardsResponseCopy.forEach((element) => {
         if (element.id === id) {

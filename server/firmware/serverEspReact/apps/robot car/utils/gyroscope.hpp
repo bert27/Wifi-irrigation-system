@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Wire.h>
-#include "services/websocket.hpp"
+#include "../services/websocket.hpp"
 
 /*
  * MPU6050 Gyroscope Manager
@@ -34,7 +34,7 @@ public:
         Wire.beginTransmission(MPU_ADDR);
         Wire.write(0x3B);  // starting with register 0x3B (ACCEL_XOUT_H)
         Wire.endTransmission(false);
-        Wire.requestFrom(MPU_ADDR, 14, true); // request a total of 14 registers
+        Wire.requestFrom((uint8_t)MPU_ADDR, (size_t)14, true); // request a total of 14 registers
 
         int16_t AcX = Wire.read() << 8 | Wire.read(); // 0x3B (ACCEL_XOUT_H) & 0x3C (ACCEL_XOUT_L)
         int16_t AcY = Wire.read() << 8 | Wire.read(); // 0x3D (ACCEL_YOUT_H) & 0x3E (ACCEL_YOUT_L)
@@ -65,7 +65,7 @@ public:
         Wire.beginTransmission(MPU_ADDR);
         Wire.write(0x3B);
         Wire.endTransmission(false);
-        Wire.requestFrom(MPU_ADDR, 14, true);
+        Wire.requestFrom((uint8_t)MPU_ADDR, (size_t)14, true);
 
         int16_t AcX = Wire.read() << 8 | Wire.read();
         int16_t AcY = Wire.read() << 8 | Wire.read();

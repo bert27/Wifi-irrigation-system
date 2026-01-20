@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ConsoleComponent } from "./console-component";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { Typography } from "@mui/material";
-import { directionWeb } from "@/services/planta.service";
+import { directionWeb } from "@/config/api.config";
 
 const urlEsp8266 = directionWeb.replace(/^http/, 'ws') + '/ws/remote';
 

@@ -3,7 +3,7 @@ import { Box, Button, Modal, Typography, IconButton } from "@mui/material";
 import WaterIcon from "@mui/icons-material/Water";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import CloseIcon from "@mui/icons-material/Close";
-import { plantaService } from "../../services/planta.service";
+import { irrigationService } from "../../services/irrigation.service";
 
 interface ModalConfigProps {
   isOpenModalConfig: boolean;
@@ -26,15 +26,15 @@ export const ModalConfig: React.FC<ModalConfigProps> = ({
     try {
       const newState = !stateWaterPump;
       const pwmValue = newState ? 255 : 0;
-      
-      const responseStateServer = await plantaService.getWaterPump1OnOFF({ 
+
+      const responseStateServer = await irrigationService.getWaterPump1OnOFF({
         set: newState,
         "0": 1,
         "1": pwmValue,
         id: 1,
         pwm: pwmValue
       });
-      
+
       setstateWaterPump(responseStateServer.status);
     } catch (e) {
       console.error("Error toggling pump", e);
@@ -74,13 +74,13 @@ export const ModalConfig: React.FC<ModalConfigProps> = ({
         </Box>
 
         <div className="optionsPlanta">
-          <Box 
-            className="glass-effect" 
-            sx={{ 
-              p: 3, 
-              borderRadius: '16px', 
-              display: 'flex', 
-              flexDirection: 'column', 
+          <Box
+            className="glass-effect"
+            sx={{
+              p: 3,
+              borderRadius: '16px',
+              display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
               gap: 2,
               width: '100%',
@@ -88,7 +88,7 @@ export const ModalConfig: React.FC<ModalConfigProps> = ({
             }}
           >
             <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 600 }}>
-              {t('plant.status.pump1')}: 
+              {t('plant.status.pump1')}:
               <span style={{ color: stateWaterPump ? 'var(--accent)' : 'var(--secondary)' }}>
                 {stateWaterPump ? t('common.on') : t('common.off')}
               </span>
@@ -99,7 +99,7 @@ export const ModalConfig: React.FC<ModalConfigProps> = ({
               fullWidth
               onClick={changeStateWatterPump1}
               startIcon={stateWaterPump ? <WarningAmberIcon /> : <WaterIcon />}
-              sx={{ 
+              sx={{
                 background: stateWaterPump ? 'linear-gradient(45deg, #ef4444, #f43f5e)' : 'linear-gradient(45deg, var(--primary), var(--accent))',
                 borderRadius: '12px',
                 py: 1.5,

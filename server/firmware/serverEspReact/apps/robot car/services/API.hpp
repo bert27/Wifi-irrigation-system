@@ -16,16 +16,6 @@ void toggleLED(AsyncWebServerRequest *request) {
     request->send(200, "text/plain", "LED Toggled");
 }
 
-void outputRobot(AsyncWebServerRequest *request) {
-    CarController::getInstance().setOutputRobot();
-    request->send(200, "text/plain", "Output Robot OK");
-}
-
-void outputsRowTableRobot(AsyncWebServerRequest *request) {
-    CarController::getInstance().setRowTableOutputs();
-    request->send(200, "text/plain", "Row Table OK");
-}
-
 void outputRobotUI(AsyncWebServerRequest *request) {
     String name = "unknown";
     if (request->hasParam("name")) {
@@ -38,7 +28,5 @@ void outputRobotUI(AsyncWebServerRequest *request) {
 void setupCarAPI(AsyncWebServer& server) {
     server.on("/changeColor", HTTP_GET, changeColor);
     server.on("/toggleLED", HTTP_GET, toggleLED);
-    server.on("/outputRobot", HTTP_GET, outputRobot);
-    server.on("/outputsRowTableRobot", HTTP_GET, outputsRowTableRobot);
     server.on("/outputRobotUI", HTTP_GET, outputRobotUI);
 }

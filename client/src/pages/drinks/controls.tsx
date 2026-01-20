@@ -5,34 +5,22 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import StarsIcon from "@mui/icons-material/Stars";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
-  PostControlCocktailMachineInterface,
-  controlService,
-} from "../../services/machine-service";
+  drinksService,
+} from "../../services/drinks.service";
 export const Controls = (props: any) => {
-  const postSendInfo = async (data: PostControlCocktailMachineInterface) => {
-    const response = await controlService.postControlCocktailMachine(data);
-    console.log("response",response)
+  const sendCommand = async (direction: string) => {
+    try {
+      await drinksService.sendControlCommand(direction);
+    } catch (e) {
+      console.error("Error sending command", e);
+    }
   };
 
-  const moveBack = () => {
-    postSendInfo({ direction: "back" });
-  };
-
-  const moveUp = () => {
-    postSendInfo({ direction: "up" });
-  };
-
-  const moveNext = () => {
-    postSendInfo({ direction: "next" });
-  };
-
-  const moveDown = () => {
-    postSendInfo({ direction: "down" });
-  };
-
-  const accept = () => {
-    postSendInfo({ direction: "accept" });
-  };
+  const moveBack = () => sendCommand("back");
+  const moveUp = () => sendCommand("up");
+  const moveNext = () => sendCommand("next");
+  const moveDown = () => sendCommand("down");
+  const accept = () => sendCommand("accept");
   return (
     <Card variant="outlined">
       <div style={{ justifyContent: "center", display: "flex" }}>

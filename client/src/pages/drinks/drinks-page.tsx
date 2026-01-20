@@ -23,11 +23,45 @@ export const DrinksPage = () => {
     selectDrink,
     updatePump,
     sendPumpCommand,
+    sendCommand,
   } = useDrinksPage();
 
   useEffect(() => {
     document.title = "RobotCore - Drinks";
-  }, []);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (activeTab !== 'drinks' && activeTab !== 'manual') return; // Only control in relevant tabs? Or globally?
+      // User asked for "controlar con el teclado", usually implies navigation context.
+      // Let's allow it globally on the page for now.
+
+      switch (e.key) {
+        case "ArrowUp":
+          sendCommand("up");
+          e.preventDefault();
+          break;
+        case "ArrowDown":
+          sendCommand("down");
+          e.preventDefault();
+          break;
+        case "Enter":
+        case " ": // Spacebar
+          sendCommand("accept");
+          e.preventDefault();
+          break;
+        case "ArrowLeft":
+          sendCommand("back");
+          e.preventDefault();
+          break;
+        case "ArrowRight":
+          sendCommand("next");
+          e.preventDefault();
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [sendCommand, activeTab]);
 
   return (
     <Box

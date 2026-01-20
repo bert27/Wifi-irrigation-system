@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { IDashboardState } from '@/pages/car/models/model';
 import { robotService } from '@/services/robot.service';
-import { directionWebRobot, directionWebRemote } from "@/services/planta.service";
+import { directionWebRobot, directionWebRemote } from "@/config/api.config";
 
 export const useRobotControl = () => {
   // Convert http/https to ws/wss

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { IColorData } from "../pages/car/models/model";
-import { directionWeb, getRequestOptions } from "./planta.service";
+import { directionWeb, getRequestOptions } from "../config/api.config";
 import { OutputDataInterface } from "../pages/car/components/card-outputs";
 import { ColumnInterface } from "../pages/car/components/table-outputs";
 

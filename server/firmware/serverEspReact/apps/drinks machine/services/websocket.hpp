@@ -1,6 +1,9 @@
 #pragma once
+
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
+
+using namespace ArduinoJson;
 
 class DrinksWebSocketHandler {
 public:
@@ -19,7 +22,7 @@ public:
     }
 
     void broadcastState(int currentDrinkIdx, const String& drinkName, int screen, bool isServing) {
-        StaticJsonDocument<256> doc;
+        JsonDocument doc;
         doc["type"] = "drinks_state";
         doc["index"] = currentDrinkIdx;
         doc["name"] = drinkName;

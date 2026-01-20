@@ -1,3 +1,5 @@
+#pragma once
+
 #include "WString.h"
 #include <RTClib.h>
 #include <ArduinoJson.h>
@@ -27,14 +29,12 @@ public:
     void begin() {
         DS3231Manager::getInstance().begin();
         setupPins();
-        // setupRoutes() moved to API.hpp
         server.begin();
-        Serial.println("HTTP server started");
+        Serial.println("IRRIGATION: HTTP server started");
     }
 
 public:
     AsyncWebServer server;
-    // RTC_DS3231 rtc; // Removed, using Manager
     std::vector<ScheduledTask> tasks;
     const size_t MAX_TASKS = 20;
 
@@ -46,12 +46,10 @@ public:
     void setupPins() {
         pinMode(PIN_IRRIGATION_PUMP, OUTPUT); digitalWrite(PIN_IRRIGATION_PUMP, LOW);
     }
-    
-    // setupRTC removed
 
     void handlePumpControl(AsyncWebServerRequest *request) {
         Serial.println("GET /waterPump1OnOFF");
-        if (!request->hasParam(0) || !request->hasParam(1)) {
+        if (request->params() < 2) { 
             request->send(400, "text/plain", "Missing Params");
             return;
         }
@@ -105,21 +103,16 @@ public:
         daysParam.toCharArray(char_array, str_len);
         char *ptr = strtok(char_array, ",");
         
-        int dayIndex = 0;
-        
-        while (ptr != NULL && dayIndex < 7) {
-            String token = String(ptr);
-             
-            dayIndex++;
+        while (ptr != NULL) {
             ptr = strtok(NULL, ",");
         }
         
-        DynamicJsonDocument doc(1024);
-        DeserializationError error = deserializeJson(doc, daysParam);
+        // ArduinoJson v5 Syntax
+        DynamicJsonBuffer jsonBuffer;
+        JsonArray& array = jsonBuffer.parseArray(daysParam);
 
-        if (!error && doc.is<JsonArray>()) {
-            JsonArray array = doc.as<JsonArray>();
-            for(JsonVariant v : array) {
+        if (array.success()) {
+            for(const auto& v : array) {
                 String dayName = v.as<String>();
                 if (tasks.size() < MAX_TASKS) {
                     tasks.push_back({dayName, hour, minute});
@@ -149,8 +142,6 @@ public:
     }
 };
 
-IrrigationSystem& irrigationSystem = IrrigationSystem::getInstance();
-
-void setupPlantController() {
-    irrigationSystem.begin();
+inline void setupPlantController() {
+    IrrigationSystem::getInstance().begin();
 }

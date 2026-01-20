@@ -23,14 +23,16 @@ public:
     }
 
     void broadcastTelemetry(float pitch, float roll, const String& direction) {
-        StaticJsonDocument<256> doc;
+        // ArduinoJson v5 Syntax
+        StaticJsonBuffer<256> jsonBuffer;
+        JsonObject& doc = jsonBuffer.createObject();
         doc["type"] = "car_telemetry";
         doc["pitch"] = pitch;
         doc["roll"] = roll;
         doc["direction"] = direction;
         
         String output;
-        serializeJson(doc, output);
+        doc.printTo(output);
         broadcast(output);
     }
 

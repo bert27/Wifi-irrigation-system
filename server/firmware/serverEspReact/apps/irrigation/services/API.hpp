@@ -11,23 +11,23 @@ void getRoot(AsyncWebServerRequest *request) {
 }
 
 void waterPump1OnOFF(AsyncWebServerRequest *request) {
-    irrigationSystem.handlePumpControl(request);
+    IrrigationSystem::getInstance().handlePumpControl(request);
 }
 
 void getClock(AsyncWebServerRequest *request) {
-     request->send(200, "text/plain", irrigationSystem.getClockString());
+     request->send(200, "text/plain", IrrigationSystem::getInstance().getClockString());
 }
 
 void getList(AsyncWebServerRequest *request) {
-    irrigationSystem.handleGetList(request);
+    IrrigationSystem::getInstance().handleGetList(request);
 }
 
 void getTemperature(AsyncWebServerRequest *request) {
-     irrigationSystem.handleGetTemperature(request);
+     IrrigationSystem::getInstance().handleGetTemperature(request);
 }
 
 void addTaskEsp(AsyncWebServerRequest *request) {
-    irrigationSystem.handleAddTask(request);
+    IrrigationSystem::getInstance().handleAddTask(request);
 }
 
 void setupPlantAPI(AsyncWebServer& server) {

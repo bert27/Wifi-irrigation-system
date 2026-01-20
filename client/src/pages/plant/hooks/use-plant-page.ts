@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { plantaService } from "../../../services/planta.service";
+import { irrigationService } from "../../../services/irrigation.service";
 import { Day } from "../../../components/days/models/day.model";
 import { IScheduledTask, ITemperature } from "../models/plant-model";
 
@@ -14,7 +14,7 @@ const getDayLetterWeek = (dayTmp: string): string => {
 const withTimeout = <T,>(promise: Promise<T>, timeoutMs: number = 10000): Promise<T> => {
   return Promise.race([
     promise,
-    new Promise<T>((_, reject) => 
+    new Promise<T>((_, reject) =>
       setTimeout(() => reject(new Error('Request timeout')), timeoutMs)
     )
   ]);
@@ -60,13 +60,13 @@ export const usePlantPage = () => {
 
   useEffect(() => {
     console.log('🎯 useEffect triggered, calling fetchData');
-    
+
     const fetchData = async () => {
       console.log('🔄 fetchData called');
       try {
-        const listData = await withTimeout(plantaService.getList());
-        const clockData = await withTimeout(plantaService.getClock());
-        const temperatureData = await withTimeout(plantaService.getTemperature());
+        const listData = await withTimeout(irrigationService.getList());
+        const clockData = await withTimeout(irrigationService.getClock());
+        const temperatureData = await withTimeout(irrigationService.getTemperature());
 
         setClock(clockData);
         setTemperature(Number(temperatureData.temperature));
@@ -74,7 +74,7 @@ export const usePlantPage = () => {
         if (listData && typeof listData === 'string') {
           const listDataSplit = listData.split("/");
           const parsedTasks: IScheduledTask[] = [];
-          
+
           const tempMap = new Map<string, Day[]>();
 
           listDataSplit.forEach((element: string) => {
@@ -101,7 +101,7 @@ export const usePlantPage = () => {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
 
@@ -126,7 +126,7 @@ export const usePlantPage = () => {
     try {
       setListTasks(prev => [...prev, { ...dataForNewTask, days: selectedDays }]);
       setErrorCreateTask(null);
-      await plantaService.postaddTaskEsp(
+      await irrigationService.postaddTaskEsp(
         dataForNewTask.hour,
         dataForNewTask.minutes,
         JSON.stringify(selectedDays.map(d => d.name))
@@ -155,7 +155,7 @@ export const usePlantPage = () => {
     dataForNewTask,
     isOpenModalConfig,
     setIsOpenModalConfig,
-    
+
     saveDays,
     saveTimeSelect,
     createTask,

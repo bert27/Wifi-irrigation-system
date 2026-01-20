@@ -9,16 +9,16 @@ void controlCocktail(AsyncWebServerRequest *request) {
         direction = request->getParam("direction")->value();
         
         if (direction == "next" || direction == "down") {
-            EncoderManager::getInstance().processRotation(true);
+            DrinksInputManager::getInstance().actionNext();
         } else if (direction == "up" || direction == "back") {
-            EncoderManager::getInstance().processRotation(false);
+            DrinksInputManager::getInstance().actionPrev();
         } else if (direction == "accept") {
-            EncoderManager::getInstance().clickButton();
+            DrinksInputManager::getInstance().actionSelect();
         }
     }
     request->send(200, "text/plain", "Command: " + direction);
 }
 
 void setupDrinksAPI(AsyncWebServer& server) {
-    server.on("/control", HTTP_GET, controlCocktail);
+    server.on("/drinks/navigation", HTTP_GET, controlCocktail);
 }

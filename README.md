@@ -76,6 +76,28 @@ El repositorio está organizado de forma modular para facilitar el mantenimiento
 
 ---
 
+## ⚙️ Configuración Modular (AppConfig)
+
+El firmware del ESP8266 (`/server/firmware/serverEspReact`) es modular por diseño. Puedes elegir qué "personalidad" quieres cargar en el robot editando un solo archivo.
+
+Esto evita conflictos de librerías (ej: usar librerías de riego cuando solo quieres la máquina de bebidas) y ahorra memoria.
+
+### Cómo activar/desactivar módulos
+
+1.  Abre el archivo `server/firmware/serverEspReact/AppConfig.h`.
+2.  Descomenta (`//`) solo el módulo que quieras compilar.
+
+Ejemplo para activar **solo la Máquina de Bebidas**:
+
+```cpp
+#define ENABLE_DRINKS_MACHINE
+// #define ENABLE_IRRIGATION_SYSTEM
+// #define ENABLE_ROBOT_CAR
+```
+
+**⚠️ Nota Importante**: Si intentas activar todos los módulos a la vez, podrías tener errores de compilación debido a conflictos de versiones de librerías (especialmente ArduinoJson). Se recomienda compilar y subir **un solo módulo activo** cada vez.
+
+
 ## 🎮 Control Dual y Modo Offline (ESP-NOW)
 
 Este sistema destaca por su versatilidad en la conectividad:

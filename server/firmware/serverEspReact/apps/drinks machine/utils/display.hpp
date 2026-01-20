@@ -87,14 +87,14 @@ public:
             Serial.println(F("SSD1306 allocation failed"));
         }
         display.clearDisplay();
-        display.setRotation(0);
+        display.setRotation(2);
         setImage();    
         display.display();
     }
 
     void setScreen(const String& first, const String& second, int size) {
         display.clearDisplay();
-        display.setRotation(0);
+        display.setRotation(2);
         display.setTextSize(size);
         display.setTextColor(SSD1306_WHITE);
         display.setCursor(10, 10);
@@ -175,6 +175,7 @@ private:
 
     DisplayManager() : display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET) {}
 
+    void printDebug(String direction) {
         if (direction == "back") {
              Serial.println("Has apretado back");
         }
