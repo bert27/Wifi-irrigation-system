@@ -52,7 +52,7 @@ void setup() {
   // 1. WiFi & Network
   ConnectWiFi_STA();
   ConnectWiFi_STA();
-  // setupRemoteHub(); // DISABLED: ESP-NOW causes WiFi Channel conflict/packet loss
+  setupRemoteHub(); 
 
   if (MDNS.begin("drinks-machine")) {
     MDNS.addService("http", "tcp", 80);
