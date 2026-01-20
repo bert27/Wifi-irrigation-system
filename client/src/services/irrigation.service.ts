@@ -1,8 +1,9 @@
 import { IWaterPumpStatus, ITemperature, IAddTask } from "../pages/plant/models/plant-model";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { directionWebIrrigation, handleResponse } from "../config/api.config";
+import { activateReactiveSimulation, isSimulationMode } from "../utils/simulation";
 
-const USE_MOCK = import.meta.env.VITE_MOCK_SERVER === 'true';
+const USE_MOCK = isSimulationMode();
 
 let mockState = {
     waterPump1: false,
@@ -28,15 +29,21 @@ export const irrigationService = {
 
             return { status: mockState.waterPump1 };
         }
-        const response = await axios.get(`${directionWebIrrigation}/waterPump1OnOFF`, { params: data });
-        const resData = handleResponse(response);
-        let status = false;
-        if (typeof resData === 'string') {
-            if (resData === "ON" || resData === "OK") status = true;
-        } else if (typeof resData === 'object' && resData.status !== undefined) {
-            status = !!resData.status;
+        try {
+            const response = await axios.get(`${directionWebIrrigation}/waterPump1OnOFF`, { params: data });
+            const resData = handleResponse(response);
+            let status = false;
+            if (typeof resData === 'string') {
+                if (resData === "ON" || resData === "OK") status = true;
+            } else if (typeof resData === 'object' && resData.status !== undefined) {
+                status = !!resData.status;
+            }
+            return { status };
+        } catch (error) {
+            console.error("Irrigation state error, triggering simulation mode:", error);
+            activateReactiveSimulation();
+            throw error;
         }
-        return { status };
     },
 
     getList: async (): Promise<string> => {
@@ -47,14 +54,20 @@ export const irrigationService = {
             ).join('/');
             return formattedTasks;
         }
-        const response = await axios.get(`${directionWebIrrigation}/getList`);
-        const data = handleResponse(response);
-        if (Array.isArray(data)) {
-            return data.flatMap((t: any) =>
-                (Array.isArray(t.days) ? t.days : [t.days]).map((d: string) => `${d}-${t.hour}-${t.minutes}`)
-            ).join('/');
+        try {
+            const response = await axios.get(`${directionWebIrrigation}/getList`);
+            const data = handleResponse(response);
+            if (Array.isArray(data)) {
+                return data.flatMap((t: any) =>
+                    (Array.isArray(t.days) ? t.days : [t.days]).map((d: string) => `${d}-${t.hour}-${t.minutes}`)
+                ).join('/');
+            }
+            return String(data);
+        } catch (error) {
+            console.error("Irrigation getList error, triggering simulation mode:", error);
+            activateReactiveSimulation();
+            throw error;
         }
-        return String(data);
     },
 
     postaddTaskEsp: async (hour: string | number, minutes: string | number, days: string): Promise<IAddTask> => {
@@ -64,10 +77,16 @@ export const irrigationService = {
             mockState.tasks.push({ hour: String(hour), minutes: String(minutes), days: newDays as any });
             return { success: true, message: "Task added (Mock)" };
         }
-        const response = await axios.get(`${directionWebIrrigation}/addTaskEsp`, {
-            params: { hour, minutes, days }
-        });
-        return handleResponse(response);
+        try {
+            const response = await axios.get(`${directionWebIrrigation}/addTaskEsp`, {
+                params: { hour, minutes, days }
+            });
+            return handleResponse(response);
+        } catch (error) {
+            console.error("Irrigation addTask error, triggering simulation mode:", error);
+            activateReactiveSimulation();
+            throw error;
+        }
     },
 
     getTemperature: async (): Promise<ITemperature> => {
@@ -79,8 +98,14 @@ export const irrigationService = {
                 humidity: mockState.humidity
             };
         }
-        const response = await axios.get(`${directionWebIrrigation}/getTemperature`);
-        return handleResponse(response);
+        try {
+            const response = await axios.get(`${directionWebIrrigation}/getTemperature`);
+            return handleResponse(response);
+        } catch (error) {
+            console.error("Irrigation temperature error, triggering simulation mode:", error);
+            activateReactiveSimulation();
+            throw error;
+        }
     },
 
     getClock: async (): Promise<string> => {
@@ -89,7 +114,13 @@ export const irrigationService = {
             const now = new Date();
             return now.toLocaleTimeString();
         }
-        const response = await axios.get(`${directionWebIrrigation}/getClock`);
-        return handleResponse(response);
+        try {
+            const response = await axios.get(`${directionWebIrrigation}/getClock`);
+            return handleResponse(response);
+        } catch (error) {
+            console.error("Irrigation clock error, triggering simulation mode:", error);
+            activateReactiveSimulation();
+            throw error;
+        }
     }
 };

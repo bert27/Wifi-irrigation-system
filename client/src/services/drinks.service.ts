@@ -1,11 +1,9 @@
 import axios from "axios";
 import {
-    directionWeb,
     directionWebDrinks,
     handleResponse,
-    getRequestOptions
 } from "../config/api.config";
-import { isSimulationMode } from "../utils/simulation";
+import { isSimulationMode, activateReactiveSimulation } from "../utils/simulation";
 import { availableCocktails } from "../pages/drinks/data/cocktails.data";
 
 const USE_MOCK = isSimulationMode();
@@ -20,15 +18,18 @@ export const drinksService = {
             console.log("Mock Control Command:", direction);
             return { success: true };
         }
-        const response = await axios.get(`${directionWebDrinks}/drinks/navigation`, { params: { direction } });
-        return handleResponse(response);
+        try {
+            const response = await axios.get(`${directionWebDrinks}/drinks/navigation`, { params: { direction } });
+            return handleResponse(response);
+        } catch (error) {
+            console.error("Drinks navigation error, triggering simulation fallback:", error);
+            activateReactiveSimulation();
+            throw error;
+        }
     },
 
     getCocktails: async (): Promise<any> => {
         if (USE_MOCK) {
-            // Map the recipe structure to match hardware response format
-            // hardware expects { name, ingredients: [{ name, quantity }] }
-            // availableCocktails has { name, recipe: [{ liquid, quantity }] }
             return availableCocktails.map(c => ({
                 name: c.name,
                 ingredients: (c.recipe || []).map(r => ({
@@ -37,16 +38,28 @@ export const drinksService = {
                 }))
             }));
         }
-        const response = await axios.get(`${directionWebDrinks}/drinks/cocktails`);
-        return handleResponse(response);
+        try {
+            const response = await axios.get(`${directionWebDrinks}/drinks/cocktails`);
+            return handleResponse(response);
+        } catch (error) {
+            console.error("Failed to fetch cocktails, triggering simulation mode:", error);
+            activateReactiveSimulation();
+            throw error;
+        }
     },
 
     saveCocktail: async (name: string, ingredients: any[]): Promise<any> => {
         if (USE_MOCK) return { success: true };
-        const response = await axios.post(`${directionWebDrinks}/drinks/save-cocktail`, {
-            name,
-            ingredients
-        });
-        return handleResponse(response);
+        try {
+            const response = await axios.post(`${directionWebDrinks}/drinks/save-cocktail`, {
+                name,
+                ingredients
+            });
+            return handleResponse(response);
+        } catch (error) {
+            console.error("Failed to save cocktail, triggering simulation mode:", error);
+            activateReactiveSimulation();
+            throw error;
+        }
     }
 };
