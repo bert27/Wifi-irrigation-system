@@ -14,12 +14,14 @@ interface PumpConfigPanelProps {
 export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ drinks, pumps, onUpdatePump }) => {
   const { t } = useTranslation();
   const [selectedPump, setSelectedPump] = useState<PumpConfig | null>(null);
+  const [selectedDrinkName, setSelectedDrinkName] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleOpenModal = (pumpId: number) => {
+  const handleOpenModal = (pumpId: number, drinkName: string) => {
     const pump = pumps.find((p) => p.id === pumpId);
     if (pump) {
       setSelectedPump(pump);
+      setSelectedDrinkName(drinkName);
       setIsModalOpen(true);
     }
   };
@@ -29,7 +31,7 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ drinks, pumps,
       <Grid container spacing={3}>
         {drinks.map((drink) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} key={drink.id}>
-            <DrinkConfigCard drink={drink} onConfigPump={handleOpenModal} />
+            <DrinkConfigCard drink={drink} onConfigPump={(pumpId) => handleOpenModal(pumpId, drink.name)} />
           </Grid>
         ))}
       </Grid>
@@ -38,6 +40,7 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ drinks, pumps,
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         pump={selectedPump}
+        drinkName={selectedDrinkName}
         onSave={onUpdatePump}
       />
     </Box>
