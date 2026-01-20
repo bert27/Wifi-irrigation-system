@@ -19,7 +19,6 @@ interface PumpSettingsModalProps {
     open: boolean;
     onClose: () => void;
     pump: PumpConfig | null;
-    drinkName?: string;
     onSave: (id: number, data: { pwm: number; timeCalibration: number }) => void;
 }
 
@@ -27,7 +26,6 @@ export const PumpSettingsModal: React.FC<PumpSettingsModalProps> = ({
     open,
     onClose,
     pump,
-    drinkName,
     onSave
 }) => {
     const { t } = useTranslation();
@@ -66,7 +64,7 @@ export const PumpSettingsModal: React.FC<PumpSettingsModalProps> = ({
             <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1.5, pb: 1 }}>
                 <WaterDropIcon sx={{ color: "var(--accent)" }} />
                 <Typography className="tech-text" sx={{ color: "var(--accent)", fontWeight: 700 }}>
-                    {pump.title} {drinkName ? `- ${drinkName}` : ""}
+                    {pump.title} - {pump.liquid}
                 </Typography>
             </DialogTitle>
 
