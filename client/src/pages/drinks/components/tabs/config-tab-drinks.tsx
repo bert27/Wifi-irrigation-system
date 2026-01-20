@@ -1,10 +1,10 @@
 import { Alert, Grid, Paper, Snackbar, Typography } from "@mui/material";
-import { irrigationService } from "../../../../services/irrigation.service";
+import { irrigationService } from "@/services/irrigation.service";
 import swal from "sweetalert";
 
 import { CardConfigTab } from "./card-config-tab";
 import { useState } from "react";
-import { AlertComponent } from "../../../../components/Alert/alert-component";
+import { AlertComponent } from "@/components/Alert/alert-component";
 
 export interface WaterPumpInterface {
   id: number;

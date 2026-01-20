@@ -13,7 +13,7 @@ import {
     ListItemText,
     Divider
 } from "@mui/material";
-import { Bottle, Cocktail } from "../models/drinks-model";
+import { Bottle, Cocktail } from "@/pages/drinks/models/drinks-model";
 import { useTranslation } from "react-i18next";
 import SaveIcon from "@mui/icons-material/Save";
 import LocalBarIcon from "@mui/icons-material/LocalBar";

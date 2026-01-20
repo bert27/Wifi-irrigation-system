@@ -97,6 +97,11 @@ public:
     unsigned long lastPollTime = 0;
     const unsigned long POLL_INTERVAL = 20;
 
+    // Broadcast throttling
+    bool needsBroadcast = false;
+    unsigned long lastBroadcastTime = 0;
+    const unsigned long BROADCAST_INTERVAL = 50; // 50ms throttle
+
     void loop() {
         // Process external commands (Actions from Web/API)
         if (pendingCommand != "") {
@@ -126,6 +131,9 @@ public:
             else if (cmd == "cancel") actionCancel();
         }
 
+        // Handle Broadcast Throttling
+        handleBroadcast();
+
         if (millis() - lastPollTime < POLL_INTERVAL) return;
         lastPollTime = millis();
 
@@ -142,6 +150,16 @@ public:
         handlePumpLogic();
     }
 
+    void handleBroadcast() {
+        if (needsBroadcast && (millis() - lastBroadcastTime > BROADCAST_INTERVAL)) {
+            needsBroadcast = false;
+            lastBroadcastTime = millis();
+            
+            String drinkName = (counter > 0 && counter <= (int)menu.size()) ? menu[counter-1].name : "Ninguna";
+            DrinksWebSocketHandler::getInstance().broadcastState(counter, drinkName, actualScreen, insideMenuDrink);
+        }
+    }
+
     // --- Actions ---
 
     void enqueueCommand(String cmd) {
@@ -150,7 +168,7 @@ public:
 
     void actionNext() {
         if (insideMenuDrink) return; 
-        Serial.println("Action: Next");
+        // Serial.println("Action: Next"); // Removed to reduce lag
         counter++;
         clampCounter();
         updateScreen();
@@ -159,7 +177,7 @@ public:
 
     void actionPrev() {
         if (insideMenuDrink) return;
-        Serial.println("Action: Prev");
+        // Serial.println("Action: Prev"); // Removed
         if (counter > 0) counter--;
         clampCounter();
         updateScreen();
@@ -167,7 +185,7 @@ public:
     }
 
     void actionSelect() {
-        Serial.println("Action: Select");
+        Serial.println("Action: Select"); // Keep vital logs
         if (actualScreen == 1) {
             insideMenuDrink = true;
             actualScreen = 2;
@@ -244,10 +262,8 @@ public:
     }
 
     void broadcastState() {
-        String drinkName = (counter > 0 && counter <= (int)menu.size()) ? menu[counter-1].name : "Ninguna";
-        Serial.print("WS: Broadcasting. Heap: ");
-        Serial.println(ESP.getFreeHeap());
-        DrinksWebSocketHandler::getInstance().broadcastState(counter, drinkName, actualScreen, insideMenuDrink);
+        // Just flag it, handleBroadcast will send it throttled
+        needsBroadcast = true;
     }
 
     // --- Encoder Interrupt Handler ---

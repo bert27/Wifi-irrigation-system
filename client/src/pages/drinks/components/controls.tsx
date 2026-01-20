@@ -6,8 +6,9 @@ import StarsIcon from "@mui/icons-material/Stars";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
   drinksService,
-} from "../../services/drinks.service";
-export const Controls = (props: any) => {
+} from "@/services/drinks.service";
+
+export const Controls = () => {
   const sendCommand = async (direction: string) => {
     try {
       await drinksService.sendControlCommand(direction);

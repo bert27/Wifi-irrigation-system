@@ -3,7 +3,7 @@ import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import WaterDropOutlinedIcon from "@mui/icons-material/WaterDropOutlined";
 import { useState } from "react";
 import type { WaterPumpInterface } from "./config-tab-drinks";
-import { SliderComponent } from "./components/slider-material";
+import { SliderComponent } from "../custom-slider";
 import "./drinks-animations.css";
 
 export const color = "#009688";
@@ -29,11 +29,11 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
   const [animate, setAnimate] = useState(false);
 
   const handleSet = async () => {
-      const success = await sendFormDataServer(cardForm, card.id);
-      if (success) {
-          setAnimate(true);
-          setTimeout(() => setAnimate(false), 1000);
-      }
+    const success = await sendFormDataServer(cardForm, card.id);
+    if (success) {
+      setAnimate(true);
+      setTimeout(() => setAnimate(false), 1000);
+    }
   };
 
   const onChangeBinaryValue = () => {
@@ -44,7 +44,7 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
           ...cardForm,
           pwm: 0,
         },
-        
+
         card.id
       );
     } else {
@@ -83,7 +83,7 @@ export const CardConfigTab = (props: CardConfigTabProps) => {
               variant="h6"
               gutterBottom={false}
               sx={{ fontWeight: "bold", color: color }}
-              
+
             >
               {card.title}
             </Typography>

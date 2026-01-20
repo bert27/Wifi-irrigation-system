@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Grid, Box, Typography, Paper, IconButton, Tooltip, Button } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import EditIcon from "@mui/icons-material/Edit";
-import { Bottle, Cocktail } from "../models/drinks-model";
+import { Bottle, Cocktail } from "@/pages/drinks/models/drinks-model";
 import { useTranslation } from "react-i18next";
 import { PumpSettingsModal } from "./pump-settings-modal";
 import { CocktailRecipeModal } from "./cocktail-recipe-modal";

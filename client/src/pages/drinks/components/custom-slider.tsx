@@ -1,6 +1,6 @@
 import { Box, Slider } from "@mui/material";
 import { useEffect, useState } from "react";
-import { color } from "../card-config-tab";
+const color = "#009688";
 
 interface SliderComponentProps {
   onChangeValue: (pwmTmp: number) => void;

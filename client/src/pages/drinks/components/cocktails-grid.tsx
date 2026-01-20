@@ -1,18 +1,34 @@
 import React from "react";
-import { Grid, Box, Typography, Paper } from "@mui/material";
+import { Grid, Box, Typography, Paper, Skeleton } from "@mui/material";
 import LocalBarIcon from "@mui/icons-material/LocalBar";
-import { Cocktail } from "../models/drinks-model";
+import { Cocktail } from "@/pages/drinks/models/drinks-model";
+import { useTranslation } from "react-i18next";
 
 interface CocktailsGridProps {
   cocktails: Cocktail[];
   onSelectCocktail: (cocktail: Cocktail) => void;
   selectedIndex?: number | null;
+  loading?: boolean;
 }
 
-import { useTranslation } from "react-i18next";
-
-export const CocktailsGrid: React.FC<CocktailsGridProps> = ({ cocktails, onSelectCocktail, selectedIndex }) => {
+export const CocktailsGrid: React.FC<CocktailsGridProps> = ({ cocktails, onSelectCocktail, selectedIndex, loading }) => {
   const { t } = useTranslation();
+
+  if (loading) {
+    return (
+      <Grid container spacing={3} sx={{ mt: 2 }}>
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={i}>
+            <Paper className="glass-card" sx={{ p: 3, height: 200, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+              <Skeleton variant="circular" width={60} height={60} sx={{ bgcolor: 'rgba(255,255,255,0.1)' }} />
+              <Skeleton variant="text" width="60%" height={32} sx={{ bgcolor: 'rgba(255,255,255,0.1)' }} />
+              <Skeleton variant="text" width="40%" height={20} sx={{ bgcolor: 'rgba(255,255,255,0.1)' }} />
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+    );
+  }
   return (
     <Grid container spacing={3} sx={{ mt: 2 }}>
       {cocktails.map((cocktail, index) => {

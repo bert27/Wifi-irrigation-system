@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import WaterDropOutlinedIcon from "@mui/icons-material/WaterDropOutlined";
-import { Bottle } from "../models/drinks-model";
+import { Bottle } from "@/pages/drinks/models/drinks-model";
 import { useTranslation } from "react-i18next";
 
 interface PumpSettingsModalProps {

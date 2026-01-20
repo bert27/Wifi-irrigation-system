@@ -7,7 +7,7 @@ import {
     Typography,
     Button
 } from "@mui/material";
-import { Cocktail } from "../models/drinks-model";
+import { Cocktail } from "@/pages/drinks/models/drinks-model";
 
 interface CocktailConfirmationModalProps {
     cocktail: Cocktail | null;
