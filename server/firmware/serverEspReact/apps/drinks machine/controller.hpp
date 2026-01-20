@@ -9,10 +9,12 @@
 #include "../../utils/remote_protocol.h"
 #include "services/websocket.hpp"
 
-struct Drink {
-    String nameLiquid;
-    String pumpId; 
+struct Bottle {
+    String name;
+    String id; // pump1, pump2...
     int gpio;
+    int pwm = 255;
+    int calibration = 1000; // ms per unit
 };
 
 struct LiquidProp {
@@ -38,6 +40,8 @@ enum KeypadButton {
     BTN_SELECT
 };
 
+#include <LittleFS.h>
+
 // Unified Manager for both Analog Keypad (A0) and Rotary Encoder (D5,D6,D7)
 class DrinksInputManager {
 public:
@@ -50,10 +54,26 @@ public:
     int counter = 0;
     bool insideMenuDrink = false;
     int actualScreen = 0;
-    std::vector<Drink> drinks;
+    std::vector<Bottle> bottles;
+    std::vector<Cocktail> cocktails;
+    
+    struct MenuEntry {
+        String name;
+        bool isCocktail;
+        int index; // Index in bottles or cocktails
+    };
+    std::vector<MenuEntry> menu;
 
     void begin() {
         Serial.println("Welcome to Drink Machine");
+        
+        if(!LittleFS.begin()){
+            Serial.println("LittleFS Mount Failed");
+        } else {
+            Serial.println("LittleFS Mounted Successfully");
+            loadCocktails(); // Load saved recipes
+        }
+
         Serial.print("IP Address: ");
         Serial.println(WiFi.localIP());
         Serial.print("MAC Address: ");
@@ -153,11 +173,11 @@ public:
             actualScreen = 2;
             servingStartTime = millis(); // Start 2-second timer
             extern void SetScreen(String, String, int);
-            SetScreen("Sirviendo...", drinks[counter - 1].nameLiquid, 2);
+            SetScreen("Sirviendo...", menu[counter - 1].name, 2);
         } else if (actualScreen == 0) {
-             if (counter > 0 && counter <= (int)drinks.size()) {
+             if (counter > 0 && counter <= (int)menu.size()) {
                 extern void SetScreen(String, String, int); 
-                SetScreen("Aceptar?", drinks[counter - 1].nameLiquid, 2);
+                SetScreen("Aceptar?", menu[counter - 1].name, 2);
                 actualScreen = 1;
              }
         }
@@ -165,14 +185,14 @@ public:
     }
 
     void actionGoto(int index) {
-        if (index > 0 && index <= (int)drinks.size()) {
+        if (index > 0 && index <= (int)menu.size()) {
             Serial.print("Action: Goto ");
             Serial.println(index);
             counter = index;
             actualScreen = 1; // Direct to confirmation screen
             insideMenuDrink = false;
             extern void SetScreen(String, String, int);
-            SetScreen("Aceptar?", drinks[counter - 1].nameLiquid, 2);
+            SetScreen("Aceptar?", menu[counter - 1].name, 2);
             broadcastState();
         }
     }
@@ -198,9 +218,11 @@ public:
         
         String liquidName = "Info";
         String targetPumpId = "pump" + String(pumpId);
-        for (const auto& d : drinks) {
-            if (d.pumpId == targetPumpId) {
-                liquidName = d.nameLiquid;
+        for (auto& b : bottles) {
+            if (b.id == targetPumpId) {
+                b.pwm = pwm;
+                b.calibration = time;
+                liquidName = b.name;
                 break;
             }
         }
@@ -222,7 +244,7 @@ public:
     }
 
     void broadcastState() {
-        String drinkName = (counter > 0 && counter <= (int)drinks.size()) ? drinks[counter-1].nameLiquid : "Ninguna";
+        String drinkName = (counter > 0 && counter <= (int)menu.size()) ? menu[counter-1].name : "Ninguna";
         Serial.print("WS: Broadcasting. Heap: ");
         Serial.println(ESP.getFreeHeap());
         DrinksWebSocketHandler::getInstance().broadcastState(counter, drinkName, actualScreen, insideMenuDrink);
@@ -243,6 +265,22 @@ public:
 
     static void pressHandlerStub(BfButton *btn, BfButton::press_pattern_t pattern) {
         DrinksInputManager::getInstance().handlePress(pattern);
+    }
+
+    void updateCocktail(const String& name, const std::vector<LiquidProp>& ingredients) {
+        bool found = false;
+        for (auto& c : cocktails) {
+            if (c.name == name) {
+                c.ingredients = ingredients;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            cocktails.push_back({ name, ingredients });
+        }
+        refreshMenu();
+        saveCocktails();
     }
 
 private:
@@ -267,18 +305,91 @@ private:
     unsigned long lastDebounceTime = 0;
     unsigned long debounceDelay = 200; 
 
-    std::vector<Cocktail> cocktails;
-
     DrinksInputManager() : btn(BfButton::STANDALONE_DIGITAL, 14, true, LOW) {
-        drinks = {
+        bottles = {
             { "Cocacola", "pump1", PIN_PUMP_1 },
-            { "Sex on the beach", "cocktail", PIN_PUMP_2 }, // Uses Naranja pump
             { "Zumo de naranja", "pump2", PIN_PUMP_2 },
-            { "Vodka con cocacola", "cocktail", PIN_PUMP_3 }, // Uses Vodka pump
-            { "Granadina", "pump4", PIN_PUMP_4 },
-            { "Vodka", "pump3", PIN_PUMP_3 }
+            { "Vodka", "pump3", PIN_PUMP_3 },
+            { "Granadina", "pump4", PIN_PUMP_4 }
         };
-        cocktails.push_back({ "Sex on The Beach", { {"Cocacola", 30}, {"Agua", 50} } });
+        refreshMenu();
+    }
+
+    void refreshMenu() {
+        menu.clear();
+        // 1. Add individual bottles
+        for (int i = 0; i < (int)bottles.size(); i++) {
+            menu.push_back({ bottles[i].name, false, i });
+        }
+        // 2. Add cocktails
+        for (int i = 0; i < (int)cocktails.size(); i++) {
+            menu.push_back({ cocktails[i].name, true, i });
+        }
+        clampCounter();
+    }
+
+    void loadCocktails() {
+        if (!LittleFS.exists("/cocktails.json")) {
+            Serial.println("No cocktails file found, using defaults");
+            saveCocktails(); // Create initial file
+            return;
+        }
+
+        File file = LittleFS.open("/cocktails.json", "r");
+        if (!file) {
+            Serial.println("Failed to open cocktails file");
+            return;
+        }
+
+        JsonDocument doc;
+        DeserializationError error = deserializeJson(doc, file);
+        file.close();
+
+        if (error) {
+            Serial.println("Failed to parse cocktails JSON");
+            return;
+        }
+
+        cocktails.clear();
+        JsonArray array = doc.as<JsonArray>();
+        for (JsonObject obj : array) {
+            Cocktail c;
+            c.name = obj["name"].as<String>();
+            JsonArray ingArray = obj["ingredients"].as<JsonArray>();
+            for (JsonObject ing : ingArray) {
+                c.ingredients.push_back({ ing["name"].as<String>(), ing["quantity"].as<int>() });
+            }
+            cocktails.push_back(c);
+        }
+        refreshMenu();
+        Serial.printf("Loaded %d cocktails\n", (int)cocktails.size());
+    }
+
+    void saveCocktails() {
+        File file = LittleFS.open("/cocktails.json", "w");
+        if (!file) {
+            Serial.println("Failed to open cocktails file for writing");
+            return;
+        }
+
+        JsonDocument doc;
+        JsonArray array = doc.to<JsonArray>();
+        for (const auto& c : cocktails) {
+            JsonObject obj = array.add<JsonObject>();
+            obj["name"] = c.name;
+            JsonArray ingArray = obj["ingredients"].to<JsonArray>();
+            for (const auto& ing : c.ingredients) {
+                JsonObject ingObj = ingArray.add<JsonObject>();
+                ingObj["name"] = ing.name;
+                ingObj["quantity"] = ing.quantity;
+            }
+        }
+
+        if (serializeJson(doc, file) == 0) {
+            Serial.println("Failed to write to file");
+        }
+        file.close();
+        Serial.println("Cocktails saved to LittleFS");
     }
 
     // --- Setup ---
@@ -369,15 +480,15 @@ private:
 
     // --- Common ---
     void clampCounter() {
-        int maxVal = (int)drinks.size();
+        int maxVal = (int)menu.size();
         if (counter > maxVal) counter = maxVal;
         if (counter < 0) counter = 0;
     }
 
     void updateScreen() {
-        if (counter != 0) {
+        if (counter != 0 && counter <= (int)menu.size()) {
             extern void SetScreen(String, String, int);
-            SetScreen(drinks[counter - 1].nameLiquid, "", 2);
+            SetScreen(menu[counter - 1].name, "", 2);
         } else {
              extern void SetScreen(String, String, int);
              SetScreen("Elige", "bebida", 2);
@@ -400,7 +511,7 @@ private:
 
     void handlePumpLogic() {
         if (!insideMenuDrink) return;
-        if (counter <= 0 || counter > (int)drinks.size()) return;
+        if (counter <= 0 || counter > (int)menu.size()) return;
 
         unsigned long elapsed = millis() - servingStartTime;
         bool isTimedServing = (actualScreen == 2 && elapsed < SERVING_DURATION);
@@ -414,29 +525,45 @@ private:
 
         bool isServing = isTimedServing || isManualServing;
 
+        const auto& entry = menu[counter - 1];
+
         if (isServing) {
             if (!wasServing) { 
                 wasServing = true;
-                // If manual started it, reset start time for progress bar
                 if (!isTimedServing) servingStartTime = millis(); 
             }
             
-            // Update Progress Bar on OLED
+            // OLED Feedback
             if (isTimedServing) {
                 int progress = map(elapsed, 0, SERVING_DURATION, 0, 100);
                 extern void SetProgress(String, int);
-                SetProgress(drinks[counter - 1].nameLiquid, progress);
+                SetProgress(entry.name, progress);
             }
 
-            pinMode(drinks[counter - 1].gpio, OUTPUT);
-            digitalWrite(drinks[counter - 1].gpio, 1);
+            if (!entry.isCocktail) {
+                // Simple bottle
+                int gpio = bottles[entry.index].gpio;
+                pinMode(gpio, OUTPUT);
+                digitalWrite(gpio, 1);
+            } else {
+                // TODO: Sequential/Parallel cocktail execution
+                // For now, let's just activate ALL project ingredients in the recipe for the duration
+                const auto& recipe = cocktails[entry.index].ingredients;
+                for (const auto& ing : recipe) {
+                    for (const auto& b : bottles) {
+                        if (b.name == ing.name) {
+                            pinMode(b.gpio, OUTPUT);
+                            digitalWrite(b.gpio, 1);
+                        }
+                    }
+                }
+            }
         } else {
             if (wasServing) {
                 extern void SetScreen(String, String, int);
-                SetScreen("Sirvete", drinks[counter - 1].nameLiquid, 2);
+                SetScreen("Sirvete", entry.name, 2);
                 wasServing = false;
                 
-                // If it was a timed serve, return to selection automatically
                 if (actualScreen == 2) {
                     actualScreen = 0;
                     insideMenuDrink = false;

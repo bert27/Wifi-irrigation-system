@@ -6,12 +6,36 @@ import { drinksService } from "../../../services/drinks.service";
 import { directionWebDrinks } from "../../../config/api.config";
 
 import { initialBottles } from "../data/bottles.data";
-import { availableCocktails } from "../data/cocktails.data";
 
 export const useDrinksPage = () => {
   const [activeTab, setActiveTab] = useState<TabType>("drinks");
   const [bottles, setBottles] = useState<Bottle[]>(initialBottles);
-  const [cocktails] = useState<Cocktail[]>(availableCocktails);
+  const [cocktails, setCocktails] = useState<Cocktail[]>([]);
+
+  // Fetch cocktails from ESP32 on mount
+  useEffect(() => {
+    const fetchCocktails = async () => {
+      try {
+        const data = await drinksService.getCocktails();
+        if (data && Array.isArray(data)) {
+          // Map firmware format to frontend if needed
+          const mapped: Cocktail[] = data.map((c: any, idx: number) => ({
+            id: String(idx + 1),
+            name: c.name,
+            recipe: c.ingredients.map((ing: any) => ({
+              pumpId: bottles.find(b => b.liquid === ing.name)?.id || 0,
+              liquid: ing.name,
+              quantity: ing.quantity
+            }))
+          }));
+          setCocktails(mapped);
+        }
+      } catch (err) {
+        console.error("Failed to fetch cocktails", err);
+      }
+    };
+    fetchCocktails();
+  }, [bottles]);
   const [message, setMessage] = useState<string | undefined>(undefined);
   const [showMessage, setShowMessage] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -99,6 +123,35 @@ export const useDrinksPage = () => {
     }
   };
 
+  const updateCocktail = async (name: string, ingredients: { name: string; quantity: number }[]) => {
+    try {
+      await drinksService.saveCocktail(name, ingredients);
+
+      // Re-fetch to sync
+      const data = await drinksService.getCocktails();
+      if (data && Array.isArray(data)) {
+        const mapped: Cocktail[] = data.map((c: any, idx: number) => ({
+          id: String(idx + 1),
+          name: c.name,
+          recipe: c.ingredients.map((ing: any) => ({
+            liquid: ing.name,
+            quantity: ing.quantity
+          }))
+        }));
+        setCocktails(mapped);
+      }
+
+      setMessage("Recipe updated successfully");
+      setShowMessage(true);
+      setTimeout(() => setShowMessage(false), 2000);
+    } catch (err) {
+      console.error("Failed to update cocktail", err);
+      setMessage("Error saving recipe");
+      setShowMessage(true);
+      setTimeout(() => setShowMessage(false), 2000);
+    }
+  };
+
   const sendPumpCommand = async (pumpId: number) => {
     setMessage(`Activating Pump ${pumpId}`);
     setShowMessage(true);
@@ -123,6 +176,7 @@ export const useDrinksPage = () => {
     handleTabChange,
     selectCocktail,
     updatePump,
+    updateCocktail,
     sendPumpCommand,
     sendCommand,
     selectedIndex,

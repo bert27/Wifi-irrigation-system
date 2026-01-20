@@ -211,6 +211,7 @@ export const DrinksPage = () => {
               cocktails={cocktails}
               bottles={bottles}
               onUpdatePump={updatePump}
+              onUpdateCocktail={updateCocktail}
             />
           )}
 

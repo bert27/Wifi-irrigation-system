@@ -18,8 +18,22 @@ export const drinksService = {
             console.log("Mock Control Command:", direction);
             return { success: true };
         }
-        // Firmware expects GET /drinks/navigation?direction=...
         const response = await axios.get(`${directionWebDrinks}/drinks/navigation`, { params: { direction } });
+        return handleResponse(response);
+    },
+
+    getCocktails: async (): Promise<any> => {
+        if (USE_MOCK) return [];
+        const response = await axios.get(`${directionWebDrinks}/drinks/cocktails`);
+        return handleResponse(response);
+    },
+
+    saveCocktail: async (name: string, ingredients: any[]): Promise<any> => {
+        if (USE_MOCK) return { success: true };
+        const response = await axios.post(`${directionWebDrinks}/drinks/save-cocktail`, {
+            name,
+            ingredients
+        });
         return handleResponse(response);
     }
 };
