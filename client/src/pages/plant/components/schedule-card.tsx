@@ -19,12 +19,12 @@ export const ScheduleCard: React.FC<ScheduleCardProps> = ({ listTasks, eliminate
       <Typography variant="caption" sx={{ mb: 1, display: 'block' }}>
         {t('plant.schedule.activeTasks')}: {listTasks.length}
       </Typography>
-      
-      <div className="tasksList_plant" style={{ flex: 1 }}>
+
+      <div className="tasksList_plant" style={{ flex: 1 }} data-testid="listsTasks">
         {listTasks.length > 0 ? (
           listTasks.map((t, i) => (
             <Task
-              taskData={{...t, hour: parseInt(t.hour), minutes: parseInt(t.minutes)}}
+              taskData={{ ...t, hour: parseInt(t.hour), minutes: parseInt(t.minutes) }}
               index={i}
               key={`task-${i}`}
               eliminateTask={eliminateTask}

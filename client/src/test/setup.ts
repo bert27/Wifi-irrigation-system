@@ -30,3 +30,11 @@ Object.defineProperty(window, 'matchMedia', {
         dispatchEvent: vi.fn(),
     })),
 });
+
+// Mock RAF for ECharts/ZRender
+global.requestAnimationFrame = vi.fn((cb) => {
+    return setTimeout(cb, 0) as unknown as number;
+});
+global.cancelAnimationFrame = vi.fn((id) => {
+    clearTimeout(id);
+});
