@@ -8,23 +8,26 @@ import { SideNavBar } from "@/components/Menu/sidenavbar";
 import { Box } from "@mui/material";
 import { CarPage } from "@/pages/car/car-page";
 import { RemoteControlProvider } from "@/context/remote-control-context";
+import { ConnectivityProvider } from "@/context/connectivity-context";
 
 export const App: React.FC = () => {
   return (
     <Router>
       <RemoteControlProvider>
-        <Box sx={{ display: "flex", width: "100%", minHeight: "100vh" }}>
-          <SideNavBar />
-          <Box component="main" sx={{ flexGrow: 1, overflowX: "hidden" }}>
-            <Routes>
-              <Route path="/" element={<CarPage />} />
-              <Route path="/irrigation" element={<Plant />} />
-              <Route path="/drinks" element={<DrinksPage />} />
-              <Route path="/drinks/:tabRouter" element={<DrinksPage />} />
-              <Route path="*" element={<Plant />} />
-            </Routes>
+        <ConnectivityProvider>
+          <Box sx={{ display: "flex", width: "100%", minHeight: "100vh" }}>
+            <SideNavBar />
+            <Box component="main" sx={{ flexGrow: 1, overflowX: "hidden" }}>
+              <Routes>
+                <Route path="/" element={<CarPage />} />
+                <Route path="/irrigation" element={<Plant />} />
+                <Route path="/drinks" element={<DrinksPage />} />
+                <Route path="/drinks/:tabRouter" element={<DrinksPage />} />
+                <Route path="*" element={<Plant />} />
+              </Routes>
+            </Box>
           </Box>
-        </Box>
+        </ConnectivityProvider>
       </RemoteControlProvider>
     </Router>
   );

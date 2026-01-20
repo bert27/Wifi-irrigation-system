@@ -30,7 +30,8 @@ export const useDrinksPage = () => {
   } = useSocketSync({
     cocktails,
     selectedCocktailForConfirm,
-    setSelectedCocktailForConfirm
+    setSelectedCocktailForConfirm,
+    loading
   });
 
   // 3. Pump & Bottle Management

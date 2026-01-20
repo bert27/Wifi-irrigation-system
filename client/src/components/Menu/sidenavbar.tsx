@@ -8,6 +8,9 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { NavItem } from "./models/navigation-model";
+import { useConnectivity } from "@/context/connectivity-context";
+import { Chip } from "@mui/material";
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 const iconsPages = [
   { name: "menu.robot", linkTo: "/", icon: <SmartToyIcon /> },
@@ -19,6 +22,18 @@ export const SideNavBar = (): React.ReactElement => {
   const location = useLocation();
   const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const { getConnectionStatus } = useConnectivity();
+
+  // Determine current context for connectivity
+  const getContextInfo = () => {
+    if (location.pathname.startsWith('/drinks')) return getConnectionStatus('drinks');
+    if (location.pathname.startsWith('/irrigation')) return getConnectionStatus('irrigation');
+    return getConnectionStatus('robot'); // Default
+  };
+
+  const connectionInfo = getContextInfo();
+  const isConnected = connectionInfo.status === 'connected';
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -38,8 +53,8 @@ export const SideNavBar = (): React.ReactElement => {
       {iconsPages.map((iconPage: NavItem) => {
         const isActive = location.pathname === iconPage.linkTo;
         return (
-          <div 
-            className={`nav-item ${isActive ? 'active' : ''}`} 
+          <div
+            className={`nav-item ${isActive ? 'active' : ''}`}
             key={iconPage.name}
           >
             <Link
@@ -58,11 +73,44 @@ export const SideNavBar = (): React.ReactElement => {
         );
       })}
 
-      <div className="nav-item language-switcher" style={{ marginTop: 'auto', marginBottom: '1rem' }}>
+      <div className="nav-item connection-status" style={{ marginTop: 'auto', marginBottom: '0.5rem' }}>
+        <Tooltip
+          placement="right"
+          title={connectionInfo.ip ? `IP: ${connectionInfo.ip}` : t('common.disconnected')}
+          arrow
+        >
+          <Chip
+            icon={<FiberManualRecordIcon style={{ fontSize: '0.8rem', color: isConnected ? '#4caf50' : '#f44336' }} />}
+            label={connectionInfo.ip || "Offline"}
+            sx={{
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              color: 'var(--text-color)',
+              border: '1px solid var(--glass-border)',
+              height: '24px',
+              width: '100%',
+              fontSize: '0.7rem',
+              cursor: 'pointer',
+              '& .MuiChip-label': {
+                paddingLeft: '4px',
+                paddingRight: '8px',
+                display: 'block',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              },
+              '& .MuiChip-icon': {
+                marginLeft: '4px'
+              },
+              justifyContent: 'flex-start'
+            }}
+          />
+        </Tooltip>
+      </div>
+
+      <div className="nav-item language-switcher" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
         <Tooltip placement="right" title={t('common.language')} arrow>
-          <IconButton 
-            onClick={handleMenuOpen} 
-            sx={{ 
+          <IconButton
+            onClick={handleMenuOpen}
+            sx={{
               color: 'var(--text-color)',
               '&:hover': { background: 'rgba(255, 255, 255, 0.1)' },
               fontSize: '1.5rem'
@@ -102,11 +150,11 @@ export const SideNavBar = (): React.ReactElement => {
           }}
         >
           <MenuItem onClick={() => changeLanguage('es')}>
-            <span role="img" aria-label="Español" style={{ marginRight: '8px' }}>🇪🇸</span> 
+            <span role="img" aria-label="Español" style={{ marginRight: '8px' }}>🇪🇸</span>
             {t('common.spanish')}
           </MenuItem>
           <MenuItem onClick={() => changeLanguage('en')}>
-            <span role="img" aria-label="English" style={{ marginRight: '8px' }}>🇬🇧</span> 
+            <span role="img" aria-label="English" style={{ marginRight: '8px' }}>🇬🇧</span>
             {t('common.english')}
           </MenuItem>
         </Menu>

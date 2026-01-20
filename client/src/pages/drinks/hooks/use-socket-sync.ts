@@ -1,29 +1,69 @@
-import { useState, useEffect } from "react";
-import useWebSocket from 'react-use-websocket';
+import { useState, useEffect, useMemo } from "react";
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { directionWebDrinks } from "@/config/api.config";
 import { Cocktail } from "@/pages/drinks/models/drinks-model";
+import { useConnectivity } from "@/context/connectivity-context";
 
 interface UseSocketSyncProps {
     cocktails: Cocktail[];
     selectedCocktailForConfirm: Cocktail | null;
     setSelectedCocktailForConfirm: (c: Cocktail | null) => void;
+    loading: boolean;
 }
 
 export const useSocketSync = ({
     cocktails,
     selectedCocktailForConfirm,
-    setSelectedCocktailForConfirm
+    setSelectedCocktailForConfirm,
+    loading
 }: UseSocketSyncProps) => {
+    const { setConnectionStatus } = useConnectivity();
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [message, setMessage] = useState<string | undefined>(undefined);
     const [showMessage, setShowMessage] = useState(false);
 
     const socketUrl = directionWebDrinks.replace(/^http/, 'ws') + '/ws/drinks';
 
-    const { lastJsonMessage } = useWebSocket(socketUrl, {
+    const [delayedConnect, setDelayedConnect] = useState(false);
+
+    useEffect(() => {
+        if (!loading) {
+            console.log("Starting WS Connection Delay...");
+            const timer = setTimeout(() => {
+                console.log("WS Delayed Connect > TRUE");
+                setDelayedConnect(true);
+            }, 500);
+            return () => clearTimeout(timer);
+        } else {
+            setDelayedConnect(false);
+        }
+    }, [loading]);
+
+    const socketOptions = useMemo(() => ({
         shouldReconnect: () => true,
-        reconnectInterval: 3000,
-    });
+        reconnectInterval: 1000,
+        reconnectAttempts: 100,
+        onOpen: () => console.log("WS Open"),
+        onClose: (e: CloseEvent) => console.log("WS Close", e),
+        onError: (e: Event) => console.log("WS Error", e),
+    }), []);
+
+    const { lastJsonMessage, readyState } = useWebSocket(socketUrl, socketOptions, delayedConnect); // Connect only after delay
+
+    useEffect(() => {
+        const connectionStatus = {
+            [ReadyState.CONNECTING]: 'connecting',
+            [ReadyState.OPEN]: 'connected',
+            [ReadyState.CLOSING]: 'disconnected',
+            [ReadyState.CLOSED]: 'disconnected',
+            [ReadyState.UNINSTANTIATED]: 'disconnected',
+        }[readyState] as 'connected' | 'disconnected' | 'connecting';
+
+        // Extract clean IP/Host for display
+        const displayIp = directionWebDrinks.replace(/^http:\/\//, '').replace(/\/$/, '');
+
+        setConnectionStatus('drinks', connectionStatus, displayIp);
+    }, [readyState, setConnectionStatus]);
 
     useEffect(() => {
         if (lastJsonMessage) {

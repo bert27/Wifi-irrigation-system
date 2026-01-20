@@ -90,6 +90,23 @@ public:
         RemoteControlHub::getInstance().subscribe([this](const struct_message& msg) {
             this->handleRemoteCommand(msg);
         });
+
+        // Register WebSocket Connection Callback to force broadcast
+        DrinksWebSocketHandler::getInstance().setOnConnectCallback([this](AsyncWebSocketClient* client) {
+            String currentDrinkName = "Seleccione";
+            // counter is 0 for title, 1..N for drinks in menu
+            if (menu.size() > 0 && counter > 0 && counter <= (int)menu.size()) {
+                currentDrinkName = menu[counter - 1].name;
+            }
+            
+            DrinksWebSocketHandler::getInstance().sendStateToClient(
+                client, 
+                counter, 
+                currentDrinkName, 
+                actualScreen, 
+                this->wasServing
+            );
+        });
     }
 
     // Command Queue to avoid crashes in Async context
