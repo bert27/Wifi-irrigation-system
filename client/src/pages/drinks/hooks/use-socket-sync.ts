@@ -22,20 +22,29 @@ export const useSocketSync = ({
     const [message, setMessage] = useState<string | undefined>(undefined);
     const [showMessage, setShowMessage] = useState(false);
 
-    const socketUrl = directionWebDrinks.replace(/^http/, 'ws') + '/ws/drinks';
-
-    const [delayedConnect, setDelayedConnect] = useState(false);
+    const [socketUrl, setSocketUrl] = useState<string | null>(null);
 
     useEffect(() => {
         if (!loading) {
-            console.log("Starting WS Connection Delay...");
+            console.log("Starting WS Connection Sequence...");
             const timer = setTimeout(() => {
-                console.log("WS Delayed Connect > TRUE");
-                setDelayedConnect(true);
-            }, 500);
+                const url = directionWebDrinks.replace(/^http/, 'ws') + '/ws/drinks';
+                console.log("Step 1: Setting WS URL:", url);
+                setSocketUrl(url);
+
+                // Step 2: "Nudge" the ESP network stack to force event loop processing
+                // We use a dedicated /drinks/ping endpoint to force the ESP event loop to cycle
+                console.log("Step 2: Nudging ESP network stack (ping)...");
+                [100, 400, 800].forEach(delay => {
+                    setTimeout(() => {
+                        fetch(directionWebDrinks + '/drinks/ping')
+                            .catch(() => { });
+                    }, delay);
+                });
+            }, 1000);
             return () => clearTimeout(timer);
         } else {
-            setDelayedConnect(false);
+            setSocketUrl(null);
         }
     }, [loading]);
 
@@ -43,12 +52,17 @@ export const useSocketSync = ({
         shouldReconnect: () => true,
         reconnectInterval: 1000,
         reconnectAttempts: 100,
-        onOpen: () => console.log("WS Open"),
-        onClose: (e: CloseEvent) => console.log("WS Close", e),
-        onError: (e: Event) => console.log("WS Error", e),
+        onOpen: () => console.log("WS Open ✅"),
+        onClose: (e: CloseEvent) => console.log("WS Close ❌", e),
+        onError: (e: Event) => console.log("WS Error ⚠️", e),
     }), []);
 
-    const { lastJsonMessage, readyState } = useWebSocket(socketUrl, socketOptions, delayedConnect); // Connect only after delay
+    const { lastJsonMessage, readyState } = useWebSocket(socketUrl, socketOptions);
+
+    // Debug log for state changes
+    useEffect(() => {
+        console.log("WebSocket ReadyState Change:", readyState);
+    }, [readyState]);
 
     useEffect(() => {
         const connectionStatus = {

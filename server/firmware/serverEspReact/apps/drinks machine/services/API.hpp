@@ -38,6 +38,10 @@ void controlCocktail(AsyncWebServerRequest *request) {
 void setupDrinksAPI(AsyncWebServer& server) {
     server.on("/drinks/navigation", HTTP_GET, controlCocktail);
 
+    server.on("/drinks/ping", HTTP_GET, [](AsyncWebServerRequest *request) {
+        request->send(200, "text/plain", "pong");
+    });
+
     server.on("/drinks/cocktails", HTTP_GET, [](AsyncWebServerRequest *request) {
         JsonDocument doc;
         JsonArray array = doc.to<JsonArray>();
