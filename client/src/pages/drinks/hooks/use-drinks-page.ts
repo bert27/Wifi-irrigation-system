@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { PumpConfig, Drink, TabType } from "../models/drinks-model";
 import { irrigationService } from "../../../services/irrigation.service";
 import { drinksService } from "../../../services/drinks.service";
+import { directionWebDrinks } from "../../../config/api.config";
 
 const initialPumps: PumpConfig[] = [
-  { id: 1, title: "Water pump 1", liquid: "water", pwm: 20, timeCalibration: 0 },
-  { id: 2, title: "Water pump 2", liquid: "cocacola", pwm: 0, timeCalibration: 0 },
-  { id: 3, title: "Water pump 3", liquid: "orange", pwm: 20, timeCalibration: 0 },
-  { id: 4, title: "Water pump 4", liquid: "lemon", pwm: 20, timeCalibration: 0 },
+  { id: 1, title: "Pump 1", liquid: "Cocacola", pwm: 20, timeCalibration: 0 },
+  { id: 2, title: "Pump 2", liquid: "Naranja", pwm: 20, timeCalibration: 0 },
+  { id: 3, title: "Pump 3", liquid: "Vodka", pwm: 20, timeCalibration: 0 },
+  { id: 4, title: "Pump 4", liquid: "Granadina", pwm: 20, timeCalibration: 0 },
 ];
 
 const availableDrinks: Drink[] = [
@@ -25,18 +27,66 @@ export const useDrinksPage = () => {
   const [drinks] = useState<Drink[]>(availableDrinks);
   const [message, setMessage] = useState<string | undefined>(undefined);
   const [showMessage, setShowMessage] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedDrinkForConfirm, setSelectedDrinkForConfirm] = useState<Drink | null>(null);
+
+  // WebSocket for real-time feedback from ESP8266
+  const socketUrl = directionWebDrinks.replace(/^http/, 'ws') + '/ws/drinks';
+  const { lastJsonMessage } = useWebSocket(socketUrl, {
+    shouldReconnect: () => true,
+    reconnectInterval: 3000,
+  });
+
+  useEffect(() => {
+    if (lastJsonMessage) {
+      const data = lastJsonMessage as any;
+      if (data.type === "drinks_state") {
+        setSelectedIndex(data.index);
+
+        // Sync Modal with Hardware Selection Screen (actualScreen == 1)
+        if (data.screen === 1 && !selectedDrinkForConfirm) {
+          const drink = drinks[data.index - 1];
+          if (drink) setSelectedDrinkForConfirm(drink);
+        }
+
+        // If hardware leaves confirmation screen, close modal
+        if (data.screen !== 1 && selectedDrinkForConfirm) {
+          setSelectedDrinkForConfirm(null);
+        }
+
+        if (data.serving) {
+          setMessage(`Sirviendo: ${data.name}`);
+          setShowMessage(true);
+        }
+      }
+    }
+  }, [lastJsonMessage, drinks, selectedDrinkForConfirm]);
+
+  // Reset ESP8266 state when entering the page
+  useEffect(() => {
+    sendCommand("cancel");
+  }, []);
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
   };
 
-  const selectDrink = async (drink: Drink) => {
-    setMessage(`Preparando ${drink.name}...`);
-    setShowMessage(true);
-    setTimeout(() => {
-      setShowMessage(false);
-      setMessage(undefined);
-    }, 2000);
+  const selectDrink = (drink: Drink) => {
+    setSelectedDrinkForConfirm(drink);
+    // Ideally here we could send a command to jump to this index on ESP
+    // sendCommand(`goto?index=${drink.id}`); 
+  };
+
+  const confirmDrink = async () => {
+    if (selectedDrinkForConfirm) {
+      await sendCommand("accept");
+      setSelectedDrinkForConfirm(null);
+    }
+  };
+
+  const cancelDrinkSelection = async () => {
+    await sendCommand("back");
+    setSelectedDrinkForConfirm(null);
   };
 
   const updatePump = async (id: number, data: { pwm: number; timeCalibration: number }) => {
@@ -91,5 +141,9 @@ export const useDrinksPage = () => {
     updatePump,
     sendPumpCommand,
     sendCommand,
+    selectedIndex,
+    selectedDrinkForConfirm,
+    confirmDrink,
+    cancelDrinkSelection,
   };
 };

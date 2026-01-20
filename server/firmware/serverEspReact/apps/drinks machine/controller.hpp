@@ -74,6 +74,8 @@ public:
 
     // Command Queue to avoid crashes in Async context
     String pendingCommand = "";
+    unsigned long lastPollTime = 0;
+    const unsigned long POLL_INTERVAL = 20;
 
     void loop() {
         // Process external commands (Actions from Web/API)
@@ -83,6 +85,7 @@ public:
             if (cmd == "next" ) actionNext();
             else if (cmd == "prev") actionPrev();
             else if (cmd == "select") actionSelect();
+            else if (cmd == "back") actionBack();
             else if (cmd == "cancel") actionCancel();
         }
 
@@ -131,6 +134,8 @@ public:
         if (actualScreen == 1) {
             insideMenuDrink = true;
             actualScreen = 2;
+            extern void SetScreen(String, String, int);
+            SetScreen("Sirviendo...", drinks[counter - 1].nameLiquid, 2);
         } else if (actualScreen == 0) {
              if (counter > 0 && counter <= (int)drinks.size()) {
                 extern void SetScreen(String, String, int); 
@@ -141,8 +146,19 @@ public:
         broadcastState();
     }
 
+    void actionBack() {
+        if (actualScreen == 1) {
+            Serial.println("Action: Back to selection");
+            actualScreen = 0;
+            updateScreen();
+            broadcastState();
+        } else {
+            actionPrev();
+        }
+    }
+
     void actionCancel() {
-        Serial.println("Action: Cancel");
+        Serial.println("Action: Reset All");
         resetMenu();
     }
 
@@ -151,12 +167,15 @@ public:
         String joyDir = String(msg.choose);
         if (joyDir == "Arriba") enqueueCommand("prev");
         else if (joyDir == "Abajo") enqueueCommand("next");
+        else if (joyDir == "Izquierda") enqueueCommand("back");
 
         if (String(msg.joystickValues.buttonState) == "on") enqueueCommand("select");
     }
 
     void broadcastState() {
         String drinkName = (counter > 0 && counter <= (int)drinks.size()) ? drinks[counter-1].nameLiquid : "Ninguna";
+        Serial.print("WS: Broadcasting. Heap: ");
+        Serial.println(ESP.getFreeHeap());
         DrinksWebSocketHandler::getInstance().broadcastState(counter, drinkName, actualScreen, insideMenuDrink);
     }
 
@@ -203,10 +222,12 @@ private:
 
     DrinksInputManager() : btn(BfButton::STANDALONE_DIGITAL, 14, true, LOW) {
         drinks = {
-            { "Cocacola", "waterPump1", PIN_PUMP_1 },
-            { "Agua", "waterPump2", PIN_PUMP_2 },
-            { "Vodka", "waterPump3", PIN_PUMP_3 },
-            { "Naranja", "waterPump4", PIN_PUMP_4 }
+            { "Cocacola", "pump1", PIN_PUMP_1 },
+            { "Sex on the beach", "cocktail", PIN_PUMP_2 }, // Uses Naranja pump
+            { "Zumo de naranja", "pump2", PIN_PUMP_2 },
+            { "Vodka con cocacola", "cocktail", PIN_PUMP_3 }, // Uses Vodka pump
+            { "Granadina", "pump4", PIN_PUMP_4 },
+            { "Vodka", "pump3", PIN_PUMP_3 }
         };
         cocktails.push_back({ "Sex on The Beach", { {"Cocacola", 30}, {"Agua", 50} } });
     }
@@ -262,7 +283,7 @@ private:
             switch (currentBtn) {
                 case BTN_UP:    actionPrev(); break;
                 case BTN_DOWN:  actionNext(); break;
-                case BTN_LEFT:  actionPrev(); break; 
+                case BTN_LEFT:  actionBack(); break; 
                 case BTN_RIGHT: actionNext(); break; 
                 case BTN_SELECT: actionSelect(); break;
                 default: break;
@@ -315,6 +336,7 @@ private:
     }
 
     void resetMenu() {
+        Serial.println("CONTROLLER: Resetting Menu State Manual Call");
         insideMenuDrink = false;
         counter = 0;
         actualScreen = 0;

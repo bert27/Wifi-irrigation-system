@@ -4,6 +4,7 @@ import { useDrinksPage } from "./hooks/use-drinks-page";
 import { DrinksGrid } from "./components/drinks-grid";
 import { PumpConfigPanel } from "./components/pump-config-panel";
 import { ManualControls } from "./components/manual-controls";
+import { DrinkConfirmationModal } from "./components/drink-confirmation-modal";
 import LocalBarIcon from "@mui/icons-material/LocalBar";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
@@ -24,6 +25,10 @@ export const DrinksPage = () => {
     updatePump,
     sendPumpCommand,
     sendCommand,
+    selectedIndex,
+    selectedDrinkForConfirm,
+    confirmDrink,
+    cancelDrinkSelection,
   } = useDrinksPage();
 
   useEffect(() => {
@@ -192,7 +197,11 @@ export const DrinksPage = () => {
                 },
               }}
             >
-              <DrinksGrid drinks={drinks} onSelectDrink={selectDrink} />
+              <DrinksGrid
+                drinks={drinks}
+                onSelectDrink={selectDrink}
+                selectedIndex={selectedIndex}
+              />
             </Box>
           )}
 
@@ -223,6 +232,11 @@ export const DrinksPage = () => {
           {message}
         </Alert>
       </Snackbar>
+      <DrinkConfirmationModal
+        drink={selectedDrinkForConfirm}
+        onConfirm={confirmDrink}
+        onCancel={cancelDrinkSelection}
+      />
     </Box>
   );
 };

@@ -36,10 +36,10 @@ Ve a **Sketch** -> **Include Library** -> **Manage Libraries...** e instala:
 ### 💧 Bombas (Pumps)
 | Componente | GPIO | Pin NodeMCU | Notas |
 | :--- | :--- | :--- | :--- |
-| **Bomba 1** | GPIO 0 | D3 | ⚠️ Debe ser HIGH al arranque |
-| **Bomba 2** | GPIO 2 | D4 | ⚠️ Debe ser HIGH al arranque (LED) |
-| **Bomba 3** | GPIO 16| D0 | Wake (Sleep) |
-| **Bomba 4** | GPIO 15| D8 | ⚠️ Debe ser LOW al arranque |
+| **Bomba 1** | GPIO 0 | D3 | Cocacola |
+| **Bomba 2** | GPIO 2 | D4 | Naranja / Mixer |
+| **Bomba 3** | GPIO 16| D0 | Vodka / Alcohol |
+| **Bomba 4** | GPIO 15| D8 | Granadina / Sirope |
 
 ### 🖥 Pantalla OLED (I2C)
 | Función | GPIO | Pin NodeMCU |
@@ -129,9 +129,22 @@ El sistema utiliza la **pantalla OLED** para mostrar un menú de líquidos (Agua
 
 ### 2. 🔄 Máquina de Estados de Navegación
 El botón del encoder permite navegar a través de diferentes pantallas:
-- **🏠 Index Server**: Menú principal de desplazamiento.
+- **🏠 Index Server**: Menú principal de selección de bebidas.
+- **❓ Pantalla de Confirmación**: Pregunta "Aceptar?" antes de servir.
 - **⏳ Pantalla de Servicio**: Muestra el estado mientras las bombas están activas.
 - **✅ Pantalla Final**: Confirmación de bebida servida.
+
+### 4. ↩️ Navegación Inteligente (Context-Aware)
+El sistema utiliza una lógica de navegación fluida para evitar errores de selección:
+- **Botón IZQUIERDA (Joystick/Web/Teclado)**: 
+    - En el **Menú de Selección**: Sube en la lista (funciona como `Anterior`).
+    - En la **Pantalla de Confirmación**: Actúa como `Atrás`, volviendo al selector pero manteniendo la bebida actual.
+- **Pulsación Larga (Encoder)**: Reinicia el sistema por completo (Reset al inicio).
+
+### 5. 🔄 Sincronización Real-Time con React
+Las listas de bebidas y el estado de selección están sincronizados al 100% con la web:
+- **WebSocket (`/ws/drinks`)**: El ESP8266 emite cada cambio de posición. La web resalta automáticamente la tarjeta de la bebida seleccionada con efectos de neón.
+- **Orden de Bebidas**: La lista de `controller.hpp` coincide exactamente con los `id` de la web para una experiencia unificada.
 
 ### 3. 🍹 Gestión Dinámica de Bebidas
 Las bebidas se almacenan utilizando `std::vector` y se definen como `struct Drink` y `struct Cocktail`, lo que facilita añadir o modificar recetas sin reestructurar el código.
