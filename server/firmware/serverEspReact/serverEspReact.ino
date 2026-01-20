@@ -51,7 +51,6 @@ void setup() {
 
   // 1. WiFi & Network
   ConnectWiFi_STA();
-  ConnectWiFi_STA();
   setupRemoteHub(); 
 
   if (MDNS.begin("drinks-machine")) {
@@ -75,12 +74,20 @@ void setup() {
       DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
       DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "*");
       
+      // Verification Root
+      standaloneServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+        request->send(200, "text/plain", "OK - Server is LIVE");
+      });
+      
       // Handle Preflight OPTIONS requests for any route
       standaloneServer.onNotFound([](AsyncWebServerRequest *request) {
+        Serial.print("HTTP: Request to: ");
+        Serial.println(request->url());
+        
         if (request->method() == HTTP_OPTIONS) {
           request->send(200);
         } else {
-          request->send(404);
+          request->send(404, "text/plain", "Not Found");
         }
       });
 

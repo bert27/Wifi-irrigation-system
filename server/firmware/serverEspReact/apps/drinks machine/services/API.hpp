@@ -9,11 +9,11 @@ void controlCocktail(AsyncWebServerRequest *request) {
         direction = request->getParam("direction")->value();
         
         if (direction == "next" || direction == "down") {
-            DrinksInputManager::getInstance().actionNext();
+            DrinksInputManager::getInstance().enqueueCommand("next");
         } else if (direction == "up" || direction == "back") {
-            DrinksInputManager::getInstance().actionPrev();
+            DrinksInputManager::getInstance().enqueueCommand("prev");
         } else if (direction == "accept") {
-            DrinksInputManager::getInstance().actionSelect();
+            DrinksInputManager::getInstance().enqueueCommand("select");
         }
     }
     request->send(200, "text/plain", "Command: " + direction);

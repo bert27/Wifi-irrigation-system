@@ -72,11 +72,20 @@ public:
         });
     }
 
-    // Non-blocking Polling Interval (20ms = 50Hz) - More than enough for human reaction
-    unsigned long lastPollTime = 0;
-    const unsigned long POLL_INTERVAL = 20;
+    // Command Queue to avoid crashes in Async context
+    String pendingCommand = "";
 
     void loop() {
+        // Process external commands (Actions from Web/API)
+        if (pendingCommand != "") {
+            String cmd = pendingCommand;
+            pendingCommand = ""; // Clear first
+            if (cmd == "next" ) actionNext();
+            else if (cmd == "prev") actionPrev();
+            else if (cmd == "select") actionSelect();
+            else if (cmd == "cancel") actionCancel();
+        }
+
         if (millis() - lastPollTime < POLL_INTERVAL) return;
         lastPollTime = millis();
 
@@ -94,6 +103,10 @@ public:
     }
 
     // --- Actions ---
+
+    void enqueueCommand(String cmd) {
+        pendingCommand = cmd;
+    }
 
     void actionNext() {
         if (insideMenuDrink) return; 
