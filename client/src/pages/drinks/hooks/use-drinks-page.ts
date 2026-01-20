@@ -68,7 +68,6 @@ export const useDrinksPage = () => {
   };
 
   const selectCocktail = (cocktail: Cocktail) => {
-    setSelectedCocktailForConfirm(cocktail);
     drinksService.sendControlCommand(`goto:${cocktail.id}`);
   };
 
