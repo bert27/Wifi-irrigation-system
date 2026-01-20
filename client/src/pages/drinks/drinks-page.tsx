@@ -206,7 +206,13 @@ export const DrinksPage = () => {
           )}
 
           {/* Config Tab */}
-          {activeTab === "config" && <PumpConfigPanel pumps={pumps} onUpdatePump={updatePump} />}
+          {activeTab === "config" && (
+            <PumpConfigPanel
+              drinks={drinks}
+              pumps={pumps}
+              onUpdatePump={updatePump}
+            />
+          )}
 
           {/* Manual Tab */}
           {activeTab === "manual" && <ManualControls onPumpCommand={sendPumpCommand} />}

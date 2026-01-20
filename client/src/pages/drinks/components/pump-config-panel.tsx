@@ -1,142 +1,99 @@
 import React, { useState } from "react";
-import { Grid, Box, Typography, Paper, Button, Slider } from "@mui/material";
-import WaterDropIcon from "@mui/icons-material/WaterDrop";
-import WaterDropOutlinedIcon from "@mui/icons-material/WaterDropOutlined";
-import { PumpConfig } from "../models/drinks-model";
+import { Grid, Box, Typography, Paper, IconButton, Tooltip } from "@mui/material";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { PumpConfig, Drink } from "../models/drinks-model";
+import { useTranslation } from "react-i18next";
+import { PumpSettingsModal } from "./pump-settings-modal";
 
 interface PumpConfigPanelProps {
+  drinks: Drink[];
   pumps: PumpConfig[];
   onUpdatePump: (id: number, data: { pwm: number; timeCalibration: number }) => void;
 }
 
-import { useTranslation } from "react-i18next";
-
-export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ pumps, onUpdatePump }) => {
+export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({ drinks, pumps, onUpdatePump }) => {
   const { t } = useTranslation();
+  const [selectedPump, setSelectedPump] = useState<PumpConfig | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = (pumpId: number) => {
+    const pump = pumps.find((p) => p.id === pumpId);
+    if (pump) {
+      setSelectedPump(pump);
+      setIsModalOpen(true);
+    }
+  };
+
   return (
-    <Grid container spacing={3} sx={{ mt: 2 }}>
-      {pumps.map((pump) => (
-        <Grid size={{ xs: 12, sm: 6, md: 3 }} key={pump.id}>
-          <PumpCard pump={pump} onUpdate={onUpdatePump} t={t} />
-        </Grid>
-      ))}
-    </Grid>
+    <Box sx={{ mt: 2 }}>
+      <Grid container spacing={3}>
+        {drinks.map((drink) => (
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={drink.id}>
+            <DrinkConfigCard drink={drink} onConfigPump={handleOpenModal} />
+          </Grid>
+        ))}
+      </Grid>
+
+      <PumpSettingsModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        pump={selectedPump}
+        onSave={onUpdatePump}
+      />
+    </Box>
   );
 };
 
-const PumpCard: React.FC<{ pump: PumpConfig; onUpdate: (id: number, data: any) => void; t: any }> = ({
-  pump,
-  onUpdate,
-  t
+const DrinkConfigCard: React.FC<{ drink: Drink; onConfigPump: (id: number) => void }> = ({
+  drink,
+  onConfigPump
 }) => {
-  const [pwm, setPwm] = useState(pump.pwm);
-  const [timeCalibration, setTimeCalibration] = useState(pump.timeCalibration);
-
-  const handleToggle = () => {
-    const newPwm = pwm > 0 ? 0 : 255;
-    setPwm(newPwm);
-    onUpdate(pump.id, { pwm: newPwm, timeCalibration });
-  };
-
-  const handleSave = () => {
-    onUpdate(pump.id, { pwm, timeCalibration });
-  };
-
   return (
     <Paper
       className="glass-effect"
       sx={{
-        p: 2,
+        p: 2.5,
         height: "100%",
         display: "flex",
         flexDirection: "column",
         gap: 2,
+        transition: "all 0.3s ease",
+        "&:hover": {
+          transform: "translateY(-5px)",
+          boxShadow: "0 10px 20px rgba(0,0,0,0.3)",
+        },
       }}
     >
-      {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Box>
-          <Typography className="tech-text" sx={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--accent)" }}>
-            {pump.title}
-          </Typography>
-          <Typography sx={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{pump.liquid}</Typography>
+      <Typography className="tech-text" sx={{ fontSize: "1rem", fontWeight: 700, color: "var(--accent)" }}>
+        {drink.name}
+      </Typography>
+
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: "auto" }}>
+        <Typography sx={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+          Configurar Bombas:
+        </Typography>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          {[1, 2, 3, 4].map((id) => (
+            <Tooltip key={id} title={`Configurar Bomba ${id}`} arrow>
+              <IconButton
+                size="small"
+                onClick={() => onConfigPump(id)}
+                sx={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  "&:hover": {
+                    background: "var(--primary-glow)",
+                    borderColor: "var(--primary)",
+                  },
+                }}
+              >
+                <SettingsIcon sx={{ fontSize: "1rem", color: "var(--text-muted)" }} />
+              </IconButton>
+            </Tooltip>
+          ))}
         </Box>
-        <Button
-          variant="contained"
-          size="small"
-          onClick={handleToggle}
-          sx={{
-            background: pwm > 0 ? "linear-gradient(135deg, var(--success), var(--accent))" : "rgba(255,255,255,0.1)",
-            minWidth: "auto",
-            p: 1,
-          }}
-        >
-          {pwm === 0 ? <WaterDropOutlinedIcon /> : <WaterDropIcon />}
-        </Button>
       </Box>
-
-      {/* PWM Slider */}
-      <Box>
-        <Typography className="tech-text" sx={{ fontSize: "0.7rem", color: "var(--text-muted)", mb: 1 }}>
-          {t('drinks.config.pwm')}: {pwm}
-        </Typography>
-        <Slider
-          value={pwm}
-          onChange={(_e: Event, v: number | number[]) => setPwm(v as number)}
-          min={0}
-          max={255}
-          sx={{
-            "& .MuiSlider-thumb": {
-              background: "var(--primary)",
-              boxShadow: "0 0 10px var(--primary-glow)",
-            },
-            "& .MuiSlider-track": {
-              background: "linear-gradient(90deg, var(--primary), var(--accent))",
-            },
-            "& .MuiSlider-rail": {
-              background: "rgba(255,255,255,0.1)",
-            },
-          }}
-        />
-      </Box>
-
-      {/* Time Calibration */}
-      <Box>
-        <Typography className="tech-text" sx={{ fontSize: "0.7rem", color: "var(--text-muted)", mb: 1 }}>
-          {t('drinks.config.time')}: {timeCalibration}s
-        </Typography>
-        <Slider
-          value={timeCalibration}
-          onChange={(_e: Event, v: number | number[]) => setTimeCalibration(v as number)}
-          min={0}
-          max={20}
-          sx={{
-            "& .MuiSlider-thumb": {
-              background: "var(--accent)",
-              boxShadow: "0 0 10px var(--accent-glow)",
-            },
-            "& .MuiSlider-track": {
-              background: "var(--accent)",
-            },
-            "& .MuiSlider-rail": {
-              background: "rgba(255,255,255,0.1)",
-            },
-          }}
-        />
-      </Box>
-
-      {/* Save Button */}
-      <Button
-        variant="contained"
-        onClick={handleSave}
-        sx={{
-          background: "linear-gradient(90deg, var(--primary), var(--accent))",
-          fontWeight: 700,
-          letterSpacing: "1px",
-        }}
-      >
-        {t('drinks.config.set')}
-      </Button>
     </Paper>
   );
 };
+
