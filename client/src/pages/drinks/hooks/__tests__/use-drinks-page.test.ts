@@ -24,23 +24,27 @@ vi.mock('@/context/connectivity-context', () => ({
 describe('useDrinksPage hook', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        // Setup default successful fetch
+        // Setup default successful fetch to avoid unhandled promises
         mockedDrinksService.getCocktails.mockResolvedValue([]);
     });
 
-    it('should initialize after fetch', async () => {
+    it('should initialize and fetch cocktails on mount', async () => {
         const hardwareCocktails = [
             { name: 'Hardware Mojito', ingredients: [{ name: 'Mint', quantity: 10 }] }
+        ];
+        const expectedCocktails = [
+            { id: '1', name: 'Hardware Mojito', recipe: [{ liquid: 'Mint', quantity: 10 }] }
         ];
         mockedDrinksService.getCocktails.mockResolvedValueOnce(hardwareCocktails);
 
         const { result } = renderHook(() => useDrinksPage());
 
+        // Wait for fetching to complete
         await waitFor(() => {
             expect(result.current.loading).toBe(false);
         });
 
-        expect(result.current.cocktails[0].name).toBe('Hardware Mojito');
+        expect(result.current.cocktails).toEqual(expectedCocktails);
     });
 
     it('should handle drink selection', async () => {
