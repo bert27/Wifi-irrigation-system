@@ -149,10 +149,10 @@ public:
     // --- Remote Control ---
     void handleRemoteCommand(const struct_message& msg) {
         String joyDir = String(msg.choose);
-        if (joyDir == "Arriba") actionPrev();
-        else if (joyDir == "Abajo") actionNext();
+        if (joyDir == "Arriba") enqueueCommand("prev");
+        else if (joyDir == "Abajo") enqueueCommand("next");
 
-        if (String(msg.joystickValues.buttonState) == "on") actionSelect();
+        if (String(msg.joystickValues.buttonState) == "on") enqueueCommand("select");
     }
 
     void broadcastState() {
