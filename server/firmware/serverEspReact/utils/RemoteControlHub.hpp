@@ -2,12 +2,13 @@
 #include <espnow.h>
 #include <vector>
 #include <functional>
+#include <queue>
 #include "remote_protocol.h"
 
 /**
- * Hub central de control remoto para el Robot (Servidor).
- * Se encarga ÚNICAMENTE de recibir ESP-NOW y notificar a las apps interesadas.
- * No realiza transmisiones de telemetría (WebSockets) para ahorrar CPU.
+ * Central Remote Control Hub for the Robot (Server).
+ * Responsible for receiving ESP-NOW messages and queuing them to be
+ * safely processed in the main loop (avoids crashes/panics on ESP8266).
  */
 class RemoteControlHub {
 public:
@@ -25,27 +26,46 @@ public:
         }
         esp_now_set_self_role(ESP_NOW_ROLE_SLAVE);
         esp_now_register_recv_cb(OnDataRecv);
-        Serial.println("HUB: Remote Hub Ready (Hardware Only)");
+        Serial.println("HUB: Remote Hub Ready (Safe Queue Mode)");
     }
 
     void subscribe(RemoteCallback callback) {
         listeners.push_back(callback);
     }
 
+    /**
+     * Processes the queued messages.
+     * MUST BE CALLED FROM THE MAIN LOOP.
+     */
+    void handleEvents() {
+        while (!messageQueue.empty()) {
+            struct_message msg = messageQueue.front();
+            messageQueue.pop();
+            
+            for (auto& callback : listeners) {
+                callback(msg);
+            }
+        }
+    }
+
 private:
     std::vector<RemoteCallback> listeners;
+    std::queue<struct_message> messageQueue;
     RemoteControlHub() {}
 
     static void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
-        struct_message msg;
-        memcpy(&msg, incomingData, sizeof(msg));
-
-        for (auto& callback : getInstance().listeners) {
-            callback(msg);
+        if (len == sizeof(struct_message)) {
+            struct_message msg;
+            memcpy(&msg, incomingData, sizeof(msg));
+            getInstance().messageQueue.push(msg);
         }
     }
 };
 
 inline void setupRemoteHub() {
     RemoteControlHub::getInstance().begin();
+}
+
+inline void loopRemoteHub() {
+    RemoteControlHub::getInstance().handleEvents();
 }

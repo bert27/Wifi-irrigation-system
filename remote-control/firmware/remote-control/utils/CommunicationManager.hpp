@@ -10,17 +10,17 @@ struct ValuesGiroscope {
 };
 
 struct JoystickData {
-    String buttonState;
-    String direction;
+    char buttonState[16];
+    char direction[16];
 };
 
 // Data structure to send, matching the robot's expectations
-typedef struct struct_message {
+typedef struct __attribute__((packed)) struct_message {
     int id;
     float temp;
     int idReading;
-    char choose[85];      // Command from joystick
-    char giroscope[85];    // Command from gyroscope
+    char choose[96];      // Command from joystick (aligned)
+    char giroscope[96];    // Command from gyroscope (aligned)
     ValuesGiroscope giroscopeValues;
     JoystickData joystickValues;
 } struct_message;

@@ -60,7 +60,7 @@ void ConnectWiFi_AP(bool useStaticIP = false)
     WiFi.softAPConfig(ip, gateway, subnet);
 
   Serial.println("");
-  Serial.print("Iniciado AP:\t");
+  Serial.print("AP Started:\t");
   Serial.println(ssid);
   Serial.print("IP address:\t");
   Serial.println(WiFi.softAPIP());

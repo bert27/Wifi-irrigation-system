@@ -76,8 +76,11 @@ public:
 
         Serial.print("IP Address: ");
         Serial.println(WiFi.localIP());
-        Serial.print("MAC Address: ");
+        Serial.print("Drinks Machine MAC: ");
         Serial.println(WiFi.macAddress());
+        Serial.print("Drinks Machine WiFi Channel: ");
+        Serial.println(WiFi.channel());
+        Serial.printf("Struct size: %d\n", (int)sizeof(struct_message));
 
         // Setup Encoder Pins
         setupEncoderPins();
@@ -120,6 +123,9 @@ public:
     const unsigned long BROADCAST_INTERVAL = 50; // 50ms throttle
 
     void loop() {
+        // Safe processing of ESP-NOW events from the queue
+        loopRemoteHub();
+
         // Process external commands (Actions from Web/API)
         if (pendingCommand != "") {
             String cmd = pendingCommand;
@@ -270,7 +276,20 @@ public:
 
     // --- Remote Control ---
     void handleRemoteCommand(const struct_message& msg) {
-        String joyDir = String(msg.choose);
+        // Universal Debug Log
+        Serial.printf("ESP-NOW: Msg received ID:%d | Choose:%s | Joy:%s\n", 
+                      msg.id, msg.choose, msg.joystickValues.direction);
+
+        if (msg.id == 99) {
+            // Message from display project
+            Serial.printf("DISPLAY: Selection received: %s\n", msg.choose);
+            extern void SetScreen(String, String, int);
+            SetScreen("Sirviendo", msg.choose, 2);
+            return;
+        }
+
+        // Handle joystick/remote control
+        String joyDir = String(msg.joystickValues.direction);
         if (joyDir == "Arriba") enqueueCommand("prev");
         else if (joyDir == "Abajo") enqueueCommand("next");
         else if (joyDir == "Izquierda") enqueueCommand("back");

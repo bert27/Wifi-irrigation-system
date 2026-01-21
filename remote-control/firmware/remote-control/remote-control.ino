@@ -106,8 +106,9 @@ void loop() {
   if (joy.direction != lastJoyDir || joy.buttonState != lastBtn || gyroDir != lastGyroDir || 
       abs(gx - lastGx) > 2.0 || abs(gy - lastGy) > 2.0) {
     struct_message msg;
-    msg.joystickValues.direction = joy.direction;
-    msg.joystickValues.buttonState = joy.buttonState;
+    memset(&msg, 0, sizeof(msg));
+    strncpy(msg.joystickValues.direction, joy.direction.c_str(), sizeof(msg.joystickValues.direction) - 1);
+    strncpy(msg.joystickValues.buttonState, joy.buttonState.c_str(), sizeof(msg.joystickValues.buttonState) - 1);
     msg.giroscopeValues.X = gx;
     msg.giroscopeValues.Y = gy;
     msg.temp = temp; // Add temp to ESP-NOW msg

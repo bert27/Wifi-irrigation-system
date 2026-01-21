@@ -10,16 +10,16 @@ struct ValuesGiroscope {
 };
 
 struct JoystickData {
-    String buttonState;
-    String direction;
+    char buttonState[16];
+    char direction[16];
 };
 
-typedef struct struct_message {
+typedef struct __attribute__((packed)) struct_message {
     int id;
     float temp;
     int idReading;
-    char choose[85];      // Command from joystick
-    char giroscope[85];    // Command from gyro
+    char choose[96];      // Command from joystick (aligned)
+    char giroscope[96];    // Command from gyro (aligned)
     ValuesGiroscope giroscopeValues;
     JoystickData joystickValues;
 } struct_message;
