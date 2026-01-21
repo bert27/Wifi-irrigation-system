@@ -33,12 +33,32 @@ jobs:
           arduino-cli lib install "Adafruit BusIO"
           arduino-cli lib install "RTClib"
 
-      - name: Install Extra Libraries (Git)
+      - name: Install Extra Libraries (Using Checkout for reliability)
+        run: mkdir -p $HOME/Arduino/libraries
+
+      - name: Checkout BfButton
+        uses: actions/checkout@v4
+        with:
+          repository: m-reilly/BfButton
+          path: BfButton
+      
+      - name: Checkout ESPAsyncTCP
+        uses: actions/checkout@v4
+        with:
+          repository: me-no-dev/ESPAsyncTCP
+          path: ESPAsyncTCP
+
+      - name: Checkout ESPAsyncWebServer
+        uses: actions/checkout@v4
+        with:
+          repository: me-no-dev/ESPAsyncWebServer
+          path: ESPAsyncWebServer
+
+      - name: Setup Libraries
         run: |
-          mkdir -p $HOME/Arduino/libraries
-          git clone https://github.com/m-reilly/BfButton.git $HOME/Arduino/libraries/BfButton
-          git clone https://github.com/me-no-dev/ESPAsyncTCP.git $HOME/Arduino/libraries/ESPAsyncTCP
-          git clone https://github.com/me-no-dev/ESPAsyncWebServer.git $HOME/Arduino/libraries/ESPAsyncWebServer
+          mv BfButton $HOME/Arduino/libraries/
+          mv ESPAsyncTCP $HOME/Arduino/libraries/
+          mv ESPAsyncWebServer $HOME/Arduino/libraries/
 
       - name: Compile Sketch
         run: |
