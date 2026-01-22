@@ -18,12 +18,12 @@ export const DaySelector: React.FC<DaySelectorProps> = ({ day, saveChoose, index
   };
 
   return (
-    <div 
-      className={`days_plant_child ${isActive ? 'active' : ''}`} 
+    <div
+      className={`days_irrigation_child ${isActive ? 'active' : ''}`}
       onClick={toggleDay}
     >
       <div>{day?.name}</div>
-      <div className="checkBox_plant_child">
+      <div className="checkBox_irrigation_child">
         {isActive && <CheckIcon className="buttonsvg" />}
       </div>
     </div>

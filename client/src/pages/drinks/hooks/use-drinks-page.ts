@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Cocktail, TabType } from "@/pages/drinks/models/drinks-model";
-import { drinksService } from "@/services/drinks.service";
+import { drinksService } from "@/pages/drinks/services/drinks.service";
 import { directionWebDrinks } from "@/config/api.config";
 
 // Sub-hooks

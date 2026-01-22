@@ -24,19 +24,19 @@ export const Task = ({
     minutes: 30,
   },
   index = 0,
-  eliminateTask = () => {},
+  eliminateTask = () => { },
 }: IPropsTask) => {
   const { t } = useTranslation();
   return (
     <div
-      className="cardTask_plant"
+      className="cardTask_irrigation"
       key={index}
       data-testid={"task"}
     >
       <div className="delete-btn-container">
-        <Tooltip title={t('plant.task.delete')}>
-          <IconButton 
-            onClick={() => eliminateTask(index)} 
+        <Tooltip title={t('irrigation.task.delete')}>
+          <IconButton
+            onClick={() => eliminateTask(index)}
             className="delete-task-btn"
             aria-label="delete"
             size="medium"
@@ -46,13 +46,13 @@ export const Task = ({
         </Tooltip>
       </div>
       <div className="title_cardtask">
-        {t('plant.task.at')} {taskData?.hour}:{taskData?.minutes}
+        {t('irrigation.task.at')} {taskData?.hour}:{taskData?.minutes}
       </div>
-      <div className="daysTask_plant">
+      <div className="daysTask_irrigation">
         {taskData?.days.map((taskdatac, index) => (
           <div key={index}>
             {taskdatac?.state && (
-              <div className="day_task">{t(`plant.days.${taskdatac?.name}`)}</div>
+              <div className="day_task">{t(`irrigation.days.${taskdatac?.name}`)}</div>
             )}
           </div>
         ))}

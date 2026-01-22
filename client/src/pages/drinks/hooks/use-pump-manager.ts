@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Bottle } from "@/pages/drinks/models/drinks-model";
 import { initialBottles } from "@/pages/drinks/data/bottles.data";
-import { drinksService } from "@/services/drinks.service";
+import { drinksService } from "@/pages/drinks/services/drinks.service";
 
 export const usePumpManager = () => {
     const [bottles, setBottles] = useState<Bottle[]>(initialBottles);

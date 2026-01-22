@@ -1,6 +1,6 @@
 import { Box, Typography, Grid, Paper, Slider } from "@mui/material";
 import { useState } from "react";
-import { robotService } from "@/services/robot.service";
+import { robotService } from "@/pages/car/services/robot.service";
 
 export interface OutputDataInterface {
   name: string;

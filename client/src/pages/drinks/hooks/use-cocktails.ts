@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Cocktail } from "@/pages/drinks/models/drinks-model";
-import { drinksService } from "@/services/drinks.service";
+import { drinksService } from "@/pages/drinks/services/drinks.service";
 import { availableCocktails } from "@/pages/drinks/data/cocktails.data";
 import { isSimulationMode } from "@/utils/simulation";
 

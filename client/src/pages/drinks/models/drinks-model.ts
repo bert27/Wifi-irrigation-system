@@ -16,4 +16,13 @@ export interface Cocktail {
   }[];
 }
 
+// Hardware cocktail format (what the ESP32 returns)
+export interface IHardwareCocktail {
+  name: string;
+  ingredients: Array<{
+    name: string;
+    quantity: number;
+  }>;
+}
+
 export type TabType = 'drinks' | 'config' | 'manual';

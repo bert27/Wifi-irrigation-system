@@ -9,8 +9,8 @@ import { DrinksTabs } from "./components/layout/drinks-tabs";
 import { CocktailConfirmationModal } from "./pages/drinks-tab/components/cocktail-confirmation-modal";
 
 import { DrinksTabPage } from "./pages/drinks-tab/drinks-tab-page";
-import { ConfigTabPage } from "./pages/config-tab/config-tab-page";
-import { ManualTabPage } from "./pages/manual-tab/manual-tab-page";
+import { CocktailsConfigTabPage } from "./pages/cocktails-config-tab/cocktails-config-tab-page";
+import { PumpsConfigTabPage } from "./pages/pumps-config-tab/pumps-config-tab-page";
 
 export const DrinksPage = () => {
   const {
@@ -76,7 +76,7 @@ export const DrinksPage = () => {
           )}
 
           {activeTab === "config" && (
-            <ConfigTabPage
+            <CocktailsConfigTabPage
               cocktails={cocktails}
               bottles={bottles}
               onUpdatePump={updatePump}
@@ -85,7 +85,11 @@ export const DrinksPage = () => {
           )}
 
           {activeTab === "manual" && (
-            <ManualTabPage onPumpCommand={sendPumpCommand} />
+            <PumpsConfigTabPage
+              onPumpCommand={sendPumpCommand}
+              bottles={bottles}
+              onUpdatePump={updatePump}
+            />
           )}
 
         </Box>
