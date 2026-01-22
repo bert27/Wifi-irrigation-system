@@ -32,12 +32,13 @@ export const isSimulationMode = (): boolean => {
             });
 
             if (needsSimulation) {
-                console.log("[SimulationMode] Activated for HTTPS environment with insecure/missing hardware URLs");
+                console.warn("[SimulationMode] HTTPS context forced simulation. Local non-HTTPS hardware is unreachable.");
                 return true;
             }
         }
     }
 
+    console.log("[SimulationMode] Hardware direct connection mode active.");
     return false;
 };
 
