@@ -42,7 +42,7 @@
             "title": "RGB MODULE"
         }
     },
-    "plant": {
+    "irrigation": {
         "title": "IRRIGATION SYSTEM",
         "status": {
             "title": "Current Status",
@@ -90,8 +90,8 @@
         "subtitle": "AUTOMATED BEVERAGE DISPENSING SYSTEM",
         "tabs": {
             "drinks": "DRINKS",
-            "config": "CONFIG",
-            "manual": "MANUAL"
+            "config": "CONFIG COCKTAILS",
+            "manual": "PUMP CONFIG"
         },
         "manual": {
             "title": "MANUAL PUMP CONTROL",

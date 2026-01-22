@@ -1,4 +1,4 @@
-export interface Bottle {
+export interface IBottle {
   id: number;
   title: string;
   liquid: string;
@@ -6,7 +6,7 @@ export interface Bottle {
   timeCalibration: number;
 }
 
-export interface Cocktail {
+export interface ICocktail {
   id: string;
   name: string;
   description?: string;
@@ -14,6 +14,15 @@ export interface Cocktail {
     liquid: string;
     quantity: number; // in ml
   }[];
+}
+
+// Hardware cocktail format (what the ESP32 returns)
+export interface IHardwareCocktail {
+  name: string;
+  ingredients: Array<{
+    name: string;
+    quantity: number;
+  }>;
 }
 
 export type TabType = 'drinks' | 'config' | 'manual';

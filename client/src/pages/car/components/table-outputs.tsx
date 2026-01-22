@@ -1,8 +1,8 @@
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { robotService } from "../../../services/robot.service";
-import ErrorMessage from "../../../components/Alert/error-message";
+import { robotService } from "@/pages/car/services/robot.service";
+import ErrorMessage from "@/components/Alert/error-message";
 
 interface CustomHeaderProps {
   color: string;
@@ -12,7 +12,7 @@ interface CustomHeaderProps {
 const CustomHeader = (props: CustomHeaderProps) => {
   const { color, name } = props;
 
-  const handleClick = () => {};
+  const handleClick = () => { };
 
   return (
     <Box
@@ -179,7 +179,7 @@ export const TableOutputs = (props: any) => {
         //    console.log(rowData);
         //  }}
         rows={rows}
-        //rowHeight={50}
+      //rowHeight={50}
       />
     </Box>
   );

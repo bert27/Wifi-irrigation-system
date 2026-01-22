@@ -7,10 +7,10 @@ import {
     Typography,
     Button
 } from "@mui/material";
-import { Cocktail } from "@/pages/drinks/models/drinks-model";
+import { ICocktail } from "@/pages/drinks/models/drinks-model";
 
 interface CocktailConfirmationModalProps {
-    cocktail: Cocktail | null;
+    cocktail: ICocktail | null;
     onConfirm: () => void;
     onCancel: () => void;
 }
@@ -42,7 +42,11 @@ export const CocktailConfirmationModal: React.FC<CocktailConfirmationModalProps>
                 <Typography sx={{ color: 'var(--text-muted)', mb: 1 }}>
                     ¿Quieres esta bebida?
                 </Typography>
-                <Typography variant="h5" sx={{ color: 'var(--primary)', fontWeight: 800 }}>
+                <Typography
+                    variant="h5"
+                    sx={{ color: 'var(--primary)', fontWeight: 800 }}
+                    data-testid="selected-cocktail-name"
+                >
                     {cocktail?.name}
                 </Typography>
             </DialogContent>

@@ -9,7 +9,7 @@ interface DaysProps {
 
 export const Days: React.FC<DaysProps> = ({ saveDays, days }) => {
   return (
-    <div className="days_plant">
+    <div className="days_irrigation">
       {days.map((day, index) => (
         <DaySelector
           day={day}

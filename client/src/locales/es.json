@@ -42,7 +42,7 @@
             "title": "MÓDULO RGB"
         }
     },
-    "plant": {
+    "irrigation": {
         "title": "SISTEMA DE RIEGO",
         "status": {
             "title": "Estado Actual",
@@ -90,8 +90,8 @@
         "subtitle": "SISTEMA AUTOMATIZADO DE BEBIDAS",
         "tabs": {
             "drinks": "BEBIDAS",
-            "config": "CONFIG",
-            "manual": "MANUAL"
+            "config": "CONFIG COCKTAILS",
+            "manual": "CONFIG BOMBAS"
         },
         "manual": {
             "title": "CONTROL MANUAL DE BOMBAS",

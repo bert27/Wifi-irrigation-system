@@ -1,7 +1,7 @@
 import React from "react";
 import "./i18n";
 import "./styles.css";
-import { Plant } from "@/pages/plant/plant-page-index";
+import { Irrigation } from "@/pages/irrigation/irrigation-page-index";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { DrinksPage } from "@/pages/drinks/drinks-page";
 import { SideNavBar } from "@/components/Menu/sidenavbar";
@@ -20,10 +20,10 @@ export const App: React.FC = () => {
             <Box component="main" sx={{ flexGrow: 1, overflowX: "hidden" }}>
               <Routes>
                 <Route path="/" element={<CarPage />} />
-                <Route path="/irrigation" element={<Plant />} />
+                <Route path="/irrigation" element={<Irrigation />} />
                 <Route path="/drinks" element={<DrinksPage />} />
                 <Route path="/drinks/:tabRouter" element={<DrinksPage />} />
-                <Route path="*" element={<Plant />} />
+                <Route path="*" element={<Irrigation />} />
               </Routes>
             </Box>
           </Box>

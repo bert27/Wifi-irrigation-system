@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { IDashboardState } from '@/pages/car/models/model';
-import { robotService } from '@/services/robot.service';
+import { robotService } from '@/pages/car/services/robot.service';
 import { directionWebRobot } from "@/config/api.config";
 import { useRemoteControl } from '@/context/remote-control-context';
 import { isSimulationMode } from '@/utils/simulation';
