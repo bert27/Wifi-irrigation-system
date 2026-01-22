@@ -1,23 +1,32 @@
-import { IWaterPumpStatus, ITemperature, IAddTask } from "@/pages/irrigation/models/irrigation-model";
+import { IWaterPumpStatus, ITemperature, IAddTask, IIrrigationConfig, IIrrigationData } from "@/pages/irrigation/models/irrigation-model";
 import axios from "axios";
 import { directionWebIrrigation, handleResponse } from "@/config/api.config";
 import { activateReactiveSimulation, isSimulationMode } from "@/utils/simulation";
 
 const USE_MOCK = isSimulationMode();
 
-let mockState = {
+
+let mockState: IIrrigationData = {
     waterPump1: false,
     temperature: 24.5,
     humidity: 60,
     tasks: [
-        { hour: "08", minutes: "30", days: ["Lunes", "Miercoles", "Viernes"] }
+        {
+            hour: "08",
+            minutes: "30",
+            days: [
+                { name: "Lunes", state: true },
+                { name: "Miercoles", state: true },
+                { name: "Viernes", state: true }
+            ]
+        }
     ]
 };
 
 const mockDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const irrigationService = {
-    getWaterPump1OnOFF: async (data?: any): Promise<IWaterPumpStatus> => {
+    getWaterPump1OnOFF: async (data?: IIrrigationConfig): Promise<IWaterPumpStatus> => {
         if (USE_MOCK) {
             await mockDelay(500);
             if (data?.set === true || data?.set === 'true') mockState.waterPump1 = true;
@@ -50,7 +59,7 @@ export const irrigationService = {
         if (USE_MOCK) {
             await mockDelay(500);
             const formattedTasks = mockState.tasks.flatMap(task =>
-                task.days.map(day => `${day}-${task.hour}-${task.minutes}`)
+                task.days.map(day => `${day.name}-${task.hour}-${task.minutes}`)
             ).join('/');
             return formattedTasks;
         }
@@ -73,8 +82,14 @@ export const irrigationService = {
     postaddTaskEsp: async (hour: string | number, minutes: string | number, days: string): Promise<IAddTask> => {
         if (USE_MOCK) {
             await mockDelay(500);
-            const newDays = typeof days === 'string' ? days.split(',') : days;
-            mockState.tasks.push({ hour: String(hour), minutes: String(minutes), days: newDays as any });
+            const selectedDayNames = typeof days === 'string' ? JSON.parse(days) : days;
+            const newDays = (selectedDayNames as string[]).map(name => ({ name, state: true }));
+
+            mockState.tasks.push({
+                hour: String(hour),
+                minutes: String(minutes),
+                days: newDays
+            });
             return { success: true, message: "Task added (Mock)" };
         }
         try {

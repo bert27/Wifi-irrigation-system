@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Grid, Box, Typography, Paper, Tooltip, Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { Bottle, Cocktail } from "@/pages/drinks/models/drinks-model";
+import { IBottle, ICocktail } from "@/pages/drinks/models/drinks-model";
 import { useTranslation } from "react-i18next";
 import { CocktailRecipeModal } from "./cocktail-recipe-modal";
 
 interface PumpConfigPanelProps {
-  cocktails: Cocktail[];
-  bottles: Bottle[];
+  cocktails: ICocktail[];
+  bottles: IBottle[];
   onUpdatePump: (id: number, data: { pwm: number; timeCalibration: number }) => void;
   onUpdateCocktail: (name: string, ingredients: { name: string; quantity: number }[]) => void;
 }
@@ -20,10 +20,10 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const [selectedCocktail, setSelectedCocktail] = useState<Cocktail | null>(null);
+  const [selectedCocktail, setSelectedCocktail] = useState<ICocktail | null>(null);
   const [isRecipeModalOpen, setIsRecipeModalOpen] = useState(false);
 
-  const handleOpenRecipeModal = (cocktail: Cocktail) => {
+  const handleOpenRecipeModal = (cocktail: ICocktail) => {
     setSelectedCocktail(cocktail);
     setIsRecipeModalOpen(true);
   };
@@ -55,7 +55,7 @@ export const PumpConfigPanel: React.FC<PumpConfigPanelProps> = ({
 
 
 const CocktailConfigCard: React.FC<{
-  cocktail: Cocktail;
+  cocktail: ICocktail;
   onEditRecipe: () => void;
 }> = ({
   cocktail,

@@ -4,8 +4,8 @@ import {
     handleResponse,
 } from "@/config/api.config";
 import { isSimulationMode, activateReactiveSimulation, withTimeout } from "@/utils/simulation";
-import { availableCocktails } from "@/pages/drinks/data/cocktails.data";
-import { IHardwareCocktail } from "@/pages/drinks/models/drinks-model";
+import { MOCK_COCKTAILS } from "@/pages/drinks/mocks/cocktails.data";
+import { ICocktail, IHardwareCocktail } from "@/pages/drinks/models/drinks-model";
 
 const USE_MOCK = isSimulationMode();
 
@@ -34,9 +34,9 @@ export const drinksService = {
 
     getCocktails: async (): Promise<IHardwareCocktail[]> => {
         if (USE_MOCK) {
-            return availableCocktails.map(c => ({
+            return MOCK_COCKTAILS.map((c: ICocktail) => ({
                 name: c.name,
-                ingredients: (c.recipe || []).map(r => ({
+                ingredients: (c.recipe || []).map((r: any) => ({
                     name: r.liquid,
                     quantity: r.quantity
                 }))

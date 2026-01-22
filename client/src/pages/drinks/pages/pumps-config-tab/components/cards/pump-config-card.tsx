@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Paper, Slider } from "@mui/material";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
-import { Bottle } from "@/pages/drinks/models/drinks-model";
+import { IBottle } from "@/pages/drinks/models/drinks-model";
 import { useTranslation } from "react-i18next";
 
 interface PumpConfigCardProps {
-    bottle: Bottle;
+    bottle: IBottle;
     onUpdatePump: (id: number, data: { pwm: number; timeCalibration: number }) => void;
 }
 

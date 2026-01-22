@@ -1,10 +1,10 @@
 import React from "react";
 import { Grid } from "@mui/material";
-import { Bottle } from "@/pages/drinks/models/drinks-model";
+import { IBottle } from "@/pages/drinks/models/drinks-model";
 import { PumpConfigCard } from "./pump-config-card";
 
 interface PumpConfigCardsProps {
-    bottles: Bottle[];
+    bottles: IBottle[];
     onUpdatePump: (id: number, data: { pwm: number; timeCalibration: number }) => void;
 }
 

@@ -2,8 +2,8 @@ import { renderHook, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, type Mocked } from 'vitest';
 import { useDrinksPage } from './use-drinks-page';
 import { drinksService } from '@/pages/drinks/services/drinks.service';
-import { availableCocktails } from '@/pages/drinks/data/cocktails.data';
-import { IHardwareCocktail } from '@/pages/drinks/models/drinks-model';
+import { MOCK_COCKTAILS } from '@/pages/drinks/mocks/cocktails.data';
+import { IHardwareCocktail, ICocktail } from '@/pages/drinks/models/drinks-model';
 
 
 vi.mock('@/pages/drinks/services/drinks.service');
@@ -31,18 +31,22 @@ describe('useDrinksPage hook', () => {
     });
 
     it('should initialize and fetch cocktails on mount', async () => {
-        // Use first cocktail from mock data
-        const mockCocktail = availableCocktails[0];
+        const mockCocktail = MOCK_COCKTAILS[0];
         const hardwareCocktails: IHardwareCocktail[] = [
-            { name: mockCocktail.name, ingredients: mockCocktail.recipe!.map(r => ({ name: r.liquid, quantity: r.quantity })) }
+            { name: mockCocktail.name, ingredients: mockCocktail.recipe!.map((r: any) => ({ name: r.liquid, quantity: r.quantity })) }
         ];
-        const expectedCocktails = [mockCocktail];
+
+        // Expected data should match how the hook maps hardware response
+        const expectedCocktails = [{
+            id: mockCocktail.id,
+            name: mockCocktail.name,
+            recipe: mockCocktail.recipe
+        }];
 
         mockedDrinksService.getCocktails.mockResolvedValueOnce(hardwareCocktails);
 
         const { result } = renderHook(() => useDrinksPage());
 
-        // Wait for fetching to complete
         await waitFor(() => {
             expect(result.current.loading).toBe(false);
         });
@@ -50,11 +54,28 @@ describe('useDrinksPage hook', () => {
         expect(result.current.cocktails).toEqual(expectedCocktails);
     });
 
+    it('should handle tab changes', async () => {
+        const { result } = renderHook(() => useDrinksPage());
+
+        await waitFor(() => expect(result.current.loading).toBe(false));
+
+        act(() => {
+            result.current.handleTabChange('config');
+        });
+        expect(result.current.activeTab).toBe('config');
+
+        act(() => {
+            result.current.handleTabChange('manual');
+        });
+        expect(result.current.activeTab).toBe('manual');
+    });
+
     it('should handle drink selection', async () => {
-        // Use second cocktail from mock data
-        const mockCocktail = availableCocktails[1];
+        // Use MOCK_COCKTAILS[1] but ensure hardwareCocktails mock reflects it
+        const mockCocktail = MOCK_COCKTAILS[1];
         const hardwareCocktails: IHardwareCocktail[] = [
-            { name: mockCocktail.name, ingredients: mockCocktail.recipe!.map(r => ({ name: r.liquid, quantity: r.quantity })) }
+            { name: MOCK_COCKTAILS[0].name, ingredients: MOCK_COCKTAILS[0].recipe!.map((r: any) => ({ name: r.liquid, quantity: r.quantity })) },
+            { name: mockCocktail.name, ingredients: mockCocktail.recipe!.map((r: any) => ({ name: r.liquid, quantity: r.quantity })) }
         ];
 
         mockedDrinksService.getCocktails.mockResolvedValueOnce(hardwareCocktails);
@@ -64,11 +85,45 @@ describe('useDrinksPage hook', () => {
         await waitFor(() => expect(result.current.loading).toBe(false));
 
         act(() => {
-            result.current.selectCocktail(result.current.cocktails[0]);
+            result.current.selectCocktail(result.current.cocktails[1]);
         });
 
-        expect(result.current.selectedCocktailForConfirm).toEqual(result.current.cocktails[0]);
+        expect(result.current.selectedCocktailForConfirm).toEqual(result.current.cocktails[1]);
         expect(mockedDrinksService.sendControlCommand).toHaveBeenCalledWith(`goto:${mockCocktail.id}`);
+    });
+
+    it('should confirm cocktail and clear selection', async () => {
+        const { result } = renderHook(() => useDrinksPage());
+        await waitFor(() => expect(result.current.loading).toBe(false));
+
+        const mockCocktail = MOCK_COCKTAILS[0];
+        act(() => {
+            result.current.selectCocktail(mockCocktail as ICocktail);
+        });
+
+        await act(async () => {
+            await result.current.confirmCocktail();
+        });
+
+        expect(mockedDrinksService.sendControlCommand).toHaveBeenCalledWith('accept');
+        expect(result.current.selectedCocktailForConfirm).toBeNull();
+    });
+
+    it('should cancel cocktail selection', async () => {
+        const { result } = renderHook(() => useDrinksPage());
+        await waitFor(() => expect(result.current.loading).toBe(false));
+
+        const mockCocktail = MOCK_COCKTAILS[0];
+        act(() => {
+            result.current.selectCocktail(mockCocktail as ICocktail);
+        });
+
+        await act(async () => {
+            await result.current.cancelCocktailSelection();
+        });
+
+        expect(mockedDrinksService.sendControlCommand).toHaveBeenCalledWith('back');
+        expect(result.current.selectedCocktailForConfirm).toBeNull();
     });
 
     it('should update cocktail and re-fetch list', async () => {
@@ -80,17 +135,16 @@ describe('useDrinksPage hook', () => {
 
         await waitFor(() => expect(result.current.loading).toBe(false));
 
-        // Use data from mock cocktails
-        const testIngredients = availableCocktails[0].recipe!.map(r => ({ name: r.liquid, quantity: r.quantity }));
+        const testIngredients = MOCK_COCKTAILS[0].recipe!.map((r: any) => ({ name: r.liquid, quantity: r.quantity }));
 
         await act(async () => {
-            await result.current.updateCocktail(availableCocktails[0].name, testIngredients);
+            await result.current.updateCocktail(MOCK_COCKTAILS[0].name, testIngredients);
         });
 
         expect(mockedDrinksService.saveCocktail).toHaveBeenCalledWith(
-            availableCocktails[0].name,
+            MOCK_COCKTAILS[0].name,
             testIngredients
         );
-        expect(mockedDrinksService.getCocktails).toHaveBeenCalledTimes(2); // Initial + reload
+        expect(mockedDrinksService.getCocktails).toHaveBeenCalledTimes(2);
     });
 });

@@ -9,6 +9,8 @@ const mockedAxios = axios as any;
 describe('drinksService', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        // Mock window.location to avoid JSDOM navigation error
+        vi.stubGlobal('location', { reload: vi.fn() });
     });
 
     describe('getCocktails', () => {

@@ -5,13 +5,13 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import AdjustIcon from "@mui/icons-material/Adjust";
-import { Bottle } from "@/pages/drinks/models/drinks-model";
+import { IBottle } from "@/pages/drinks/models/drinks-model";
 import { useTranslation } from "react-i18next";
 import { PumpConfigCards } from "./cards/pump-config-cards";
 
 interface PumpsControlsProps {
   onPumpCommand: (pumpId: number) => void;
-  bottles: Bottle[];
+  bottles: IBottle[];
   onUpdatePump: (id: number, data: { pwm: number; timeCalibration: number }) => void;
 }
 

@@ -1,4 +1,4 @@
-export interface Bottle {
+export interface IBottle {
   id: number;
   title: string;
   liquid: string;
@@ -6,7 +6,7 @@ export interface Bottle {
   timeCalibration: number;
 }
 
-export interface Cocktail {
+export interface ICocktail {
   id: string;
   name: string;
   description?: string;

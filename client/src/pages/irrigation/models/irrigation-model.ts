@@ -15,6 +15,13 @@ export interface ITemperature {
   humidity: string | number;
 }
 
+export interface IIrrigationConfig {
+  set?: boolean | string;
+  pwm?: number;
+  timeCalibration?: number;
+  [key: string]: any;
+}
+
 export interface IAddTask {
   success?: boolean;
   message?: string;
@@ -26,4 +33,11 @@ export interface IResponseIrrigation {
   clock: string;
   temperature: ITemperature;
   waterPumpStatus: IWaterPumpStatus;
+}
+
+export interface IIrrigationData {
+  waterPump1: boolean;
+  temperature: number;
+  humidity: number;
+  tasks: IScheduledTask[];
 }

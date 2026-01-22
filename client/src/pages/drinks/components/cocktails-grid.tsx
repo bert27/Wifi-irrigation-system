@@ -1,12 +1,12 @@
 import React from "react";
 import { Grid, Box, Typography, Paper, Skeleton } from "@mui/material";
 import LocalBarIcon from "@mui/icons-material/LocalBar";
-import { Cocktail } from "@/pages/drinks/models/drinks-model";
+import { ICocktail } from "@/pages/drinks/models/drinks-model";
 import { useTranslation } from "react-i18next";
 
 interface CocktailsGridProps {
-  cocktails: Cocktail[];
-  onSelectCocktail: (cocktail: Cocktail) => void;
+  cocktails: ICocktail[];
+  onSelectCocktail: (cocktail: ICocktail) => void;
   selectedIndex?: number | null;
   loading?: boolean;
 }

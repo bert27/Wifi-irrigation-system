@@ -1,11 +1,11 @@
 import React from "react";
 import { Box } from "@mui/material";
 import { CocktailsGrid } from "@/pages/drinks/components/cocktails-grid";
-import { Cocktail } from "@/pages/drinks/models/drinks-model";
+import { ICocktail } from "@/pages/drinks/models/drinks-model";
 
 interface DrinksTabPageProps {
-    cocktails: Cocktail[];
-    onSelectCocktail: (cocktail: Cocktail) => void;
+    cocktails: ICocktail[];
+    onSelectCocktail: (cocktail: ICocktail) => void;
     selectedIndex?: number | null;
     loading?: boolean;
 }

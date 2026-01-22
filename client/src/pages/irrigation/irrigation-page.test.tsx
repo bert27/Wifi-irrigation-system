@@ -1,8 +1,7 @@
 import { vi, test, expect } from 'vitest';
-import { render, screen, cleanup, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
-import React, { useState } from 'react';
 import { Irrigation } from "./irrigation-page-index";
 
 // Mock axios just in case interaction escapes

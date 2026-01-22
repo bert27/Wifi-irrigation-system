@@ -2,13 +2,13 @@ import { useState, useEffect, useMemo } from "react";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { directionWebDrinks } from "@/config/api.config";
 import { isSimulationMode } from "@/utils/simulation";
-import { Cocktail } from "@/pages/drinks/models/drinks-model";
+import { ICocktail } from "@/pages/drinks/models/drinks-model";
 import { useConnectivity } from "@/context/connectivity-context";
 
 interface UseSocketSyncProps {
-    cocktails: Cocktail[];
-    selectedCocktailForConfirm: Cocktail | null;
-    setSelectedCocktailForConfirm: (c: Cocktail | null) => void;
+    cocktails: ICocktail[];
+    selectedCocktailForConfirm: ICocktail | null;
+    setSelectedCocktailForConfirm: (c: ICocktail | null) => void;
     loading: boolean;
 }
 

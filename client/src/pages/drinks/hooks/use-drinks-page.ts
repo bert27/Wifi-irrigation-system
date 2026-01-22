@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { Cocktail, TabType } from "@/pages/drinks/models/drinks-model";
+import { ICocktail, TabType } from "@/pages/drinks/models/drinks-model";
 import { drinksService } from "@/pages/drinks/services/drinks.service";
-import { directionWebDrinks } from "@/config/api.config";
 
 // Sub-hooks
 import { useCocktails } from "./use-cocktails";
@@ -12,7 +11,7 @@ import { isSimulationMode } from "@/utils/simulation";
 
 export const useDrinksPage = () => {
   const [activeTab, setActiveTab] = useState<TabType>("drinks");
-  const [selectedCocktailForConfirm, setSelectedCocktailForConfirm] = useState<Cocktail | null>(null);
+  const [selectedCocktailForConfirm, setSelectedCocktailForConfirm] = useState<ICocktail | null>(null);
 
   // Simulation Mode Detection
   const isMock = isSimulationMode();
@@ -76,7 +75,7 @@ export const useDrinksPage = () => {
     }
   };
 
-  const selectCocktail = (cocktail: Cocktail) => {
+  const selectCocktail = (cocktail: ICocktail) => {
     setSelectedCocktailForConfirm(cocktail);
     drinksService.sendControlCommand(`goto:${cocktail.id}`);
   };

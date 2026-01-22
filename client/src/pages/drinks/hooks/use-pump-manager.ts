@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Bottle } from "@/pages/drinks/models/drinks-model";
-import { initialBottles } from "@/pages/drinks/data/bottles.data";
+import { IBottle } from "@/pages/drinks/models/drinks-model";
+import { MOCK_BOTTLES } from "@/pages/drinks/mocks/bottles.data";
 import { drinksService } from "@/pages/drinks/services/drinks.service";
 
 export const usePumpManager = () => {
-    const [bottles, setBottles] = useState<Bottle[]>(initialBottles);
+    const [bottles, setBottles] = useState<IBottle[]>(MOCK_BOTTLES);
     const [message, setMessage] = useState<string | undefined>(undefined);
     const [showMessage, setShowMessage] = useState(false);
 

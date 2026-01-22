@@ -12,13 +12,13 @@ import {
 } from "@mui/material";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import WaterDropOutlinedIcon from "@mui/icons-material/WaterDropOutlined";
-import { Bottle } from "@/pages/drinks/models/drinks-model";
+import { IBottle } from "@/pages/drinks/models/drinks-model";
 import { useTranslation } from "react-i18next";
 
 interface PumpSettingsModalProps {
     open: boolean;
     onClose: () => void;
-    pump: Bottle | null;
+    pump: IBottle | null;
     onSave: (id: number, data: { pwm: number; timeCalibration: number }) => void;
 }
 
