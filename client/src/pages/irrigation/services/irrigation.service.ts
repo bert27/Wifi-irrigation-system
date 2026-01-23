@@ -6,7 +6,7 @@ import { activateReactiveSimulation, isSimulationMode } from "@/utils/simulation
 const USE_MOCK = isSimulationMode();
 
 
-let mockState: IIrrigationData = {
+const mockState: IIrrigationData = {
     waterPump1: false,
     temperature: 24.5,
     humidity: 60,

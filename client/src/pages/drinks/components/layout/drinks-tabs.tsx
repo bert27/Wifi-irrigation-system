@@ -2,8 +2,9 @@ import React from "react";
 import { Box, Tabs, Tab } from "@mui/material";
 import LocalBarIcon from "@mui/icons-material/LocalBar";
 import SettingsIcon from "@mui/icons-material/Settings";
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import OpacityIcon from "@mui/icons-material/Opacity";
 import { useTranslation } from "react-i18next";
+import { useMediaQuery, useTheme } from "@mui/material";
 import { TabType } from "../../models/drinks-model";
 
 interface DrinksTabsProps {
@@ -13,6 +14,9 @@ interface DrinksTabsProps {
 
 export const DrinksTabs: React.FC<DrinksTabsProps> = ({ activeTab, onTabChange }) => {
     const { t } = useTranslation();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const iconPosition = isMobile ? "top" : "start";
 
     return (
         <Box
@@ -50,9 +54,9 @@ export const DrinksTabs: React.FC<DrinksTabsProps> = ({ activeTab, onTabChange }
                     },
                 }}
             >
-                <Tab value="drinks" label={t('drinks.tabs.drinks')} icon={<LocalBarIcon />} iconPosition="start" />
-                <Tab value="config" label={t('drinks.tabs.config')} icon={<SettingsIcon />} iconPosition="start" />
-                <Tab value="manual" label={t('drinks.tabs.manual')} icon={<SportsEsportsIcon />} iconPosition="start" />
+                <Tab value="drinks" label={t('drinks.tabs.drinks')} icon={<LocalBarIcon />} iconPosition={iconPosition} />
+                <Tab value="config" label={isMobile ? t('drinks.tabs.config_short') : t('drinks.tabs.config')} icon={<SettingsIcon />} iconPosition={iconPosition} />
+                <Tab value="manual" label={isMobile ? t('drinks.tabs.manual_short') : t('drinks.tabs.manual')} icon={<OpacityIcon />} iconPosition={iconPosition} />
             </Tabs>
         </Box>
     );

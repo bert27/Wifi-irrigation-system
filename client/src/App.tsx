@@ -15,7 +15,12 @@ export const App: React.FC = () => {
     <Router>
       <RemoteControlProvider>
         <ConnectivityProvider>
-          <Box sx={{ display: "flex", width: "100%", minHeight: "100vh" }}>
+          <Box sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            width: "100%",
+            minHeight: "100vh"
+          }}>
             <SideNavBar />
             <Box component="main" sx={{ flexGrow: 1, overflowX: "hidden" }}>
               <Routes>

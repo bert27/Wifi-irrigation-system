@@ -1,97 +1,99 @@
-# RobotCore - Ecosistema Modular IoT (ESP8266 / ESP32 + React)
+# RobotCore - Modular IoT Ecosystem (ESP8266 / ESP32 + React)
 
-## 🌟 Descripción del Proyecto
+🇺🇸 **[Read in English](README.md)** | 🇪🇸 **[Leer en Español](README_es.md)**
 
-Este proyecto es un **ecosistema multi-aplicación** que integra hardware y software para el control unificado de dispositivos IoT mediante una interfaz web moderna en **React**.
+## 🌟 Project Description
 
-Desarrollado con una arquitectura híbrida, combina la eficiencia de los chips **ESP8266** (para los dispositivos de actuación) con la potencia del **ESP32** (para el Mando Físico), permitiendo gestionar **múltiples aplicaciones** independientes desde un mismo código base:
+This project is a **multi-application ecosystem** that integrates hardware and software for unified IoT device control through a modern **React** web interface.
 
-1.  **Robot Car**: Vehículo teledirigido con telemetría.
-2.  **Cocktail Machine**: Dispensador automático de bebidas.
-3.  **Irrigation System**: Control de riego inteligente.
+Developed with a hybrid architecture, it combines the efficiency of **ESP8266** chips (for actuation devices) with the power of the **ESP32** (for the Physical Remote Control), allowing the management of **multiple independent applications** from the same codebase:
 
-> **🌐 [Visita RobotCore](https://robot-core.vercel.app/)**
+1.  **Robot Car**: Remote-controlled vehicle with telemetry.
+2.  **Cocktail Machine**: Automatic drink dispenser.
+3.  **Irrigation System**: Smart irrigation control.
+
+> **🌐 [Visit RobotCore](https://robot-core.vercel.app/)**
 
 ---
 
-## 🎨 Interfaz Cyberpunk
+## 🎨 Cyberpunk Interface
 
-El dashboard cuenta con un diseño **cyberpunk de alta calidad** con efectos de glassmorphism, neon glows y animaciones fluidas.
+The dashboard features a **high-quality cyberpunk design** with glassmorphism effects, neon glows, and fluid animations.
 
 ### 🤖 RobotCore Dashboard
 
 ![RobotCore](./client/public/car/screenshot.png?v=1)
 
-Control completo del robot con:
-- **Neural Telemetry**: Visualización de giroscopio MPU en tiempo real
-- **RGB Module**: Selector de color con preview y efectos de glow
-- **Kinetic Control**: D-pad para control direccional con indicadores de estado
-- **Actuators**: Panel de control de pines y outputs
+Complete robot control with:
+- **Neural Telemetry**: Real-time MPU gyroscope visualization
+- **RGB Module**: Color selector with preview and glow effects
+- **Kinetic Control**: D-pad for directional control with status indicators
+- **Actuators**: Pin and output control panel
 
-### 🌿 Sistema de Riego
+### 🌿 Irrigation System
 
-![Sistema de Riego](./client/public/plant/screenshot.png?v=1)
+![Irrigation System](./client/public/plant/screenshot.png?v=1)
 
-Automatización de riego inteligente:
-- **Status Actual**: Temperatura y hora ESP en tiempo real
-- **Programación**: Gestión de tareas por días y horarios
-- **Configuración**: Selector de días y hora para nuevas tareas
-- **Control Manual**: Ajustes directos de bombas
+Smart irrigation automation:
+- **Current Status**: Real-time temperature and ESP clock
+- **Scheduling**: Task management by days and times
+- **Configuration**: Day and time selector for new tasks
+- **Manual Control**: Direct pump adjustments
 
-### �🍹 Cocktail Mixer 3000
+### 🍹 Cocktail Mixer 3000
 
 ![Cocktail Machine](./client/public/drinks/screenshot.png)
 
-Sistema automatizado de mezcla de bebidas:
-- **Grid de bebidas**: Selección rápida con efectos visuales premium
-- **Configuración de bombas**: Control PWM y calibración de tiempo
-- **Control manual**: D-pad para activación individual de bombas
+Automated drink mixing system:
+- **Drinks Grid**: Quick selection with premium visual effects
+- **Pump Configuration**: PWM control and time calibration
+- **Manual Control**: D-pad for individual pump activation
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## 🛠️ Technologies Used
 
 ### Frontend
-- **React (v19+)**: Interfaz dinámica y reactiva.
-- **Vite**: Sistema de construcción ultra rápido (Sustituyendo a CRA).
-- **TypeScript**: Robustez y tipado estático con alias `@/`.
-- **Material UI (MUI)**: Sistema de diseño moderno.
-- **WebSocket**: Comunicación en tiempo real de baja latencia.
-- **Clean Code Architecture**: Separación en Models, Hooks y Components.
+- **React (v19+)**: Dynamic and reactive interface.
+- **Vite**: Ultra-fast build system (replacing CRA).
+- **TypeScript**: Robustness and static typing with `@/` alias.
+- **Material UI (MUI)**: Modern design system.
+- **WebSocket**: Low-latency real-time communication.
+- **Clean Code Architecture**: Separation into Models, Hooks, and Components.
 
 ### Backend / Firmware
-- **ESP8266 Core for Arduino**: Firmware optimizado para el chip ESP8266.
-- **AsyncWebServer**: Servidor HTTP asíncrono para ESP8266.
-- **Node.js (Mock Server)**: Para desarrollo local sin necesidad del chip físico.
+- **ESP8266 Core for Arduino**: Optimized firmware for ESP8266 chip.
+- **AsyncWebServer**: Asynchronous HTTP server for ESP8266.
+- **Node.js (Mock Server)**: For local development without physical hardware.
 
 ---
 
-## 🏗️ Estructura del Proyecto
+## 🏗️ Project Structure
 
-El repositorio está organizado de forma modular para facilitar el mantenimiento y escalabilidad:
+The repository is organized modularly to facilitate maintenance and scalability:
 
-- `/client`: Aplicación frontend en React + Vite (Cyberpunk Dashboard).
-- `/remote-control`: Firmware para el **Mando Físico (ESP32)** con soporte para joystick, giroscopio y telemetría directa.
-- `/server/firmware`: Código fuente modular para el **Robot (ESP8266/ESP32)**.
-    - `/apps/robot car`: Lógica de control de motores y giroscopio interno.
-    - `/apps/drinks machine`: Gestión de bombas, recetas y pantalla OLED.
-    - `/apps/irrigation`: Programación horaria y tareas de riego.
-    - `/utils`: Componentes compartidos y Hub de comunicación.
+- `/client`: React + Vite frontend application (Cyberpunk Dashboard).
+- `/remote-control`: Firmware for **Physical Remote Control (ESP32)** with joystick, gyroscope, and direct telemetry support.
+- `/server/firmware`: Modular source code for **Robot (ESP8266/ESP32)**.
+    - `/apps/robot car`: Motor control and internal gyroscope logic.
+    - `/apps/drinks machine`: Pump management, recipes, and OLED display.
+    - `/apps/irrigation`: Schedule programming and irrigation tasks.
+    - `/utils`: Shared components and Communication Hub.
 
 ---
 
-## ⚙️ Configuración Modular (AppConfig)
+## ⚙️ Modular Configuration (AppConfig)
 
-El firmware del ESP8266 (`/server/firmware/serverEspReact`) es modular por diseño. Puedes elegir qué "personalidad" quieres cargar en el robot editando un solo archivo.
+The ESP8266 firmware (`/server/firmware/serverEspReact`) is modular by design. You can choose which "personality" to load on the robot by editing a single file.
 
-Esto evita conflictos de librerías (ej: usar librerías de riego cuando solo quieres la máquina de bebidas) y ahorra memoria.
+This avoids library conflicts (e.g., using irrigation libraries when you only want the drinks machine) and saves memory.
 
-### Cómo activar/desactivar módulos
+### How to enable/disable modules
 
-1.  Abre el archivo `server/firmware/serverEspReact/AppConfig.h`.
-2.  Descomenta (`//`) solo el módulo que quieras compilar.
+1.  Open the file `server/firmware/serverEspReact/AppConfig.h`.
+2.  Uncomment (`//`) only the module you want to compile.
 
-Ejemplo para activar **solo la Máquina de Bebidas**:
+Example to activate **only the Drinks Machine**:
 
 ```cpp
 #define ENABLE_DRINKS_MACHINE
@@ -99,109 +101,108 @@ Ejemplo para activar **solo la Máquina de Bebidas**:
 // #define ENABLE_ROBOT_CAR
 ```
 
-**⚠️ Nota Importante**: Si intentas activar todos los módulos a la vez, podrías tener errores de compilación debido a conflictos de versiones de librerías (especialmente ArduinoJson). Se recomienda compilar y subir **un solo módulo activo** cada vez.
+**⚠️ Important Note**: If you try to activate all modules at once, you might encounter compilation errors due to library version conflicts (especially ArduinoJson). It's recommended to compile and upload **one active module at a time**.
 
-## 🎮 Arquitectura de Red y Control Multi-Dispositivo
+## 🎮 Network Architecture and Multi-Device Control
 
-Este sistema no se conecta a un solo servidor, sino que orquesta una red de dispositivos distribuidos, combinando tecnologías según la naturaleza de los datos:
+This system doesn't connect to a single server but orchestrates a network of distributed devices, combining technologies according to data nature:
 
 ### 📡 WebSockets vs HTTP (Endpoints)
 
-El Frontend de React utiliza una arquitectura híbrida:
+The React Frontend uses a hybrid architecture:
 
-1.  **WebSockets (Telemetría en Tiempo Real)**
-    *   **¿Por qué?** Para datos de flujo continuo y crítico como el **Giroscopio (Joystick/Robot)**.
-    *   **Funcionamiento**: Se abre un "tubo" permanente. El ESP32 "empuja" miles de datos por segundo sin que el navegador tenga que pedirlo.
-    *   **Latencia**: Mínima (<10ms), permitiendo ver gráficos fluidos que reaccionan al milisegundo.
-    *   **Implementación**: `RemoteControlContext` mantiene una conexión global para que el mando físico funcione en cualquier pantalla.
+1.  **WebSockets (Real-Time Telemetry)**
+    *   **Why?** For continuous and critical data flow like **Gyroscope (Joystick/Robot)**.
+    *   **How it works**: A permanent "tube" is opened. The ESP32 "pushes" thousands of data points per second without the browser having to request them.
+    *   **Latency**: Minimal (<10ms), allowing smooth graphics that react to the millisecond.
+    *   **Implementation**: `RemoteControlContext` maintains a global connection so the physical remote works on any screen.
 
-2.  **HTTP/REST (Comandos)**
-    *   **¿Por qué?** Para acciones puntuales y confirmadas como **"Encender Bomba"**, **"Cambiar Color"** o **"Guardar Configuración"**.
-    *   **Funcionamiento**: El navegador hace una petición puntual (GET/POST) y espera confirmación ("OK").
-    *   **Seguridad**: Asegura que una orden (ej: regar) se ha recibido y procesado correctamente.
+2.  **HTTP/REST (Commands)**
+    *   **Why?** For specific and confirmed actions like **"Turn on Pump"**, **"Change Color"**, or **"Save Configuration"**.
+    *   **How it works**: The browser makes a one-time request (GET/POST) and waits for confirmation ("OK").
+    *   **Security**: Ensures an order (e.g., irrigation) has been received and processed correctly.
 
-### 🔗 Mapa de Conexiones
+### 🔗 Connection Map
 
-El sistema gestiona 4 IPs simultáneas, permitiendo que cada módulo tenga su propio cerebro pero opere bajo una misma interfaz unificada:
+The system manages 4 IPs simultaneously, allowing each module to have its own brain but operate under a single unified interface:
 
-| Dispositivo | Variable `.env` | Función Principal | Protocolo |
-| :--- | :--- | :--- | :--- |
-| **Robot Car** | `REACT_APP_ROBOT_IP` | Movimiento, Motores, Luces | HTTP + WebSocket |
-| **Mando Remoto** | `REACT_APP_REMOTE_IP` | Joystick Físico, Giroscopio externo | WebSocket Global |
-| **Máquina Bebidas**| `REACT_APP_DRINKS_IP`| Bombas peristálticas, Pantalla OLED | HTTP + WebSocket |
-| **Sistema Riego** | `REACT_APP_IRRIGATION_IP`| Gestión hídrica, Calendario | HTTP |
+| Device | `.env` Variable | mDNS Hostname | Main Function | Protocol |
+| :--- | :--- | :--- | :--- | :--- |
+| **Robot Car** | `VITE_ROBOT_IP` | `robot-car.local` | Movement, Motors, Lights | HTTP + WebSocket |
+| **Remote Control** | `VITE_REMOTE_IP` | `remote-control.local` | Physical Joystick, External Gyroscope | Global WebSocket |
+| **Drinks Machine**| `VITE_DRINKS_IP`| `drinks-machine.local` | Peristaltic Pumps, OLED Display | HTTP + WebSocket |
+| **Irrigation System** | `VITE_IRRIGATION_IP`| `irrigation-system.local` | Water Management, Calendar | HTTP |
 
-### 📶 Comunicación Híbrida (ESP-NOW)
-Además del WiFi, el **Mando Remoto** habla directamente con el **Robot** usando **ESP-NOW** (protocolo de radio directo de Espressif). Esto permite controlar el robot en exteriores sin necesidad de Router ni WiFi, mientras que si hay WiFi disponible, ambos dispositivos reportan sus datos a la web simultáneamente.
+### 📶 Hybrid Communication (ESP-NOW)
+Additionally to WiFi, the **Remote Control** talks directly with the **Robot** using **ESP-NOW** (Espressif's direct radio protocol). This allows controlling the robot outdoors without Router or WiFi, while if WiFi is available, both devices simultaneously report their data to the web.
 
 ---
 
-## 🚀 Instalación y Ejecución
+## 🚀 Installation and Execution
 
-### Opción Rápida (Scripts de un solo clic)
-He creado scripts para facilitar el inicio del proyecto (instala dependencias y lanza los servidores):
+### Quick Option (One-Click Scripts)
+I've created scripts to facilitate project startup (installs dependencies and launches servers):
 
 - **Mac/Linux:**
   ```bash
   ./run-mac.sh
   ```
 - **Windows:**
-  Doble clic en `run-windows.bat` o `run-windows.bat` desde la terminal.
+  Double-click `run-windows.bat` or run `run-windows.bat` from the terminal.
 
 ---
 
-4. **Modo Simulación (Mock)**:
-   - Si no tienes el robot físico contigo, puedes activar el modo simulación para ver la UI funcionando con datos falsos.
-   - En el archivo `client/.env`, cambia `VITE_MOCK_SERVER=true`.
-   - Esto también se activa automáticamente si despliegas en Vercel (HTTPS) para evitar errores de conexión segurida.
+4. **Simulation Mode (Mock)**:
+   - If you don't have the physical robot with you, you can activate simulation mode to see the UI working with fake data.
+   - In the `client/.env` file, change `VITE_MOCK_SERVER=true`.
+   - This also activates automatically if you deploy on Vercel (HTTPS) to avoid secure connection errors.
 
-1. Abre el archivo en `/server/firmware` (Robot) o `/remote-control/firmware` (Mando).
-> **Nota para ESP32**: Si usas una placa ESP32, asegúrate de tener esta URL en *Arduino IDE -> Preferences -> Additional Board Manager URLs*:
+1. Open the file in `/server/firmware` (Robot) or `/remote-control/firmware` (Remote).
+> **Note for ESP32**: If using an ESP32 board, make sure to have this URL in *Arduino IDE -> Preferences -> Additional Board Manager URLs*:
 > `https://espressif.github.io/arduino-esp32/package_esp32_index.json`
 >
-> ⚠️ **Solución de problemas**: Si la instalación de la versión más reciente falla (error `DEADLINE_EXCEEDED` o similar), intenta instalar la versión **2.0.17** desde el Gestor de Tarjetas.
+> ⚠️ **Troubleshooting**: If the latest version installation fails (`DEADLINE_EXCEEDED` error or similar), try installing **version 2.0.17** from the Boards Manager.
 
-1. Abre el archivo en `/server/firmware` (Robot) o `/remote-control/firmware` (Mando).
-2. **Configuración de Secretos**:
-   - Este proyecto requiere **dos** archivos `secrets.h` (uno para el mando, otro para el robot).
-   - En cada carpeta de firmware (`server/firmware/serverEspReact/` y `remote-control/firmware/remote-control/`), encontrarás un `secrets_example.h`.
-   - Renómbralos a `secrets.h` y rellena tus credenciales WiFi y MACs.
-3. Carga el sketch a tus dispositivos.
+1. Open the file in `/server/firmware` (Robot) or `/remote-control/firmware` (Remote).
+2. **Secrets Configuration**:
+   - This project requires **two** `secrets.h` files (one for the remote, another for the robot).
+   - In each firmware folder (`server/firmware/serverEspReact/` and `remote-control/firmware/remote-control/`), you'll find a `secrets_example.h`.
+   - Rename them to `secrets.h` and fill in your WiFi credentials and MACs.
+3. Upload the sketch to your devices.
 
-### ⚠️ Importante: Problemas de Conexión WiFi
-Si el frontend no conecta con el ESP32 (error `ws: connection failed` o `No route to host`) y usas mDNS (`remote-control.local`), verifica esto:
+### ⚠️ Important: WiFi Connection Issues
+If the frontend doesn't connect to the ESP32 (`ws: connection failed` or `No route to host` error) and you're using mDNS (`remote-control.local`), check this:
 
-1.  **Navegador y Mixed Content (Error comunes en Vercel/HTTPS)**:
-    *   **Problema**: Si despliegas esta web en Vercel (`https://...`), el navegador bloqueará la conexión al ESP32 (`ws://...`) por seguridad ("Mixed Content"). Verás un mensaje de error rojo en la aplicación.
-    *   **Solución Recomendada**: Ejecuta el cliente **localmente** (`npm run dev`) en tu ordenador. Desde `http://localhost`, la conexión al robot funciona perfectamente.
-    *   **Solución Alternativa (Difícil)**: Configurar Chrome para permitir contenido inseguro (`chrome://flags/#block-insecure-private-network-requests`), aunque esto no siempre funciona para WebSockets desde dominios públicos HTTPS.
-2.  **mDNS en Windows/Android**: `.local` funciona nativamente en Apple (Mac/iPhone). En Windows necesitas tener instalado Bonjour (viene con iTunes) o usar la IP directa en lugar de `remote-control.local`.
-3.  **Firewall**: A veces el firewall del ordenador bloquea las conexiones entrantes/salientes al puerto 80 del ESP32.
+1.  **Browser and Mixed Content (Common errors on Vercel/HTTPS)**:
+    *   **Problem**: If you deploy this web on Vercel (`https://...`), the browser will block the connection to ESP32 (`ws://...`) for security ("Mixed Content"). You'll see a red error message in the application.
+    *   **Recommended Solution**: Run the client **locally** (`npm run dev`) on your computer. From `http://localhost`, the robot connection works perfectly.
+    *   **Alternative Solution (Difficult)**: Configure Chrome to allow insecure content (`chrome://flags/#block-insecure-private-network-requests`), although this doesn't always work for WebSockets from public HTTPS domains.
+2.  **mDNS on Windows/Android**: `.local` works natively on Apple (Mac/iPhone). On Windows you need to have Bonjour installed (comes with iTunes) or use the direct IP instead of `remote-control.local`.
+3.  **Firewall**: Sometimes the computer's firewall blocks incoming/outgoing connections to ESP32's port 80.
 
 ---
 
-## 📋 Características Implementadas
+## 📋 Implemented Features
 
-### Dashboard & Mando Físico
-- Control inalámbrico de largo alcance (ESP-NOW)
-- Telemetría directa desde el mando a la Web (WebSocket `/ws/remote`)
-- Visualización 3D del giroscopio del mando en tiempo real
-- Control híbrido Web/Físico sin interrupciones
+### Dashboard & Physical Remote
+- Long-range wireless control (ESP-NOW)
+- Direct telemetry from remote to Web (WebSocket `/ws/remote`)
+- 3D visualization of remote's gyroscope in real-time
+- Hybrid Web/Physical control without interruptions
 
-### Módulo Robot Car
-- Control de motores de alta frecuencia
-- Telemetría interna de inclinación (Pitch/Roll)
-- Efectos de iluminación RGB sincronizados
-- Comunicación directa con Mando Remoto (ESP-NOW)
+### Robot Car Module
+- High-frequency motor control
+- Internal tilt telemetry (Pitch/Roll)
+- Synchronized RGB lighting effects
+- Direct communication with Remote Control (ESP-NOW)
 
 ### Cocktail Mixer & Drinks
-- Interfaz física en pantalla OLED (Menú autónomo)
-- Selección de bebidas desde el mando (Joystick Up/Down/Accept)
-- API de control remoto y visualización en dashboard
+- Physical interface on OLED display (Standalone menu)
+- Drink selection from remote (Joystick Up/Down/Accept)
+- Remote control API and dashboard visualization
 
-### Sistema de Riego Inteligente
-- Control manual de bombas de agua (ON/OFF)
-- Programación de tareas de riego por días y horas
-- Telemetría de humedad y temperatura DHT22 simulada/real
-- Sincronización horaria automática (NTP)
-
+### Smart Irrigation System
+- Manual water pump control (ON/OFF)
+- Irrigation task programming by days and times
+- DHT22 humidity and temperature telemetry (simulated/real)
+- Automatic time synchronization (NTP)

@@ -15,7 +15,8 @@
         "online": "SISTEMA ONLINE",
         "offline": "SISTEMA OFFLINE",
         "cancel": "CANCELAR",
-        "save": "GUARDAR"
+        "save": "GUARDAR",
+        "accept": "ACEPTAR"
     },
     "car": {
         "title": "Núcleo Robot",
@@ -33,7 +34,15 @@
             "gyroscope": "Giroscopio"
         },
         "actuators": {
-            "title": "ACTUADORES"
+            "title": "ACTUADORES",
+            "front_left": "DELANTERO IZQ.",
+            "front_right": "DELANTERO DER.",
+            "rear_left": "TRASERO IZQ.",
+            "rear_right": "TRASERO DER.",
+            "fl_reverse": "DEL. IZQ. REV.",
+            "fr_reverse": "DEL. DER. REV.",
+            "rl_reverse": "TRA. IZQ. REV.",
+            "rr_reverse": "TRA. DER. REV."
         },
         "kinetic": {
             "title": "CONTROL KINÉTICO"
@@ -90,8 +99,10 @@
         "subtitle": "SISTEMA AUTOMATIZADO DE BEBIDAS",
         "tabs": {
             "drinks": "BEBIDAS",
-            "config": "CONFIG COCKTAILS",
-            "manual": "CONFIG BOMBAS"
+            "config": "CONFIG CÓCTELES",
+            "config_short": "CÓCTELES",
+            "manual": "CONFIG BOMBAS",
+            "manual_short": "BOMBAS"
         },
         "manual": {
             "title": "CONTROL MANUAL DE BOMBAS",
@@ -100,7 +111,27 @@
         "config": {
             "pwm": "PWM",
             "time": "TIEMPO",
-            "set": "FIJAR"
+            "set": "FIJAR",
+            "reset": "RESETEAR VALORES",
+            "resetConfirmTitle": "¿Resetear Recetas?",
+            "resetConfirmText": "Esto borrará todas las recetas personalizadas y restaurará los cócteles predeterminados del ESP32. Esta acción no se puede deshacer."
+        },
+        "liquids": {
+            "cocacola": "Cocacola",
+            "zumo de naranja": "Zumo de naranja",
+            "vodka": "Vodka",
+            "granadina": "Granadina",
+            "tequila": "Tequila"
+        },
+        "cocktails": {
+            "cocacola": "Cocacola",
+            "zumo de naranja": "Zumo de naranja",
+            "vodka shot": "Chupito de Vodka",
+            "vodka con cocacola": "Vodka con Cocacola",
+            "destornillador": "Destornillador",
+            "sex on the beach": "Sex on the Beach",
+            "tequila sunrise": "Tequila Sunrise",
+            "shirley temple": "Shirley Temple"
         },
         "grid": {
             "tapToMix": "Toca para Mezclar"
@@ -109,8 +140,13 @@
             "editTitle": "Editar Receta: {{name}}",
             "helpText": "Ajusta las cantidades de cada ingrediente para este cóctel."
         },
+        "confirm": {
+            "question": "¿Quieres esta bebida?"
+        },
         "messages": {
             "preparing": "Preparando {{name}}...",
+            "serving": "Sirviendo: {{name}}",
+            "cocktailUpdated": "Cóctel guardado correctamente",
             "pumpUpdated": "Bomba actualizada con éxito",
             "pumpUpdateError": "Error al actualizar la bomba",
             "activatingPump": "Activando Bomba {{id}}"

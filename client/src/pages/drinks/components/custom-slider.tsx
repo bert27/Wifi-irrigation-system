@@ -30,7 +30,7 @@ export const SliderComponent = (props: SliderComponentProps) => {
     setValue(valueSlider as number);
   }, [valueSlider]);
 
-  const handleSliderChange = (event: Event, newValue: number | number[]) => {
+  const handleSliderChange = (_event: Event, newValue: number | number[]) => {
     setValue(newValue);
     onChangeValue(newValue as number);
   };

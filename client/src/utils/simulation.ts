@@ -56,7 +56,7 @@ export const activateReactiveSimulation = () => {
 /**
  * Utility to wrap a promise with a timeout.
  */
-export const withTimeout = <T,>(promise: Promise<T>, timeoutMs: number = 3000): Promise<T> => {
+export const withTimeout = <T,>(promise: Promise<T>, timeoutMs = 3000): Promise<T> => {
     return Promise.race([
         promise,
         new Promise<T>((_, reject) =>

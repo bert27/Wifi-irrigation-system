@@ -109,7 +109,7 @@ function CellButton(props: { row: ColumnInterface }): React.ReactElement {
   );
 }
 
-export const TableOutputs = (props: any) => {
+export const TableOutputs = () => {
   const width = 200;
   const columns = [
     {
@@ -150,7 +150,7 @@ export const TableOutputs = (props: any) => {
     },
   ];
 
-  const [rows, setRows] = useState([
+  const [rows] = useState([
     { id: "01", motorA1: 0, motorA2: 0, motorB1: 0, motorB2: 0 },
     { id: "02", motorA1: 0, motorA2: 0, motorB1: 0, motorB2: 1 },
     { id: "03", motorA1: 0, motorA2: 0, motorB1: 1, motorB2: 0 },

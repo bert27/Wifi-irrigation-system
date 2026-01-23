@@ -5,37 +5,59 @@ import { IRemoteControlReceiveStatus } from "../../models/model";
 
 interface KineticCardProps {
   remoteStatus: IRemoteControlReceiveStatus;
-  panelStyle: any;
+  panelStyle: SxProps<Theme>;
   sx?: SxProps<Theme>;
   id?: string;
-  lastCmd?: string;
   onDirection: (name: string) => void;
+  pulseDuration: number;
+  onPulseDurationChange: (val: number) => void;
+  throttle: number;
+  onThrottleChange: (val: number) => void;
 }
 
 import { useTranslation } from "react-i18next";
 
-export const KineticCard: React.FC<KineticCardProps> = ({ remoteStatus, panelStyle, sx, id, lastCmd, onDirection }) => {
+export const KineticCard: React.FC<KineticCardProps> = ({
+  remoteStatus,
+  panelStyle,
+  sx,
+  id,
+  onDirection,
+  pulseDuration,
+  onPulseDurationChange,
+  throttle,
+  onThrottleChange
+}) => {
   const { t } = useTranslation();
   return (
     <Paper
       id={id || "kinetic-card"}
       className="glass-effect"
-      sx={{
-        ...panelStyle,
-        p: 2,
-        justifyContent: 'center',
-        maxWidth: '100%',
-        overflow: 'hidden',
-        boxSizing: 'border-box',
-        ...sx
-      }}
+      sx={[
+        ...(Array.isArray(panelStyle) ? panelStyle : [panelStyle]),
+        {
+          p: 2,
+          justifyContent: 'center',
+          maxWidth: '100%',
+          overflow: 'hidden',
+          boxSizing: 'border-box',
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
     >
       <Typography variant="subtitle2" className="tech-text" sx={{ color: 'var(--secondary)', mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
         <SportsEsportsIcon fontSize="small" /> {t('car.kinetic.title')}
       </Typography>
 
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: 0 }}>
-        <CardController recibedMessage={remoteStatus} lastCmd={lastCmd} onDirection={onDirection} />
+        <CardController
+          recibedMessage={remoteStatus}
+          onDirection={onDirection}
+          pulseDuration={pulseDuration}
+          onPulseDurationChange={onPulseDurationChange}
+          throttle={throttle}
+          onThrottleChange={onThrottleChange}
+        />
       </Box>
     </Paper>
   );

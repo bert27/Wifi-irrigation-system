@@ -133,7 +133,7 @@ describe('DrinksPage Component', () => {
 
         render(<DrinksPage />);
 
-        expect(screen.getByText(/¿Quieres esta bebida?/i)).toBeInTheDocument();
-        expect(screen.getByTestId('selected-cocktail-name')).toHaveTextContent('Margarita');
+        expect(screen.getByText('drinks.confirm.question')).toBeInTheDocument();
+        expect(screen.getByTestId('selected-cocktail-name')).toHaveTextContent('drinks.cocktails.margarita');
     });
 });

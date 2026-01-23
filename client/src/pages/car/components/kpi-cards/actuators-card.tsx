@@ -2,32 +2,43 @@ import { Box, Paper, Typography, Slider, SxProps, Theme } from "@mui/material";
 import WifiIcon from '@mui/icons-material/Wifi';
 import { CardOutputs } from "../card-outputs";
 
+export interface OutputDataInterface {
+  name: string;
+  colorLabel: string;
+  pin: number;
+  state: number;
+}
+
 interface ActuatorsCardProps {
   globalPwm: number;
   setGlobalPwm: (val: number) => void;
-  panelStyle: any;
+  panelStyle: SxProps<Theme>;
   sx?: SxProps<Theme>;
   id?: string;
-  lastCmd?: string;
+  outputs: OutputDataInterface[];
+  onToggle: (index: number) => void;
 }
 
 import { useTranslation } from "react-i18next";
 
-export const ActuatorsCard: React.FC<ActuatorsCardProps> = ({ globalPwm, setGlobalPwm, panelStyle, sx, id, lastCmd }) => {
+export const ActuatorsCard: React.FC<ActuatorsCardProps> = ({ globalPwm, setGlobalPwm, panelStyle, sx, id, outputs, onToggle }) => {
   const { t } = useTranslation();
   return (
     <Paper
       id={id || "actuators-card"}
       className="glass-effect"
-      sx={{
-        ...panelStyle,
-        p: 2,
-        display: 'flex',
-        flexDirection: 'row',
-        gap: 2,
-        overflow: 'hidden',
-        ...sx
-      }}
+      sx={[
+        ...(Array.isArray(panelStyle) ? panelStyle : [panelStyle]),
+        {
+          p: { xs: 1.5, sm: 2 },
+          display: 'flex',
+          flexDirection: 'row',
+          gap: { xs: 1, sm: 2 },
+          overflow: 'hidden',
+          minHeight: { xs: '300px', md: 'auto' },
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
     >
       {/* Left: Matrix */}
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
@@ -35,7 +46,7 @@ export const ActuatorsCard: React.FC<ActuatorsCardProps> = ({ globalPwm, setGlob
           <WifiIcon fontSize="small" /> {t('car.actuators.title')}
         </Typography>
         <Box sx={{ flexGrow: 1, minHeight: 0, overflowY: 'auto' }}>
-          <CardOutputs globalPwm={globalPwm} lastCmd={lastCmd} />
+          <CardOutputs outputs={outputs} onToggle={onToggle} />
         </Box>
       </Box>
 

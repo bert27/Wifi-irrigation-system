@@ -52,7 +52,7 @@ export const StatusCard: React.FC<StatusCardProps> = ({ temperature, clock, stat
       </Box>
 
       <Box mt={2}>
-        <ChartTemperature />
+        <ChartTemperature isPumpActive={stateWaterPump} />
       </Box>
     </div>
   );

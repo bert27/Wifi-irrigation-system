@@ -1,24 +1,24 @@
 import axios from "axios";
 import { IColorData } from "@/pages/car/models/model";
-import { directionWebRobot, getRequestOptions } from "@/config/api.config";
+import { directionWebRobot } from "@/config/api.config";
 import { OutputDataInterface } from "@/pages/car/components/card-outputs";
 import { ColumnInterface } from "@/pages/car/components/table-outputs";
 import { activateReactiveSimulation, isSimulationMode } from "@/utils/simulation";
 
 const USE_MOCK = isSimulationMode();
 
-const axiosGet = async (params: any, endpoint: string) => {
+const axiosGet = async (params: Record<string, any> | undefined, endpoint: string) => {
   if (USE_MOCK) return { success: true };
   try {
     const response = await axios.get(`${directionWebRobot}/${endpoint}`, {
       params,
-      ...getRequestOptions("GET"),
     });
     return response.data;
-  } catch (error: any) {
-    console.error(`Robot service error on ${endpoint}:`, error);
+  } catch (error) {
+    const err = error as Error & { response?: { data?: any } };
+    console.error(`Robot service error on ${endpoint}:`, err);
     activateReactiveSimulation();
-    const errorMessage = error.message ?? "Unknown error";
+    const errorMessage = err.message ?? "Unknown error";
     return { type: "error", message: errorMessage };
   }
 };

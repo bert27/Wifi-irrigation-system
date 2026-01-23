@@ -7,11 +7,9 @@ import {
     Button,
     Box,
     Typography,
-    Slider,
-    IconButton
+    Slider
 } from "@mui/material";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
-import WaterDropOutlinedIcon from "@mui/icons-material/WaterDropOutlined";
 import { IBottle } from "@/pages/drinks/models/drinks-model";
 import { useTranslation } from "react-i18next";
 
@@ -110,14 +108,15 @@ export const PumpSettingsModal: React.FC<PumpSettingsModalProps> = ({
                             {t('drinks.config.time')}
                         </Typography>
                         <Typography sx={{ color: "var(--accent)", fontWeight: 700 }}>
-                            {time}s
+                            {time.toFixed(1)}s
                         </Typography>
                     </Box>
                     <Slider
                         value={time}
                         onChange={(_e, v) => setTime(v as number)}
                         min={0}
-                        max={20}
+                        max={60}
+                        step={0.1}
                         sx={{
                             height: 6,
                             "& .MuiSlider-thumb": {

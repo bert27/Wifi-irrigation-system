@@ -21,7 +21,8 @@ export const useDrinksPage = () => {
     message: cocktailMessage,
     showMessage: showCocktailMessage,
     setShowMessage: setShowCocktailMessage,
-    loading
+    loading,
+    error: cocktailError
   } = useCocktails();
 
   // 2. Hardware Synchronization (WebSocket)
@@ -92,9 +93,9 @@ export const useDrinksPage = () => {
     setSelectedCocktailForConfirm(null);
   };
 
-  // Aggregate Messages (Simple priority logic: WS > Pump > Cocktail)
-  const displayMessage = wsMessage || pumpMessage || cocktailMessage;
-  const displayShowMessage = showWsMessage || showPumpMessage || showCocktailMessage;
+  // Aggregate Messages (Priority: Cocktail > Pump > WS Status)
+  const displayMessage = cocktailMessage || pumpMessage || wsMessage;
+  const displayShowMessage = showCocktailMessage || showPumpMessage || showWsMessage;
 
   // Unified closer
   const setDisplayShowMessage = (show: boolean) => {
@@ -123,6 +124,7 @@ export const useDrinksPage = () => {
     confirmCocktail,
     cancelCocktailSelection,
     loading,
-    isMock
+    isMock,
+    cocktailError
   };
 };

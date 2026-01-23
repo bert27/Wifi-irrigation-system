@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import { useTranslation } from "react-i18next";
 
 interface ConnectInfoProps {
   connectedRobot: boolean;
@@ -8,7 +7,6 @@ interface ConnectInfoProps {
 }
 
 export const ConnectInfo = ({ connectedRobot, connectedRemote, isMock }: ConnectInfoProps) => {
-  const { t } = useTranslation();
 
   const StatusBadge = ({ label, active, simulated }: { label: string, active: boolean, simulated?: boolean }) => {
     // If simulated, it should look disconnected (Red/Offline) as per user request

@@ -25,4 +25,12 @@ export interface IHardwareCocktail {
   }>;
 }
 
+export interface IDrinksStateData {
+  type: string;
+  index: number;
+  screen: number;
+  serving?: boolean;
+  name: string;
+}
+
 export type TabType = 'drinks' | 'config' | 'manual';

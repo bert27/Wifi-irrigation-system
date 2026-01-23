@@ -52,8 +52,11 @@ void setup() {
       Serial.print("REMOTE: Connected! IP: ");
       Serial.println(WiFi.localIP());
       
-      if (MDNS.begin("remote-control")) {
-        Serial.println("REMOTE: MDNS Responder Started (remote-control.local)");
+      
+      if (MDNS.begin(MDNS_HOSTNAME)) {
+        Serial.print("REMOTE: MDNS Responder Started (");
+        Serial.print(MDNS_HOSTNAME);
+        Serial.println(".local)");
         MDNS.addService("http", "tcp", 80);
       }
   } else {

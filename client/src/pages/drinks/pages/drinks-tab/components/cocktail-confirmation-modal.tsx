@@ -7,6 +7,7 @@ import {
     Typography,
     Button
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { ICocktail } from "@/pages/drinks/models/drinks-model";
 
 interface CocktailConfirmationModalProps {
@@ -20,6 +21,7 @@ export const CocktailConfirmationModal: React.FC<CocktailConfirmationModalProps>
     onConfirm,
     onCancel
 }) => {
+    const { t } = useTranslation();
     return (
         <Dialog
             open={Boolean(cocktail)}
@@ -36,18 +38,18 @@ export const CocktailConfirmationModal: React.FC<CocktailConfirmationModalProps>
             }}
         >
             <DialogTitle sx={{ fontWeight: 800, textAlign: 'center', pt: 3 }}>
-                ¿Aceptar?
+                {t('common.accept')}?
             </DialogTitle>
             <DialogContent sx={{ textAlign: 'center', pb: 2 }}>
                 <Typography sx={{ color: 'var(--text-muted)', mb: 1 }}>
-                    ¿Quieres esta bebida?
+                    {t('drinks.confirm.question', { defaultValue: 'Do you want this drink?' })}
                 </Typography>
                 <Typography
                     variant="h5"
                     sx={{ color: 'var(--primary)', fontWeight: 800 }}
                     data-testid="selected-cocktail-name"
                 >
-                    {cocktail?.name}
+                    {cocktail ? t(`drinks.cocktails.${cocktail.name.toLowerCase()}`, { defaultValue: cocktail.name }) : ""}
                 </Typography>
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'center', gap: 2, pb: 4, px: 3 }}>
@@ -59,7 +61,7 @@ export const CocktailConfirmationModal: React.FC<CocktailConfirmationModalProps>
                         '&:hover': { background: 'rgba(255,255,255,0.05)' }
                     }}
                 >
-                    Cancelar
+                    {t('common.cancel')}
                 </Button>
                 <Button
                     onClick={onConfirm}
@@ -71,7 +73,7 @@ export const CocktailConfirmationModal: React.FC<CocktailConfirmationModalProps>
                         px: 4
                     }}
                 >
-                    Aceptar
+                    {t('common.accept')}
                 </Button>
             </DialogActions>
         </Dialog>

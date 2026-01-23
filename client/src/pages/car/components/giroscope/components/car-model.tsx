@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Edges } from "@react-three/drei";
@@ -5,9 +6,10 @@ import { Edges } from "@react-three/drei";
 interface CarModelProps {
     rotation: [number, number, number];
     isDragging: boolean;
+    headlightColor?: string;
 }
 
-export function CarModel({ rotation, isDragging }: CarModelProps) {
+export function CarModel({ rotation, isDragging, headlightColor = "#fef08a" }: CarModelProps) {
     const mesh = useRef<any>(null);
     const [hovered, setHover] = useState(false);
 
@@ -102,16 +104,16 @@ export function CarModel({ rotation, isDragging }: CarModelProps) {
             <mesh position={[1.05, 0.15, 0.3]}>
                 <sphereGeometry args={[0.08, 8, 8]} />
                 <meshStandardMaterial
-                    color="#fef08a"
-                    emissive="#fef08a"
+                    color={headlightColor}
+                    emissive={headlightColor}
                     emissiveIntensity={2}
                 />
             </mesh>
             <mesh position={[1.05, 0.15, -0.3]}>
                 <sphereGeometry args={[0.08, 8, 8]} />
                 <meshStandardMaterial
-                    color="#fef08a"
-                    emissive="#fef08a"
+                    color={headlightColor}
+                    emissive={headlightColor}
                     emissiveIntensity={2}
                 />
             </mesh>

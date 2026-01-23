@@ -9,7 +9,7 @@ import "./../irrigation.css";
 
 interface ConfigCardProps {
   days: Day[];
-  saveDays: (clickedDay: Day, index: number) => void;
+  saveDays: (index: number) => void;
   dataForNewTask: IScheduledTask;
   saveTimeSelect: (h: string, m: string) => void;
   setIsOpenModalConfig: (isOpen: boolean) => void;

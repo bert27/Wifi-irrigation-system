@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Box, Alert, Snackbar } from "@mui/material";
 import { useDrinksPage } from "./hooks/use-drinks-page";
 import { SimulationAlert } from "@/components/simulation-alert/simulation-alert";
@@ -7,6 +7,7 @@ import { DrinksHeader } from "./components/layout/drinks-header";
 import { DrinksBackground } from "./components/layout/drinks-background";
 import { DrinksTabs } from "./components/layout/drinks-tabs";
 import { CocktailConfirmationModal } from "./pages/drinks-tab/components/cocktail-confirmation-modal";
+import { ErrorAlert } from "@/components/error-alert/error-alert";
 
 import { DrinksTabPage } from "./pages/drinks-tab/drinks-tab-page";
 import { CocktailsConfigTabPage } from "./pages/cocktails-config-tab/cocktails-config-tab-page";
@@ -30,7 +31,8 @@ export const DrinksPage = () => {
     selectedCocktailForConfirm,
     confirmCocktail,
     cancelCocktailSelection,
-    isMock
+    isMock,
+    cocktailError
   } = useDrinksPage();
 
   useEffect(() => {
@@ -79,8 +81,8 @@ export const DrinksPage = () => {
             <CocktailsConfigTabPage
               cocktails={cocktails}
               bottles={bottles}
-              onUpdatePump={updatePump}
               onUpdateCocktail={updateCocktail}
+              onRefreshCocktails={() => window.location.reload()}
             />
           )}
 
@@ -114,6 +116,8 @@ export const DrinksPage = () => {
           {message}
         </Alert>
       </Snackbar>
+
+      <ErrorAlert error={cocktailError} />
 
       <CocktailConfirmationModal
         cocktail={selectedCocktailForConfirm}

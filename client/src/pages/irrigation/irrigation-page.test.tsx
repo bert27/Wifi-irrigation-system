@@ -31,9 +31,9 @@ vi.mock("./hooks/use-irrigation-page", () => {
         { name: "S", state: false },
         { name: "D", state: false },
       ]);
-      const [dataForNewTask, setDataForNewTask] = React.useState({ days: [], hour: "17", minutes: "30" });
+      const dataForNewTask = { days: [], hour: "17", minutes: "30" };
 
-      const saveDays = (day: any, index: number) => {
+      const saveDays = (index: number) => {
         const newDays = [...days];
         newDays[index] = { ...newDays[index], state: !newDays[index].state };
         setDays(newDays);
@@ -103,7 +103,7 @@ test("Create Task and not selected Day", async () => {
 
 test("Create Task by defect and delete task", async () => {
   const user = userEvent.setup();
-  const { container, getByText, getByTestId, getAllByTestId, queryByText } = render(<Irrigation />);
+  const { container, getByText, getByTestId } = render(<Irrigation />);
 
   // Checkbox interactions
   const checkboxes = container.getElementsByClassName("days_irrigation_child");

@@ -22,6 +22,7 @@
 #ifdef ENABLE_IRRIGATION_SYSTEM
     #include "apps/irrigation/services/API.hpp"
     #include "apps/irrigation/controller.hpp"
+    #include "apps/irrigation/config.hpp"
 #endif
 
 #ifdef ENABLE_DRINKS_MACHINE
@@ -29,6 +30,7 @@
     #include "apps/drinks machine/utils/display.hpp"
     #include "apps/drinks machine/controller.hpp"
     #include "apps/drinks machine/services/websocket.hpp"
+    #include "apps/drinks machine/config.hpp"
 #endif
 
 #ifdef ENABLE_ROBOT_CAR
@@ -36,6 +38,7 @@
     #include "apps/robot car/utils/gyroscope.hpp"
     #include "apps/robot car/controller.hpp"
     #include "apps/robot car/services/websocket.hpp"
+    #include "apps/robot car/config.hpp"
 #endif
 
 
@@ -53,12 +56,31 @@ void setup() {
   ConnectWiFi_STA();
   setupRemoteHub(); 
 
-  if (MDNS.begin("drinks-machine")) {
-    MDNS.addService("http", "tcp", 80);
-    Serial.println("MDNS started: drinks-machine.local");
-  }
+  // 2. mDNS Setup (depends on which app is enabled)
+  #ifdef ENABLE_IRRIGATION_SYSTEM
+    if (MDNS.begin(MDNS_HOSTNAME)) {
+      MDNS.addService("http", "tcp", 80);
+      Serial.print("MDNS started: ");
+      Serial.print(MDNS_HOSTNAME);
+      Serial.println(".local");
+    }
+  #elif defined(ENABLE_DRINKS_MACHINE)
+    if (MDNS.begin(MDNS_HOSTNAME)) {
+      MDNS.addService("http", "tcp", 80);
+      Serial.print("MDNS started: ");
+      Serial.print(MDNS_HOSTNAME);
+      Serial.println(".local");
+    }
+  #elif defined(ENABLE_ROBOT_CAR)
+    if (MDNS.begin(MDNS_HOSTNAME)) {
+      MDNS.addService("http", "tcp", 80);
+      Serial.print("MDNS started: ");
+      Serial.print(MDNS_HOSTNAME);
+      Serial.println(".local");
+    }
+  #endif
 
-  // 2. Server Initialization
+  // 3. Server Initialization
   #ifdef ENABLE_IRRIGATION_SYSTEM
       Serial.println("System: Irrigation Enabled");
       setupPlantController();

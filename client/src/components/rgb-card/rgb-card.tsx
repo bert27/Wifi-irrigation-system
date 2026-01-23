@@ -20,6 +20,7 @@ export const RgbCard: React.FC<RgbCardProps> = ({ color, handleColorChange, pane
       className="glass-effect rgb-card-container"
       sx={{
         ...panelStyle,
+        p: { xs: 1.5, md: 2 },
         ...sx
       }}
     >
@@ -42,27 +43,31 @@ export const RgbCard: React.FC<RgbCardProps> = ({ color, handleColorChange, pane
       {/* Main Content Area */}
       <Box className="main-content">
 
-        {/* Top Left: Hex Code */}
-        <Box className="hex-display-container">
-          <Typography className="tech-text hex-text" sx={{
-            textShadow: `0 0 10px ${color}`
-          }}>
-            {color.toUpperCase()}
-          </Typography>
-        </Box>
+        {/* Top Row: Hex Code + Color Viewer */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
+          <Box className="hex-display-container">
+            <Typography className="tech-text hex-text" sx={{
+              textShadow: `0 0 10px ${color}`,
+              fontSize: { xs: '0.8rem', md: '0.9rem' }
+            }}>
+              {color.toUpperCase()}
+            </Typography>
+          </Box>
 
-        {/* Middle Left: Small Color Viewer */}
-        <Box
-          id="rgb-color-display"
-          className="color-viewer"
-          sx={{
-            background: color,
-            boxShadow: `
-                  inset 0 0 5px rgba(255,255,255,0.4), 
-                  0 0 10px ${color}44
-                `
-          }}
-        />
+          <Box
+            id="rgb-color-display"
+            className="color-viewer"
+            sx={{
+              background: color,
+              width: { xs: '25px', md: '30px' },
+              height: { xs: '25px', md: '30px' },
+              boxShadow: `
+                    inset 0 0 5px rgba(255,255,255,0.4), 
+                    0 0 10px ${color}44
+                  `
+            }}
+          />
+        </Box>
 
         {/* Bottom: Wide Picker */}
         <Box

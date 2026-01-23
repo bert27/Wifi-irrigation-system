@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Box, Button, SxProps, Theme } from '@mui/material';
+import { Alert, Button, SxProps, Theme } from '@mui/material';
 import { SIMULATION_MESSAGE, resetSimulationMode } from '@/utils/simulation';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
