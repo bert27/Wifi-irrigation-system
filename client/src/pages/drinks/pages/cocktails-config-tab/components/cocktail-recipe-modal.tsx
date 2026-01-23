@@ -38,13 +38,24 @@ export const CocktailRecipeModal: React.FC<CocktailRecipeModalProps> = ({
 
     useEffect(() => {
         if (cocktail) {
+            console.log("[CocktailRecipeModal] Opening modal for:", cocktail.name, "Current cocktails recipe:", cocktail.recipe);
+            console.log("[CocktailRecipeModal] Available bottles in UI:", bottles.map(b => b.liquid));
+
             // Map initial proportions
             const initial = cocktail.recipe?.map(r => ({ name: r.liquid, quantity: r.quantity })) || [];
+
             // Ensure all bottles are present in the UI for adjustment
             const allIngredients = bottles.map(b => {
-                const existing = initial.find(i => i.name === b.liquid);
+                // Use case-insensitive matching to be robust against "Zumo de Naranja" vs "Zumo de naranja"
+                const existing = initial.find(i => i.name.toLowerCase().trim() === b.liquid.toLowerCase().trim());
+
+                if (existing) {
+                    console.log(`[CocktailRecipeModal] Matched ingredient: ${b.liquid} -> ${existing.quantity}ml`);
+                }
+
                 return { name: b.liquid, quantity: existing ? existing.quantity : 0 };
             });
+
             setRecipe(allIngredients);
         }
     }, [cocktail, bottles]);
@@ -69,7 +80,7 @@ export const CocktailRecipeModal: React.FC<CocktailRecipeModalProps> = ({
             <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1.5, pb: 1 }}>
                 <LocalBarIcon sx={{ color: "var(--accent)" }} />
                 <Typography className="tech-text" sx={{ color: "var(--accent)", fontWeight: 700 }}>
-                    {t('drinks.recipe.editTitle', { name: cocktail.name })}
+                    {t('drinks.recipe.editTitle', { name: t(`drinks.cocktails.${cocktail.name.toLowerCase()}`, { defaultValue: cocktail.name }) })}
                 </Typography>
             </DialogTitle>
 
@@ -85,7 +96,7 @@ export const CocktailRecipeModal: React.FC<CocktailRecipeModalProps> = ({
                             <ListItem sx={{ px: 0, flexDirection: "column", alignItems: "stretch", gap: 1 }}>
                                 <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
                                     <ListItemText
-                                        primary={ing.name}
+                                        primary={t(`drinks.liquids.${ing.name.toLowerCase()}`, { defaultValue: ing.name })}
                                         primaryTypographyProps={{ sx: { fontWeight: 600, color: "var(--text-main)" } }}
                                     />
                                     <Typography sx={{ color: "var(--accent)", fontWeight: 700 }}>

@@ -63,6 +63,25 @@ void setupDrinksAPI(AsyncWebServer& server) {
         request->send(200, "application/json", response);
     });
 
+    server.on("/drinks/bottles", HTTP_GET, [](AsyncWebServerRequest *request) {
+        JsonDocument doc;
+        JsonArray array = doc.to<JsonArray>();
+        auto& bottles = DrinksInputManager::getInstance().bottles;
+        
+        for (const auto& b : bottles) {
+            JsonObject obj = array.add<JsonObject>();
+            obj["id"] = b.id;
+            obj["title"] = b.title;
+            obj["liquid"] = b.liquid;
+            obj["pwm"] = b.pwm;
+            obj["timeCalibration"] = b.timeCalibration;
+        }
+        
+        String response;
+        serializeJson(doc, response);
+        request->send(200, "application/json", response);
+    });
+
     server.on("/drinks/save-cocktail", HTTP_POST, [](AsyncWebServerRequest *request) {
         // No-op
     }, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
@@ -77,7 +96,7 @@ void setupDrinksAPI(AsyncWebServer& server) {
             if (!error) {
                 String name = doc["name"].as<String>();
                 JsonArray ings = doc["ingredients"].as<JsonArray>();
-                std::vector<LiquidProp> ingredients;
+                std::vector<ILiquidProp> ingredients;
                 for (JsonObject ing : ings) {
                     ingredients.push_back({ ing["name"].as<String>(), ing["quantity"].as<int>() });
                 }
@@ -88,5 +107,10 @@ void setupDrinksAPI(AsyncWebServer& server) {
             }
             bodyStr = ""; // Reset
         }
+    });
+
+    server.on("/drinks/reset-recipes", HTTP_POST, [](AsyncWebServerRequest *request) {
+        DrinksInputManager::getInstance().resetToDefaults();
+        request->send(200, "text/plain", "Recipes reset to defaults successfully");
     });
 }

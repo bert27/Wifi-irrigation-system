@@ -7,17 +7,10 @@
 #include <vector>
 #include <map>
 
+#include "config.hpp"
+#include "models.hpp"
 #include "utils/ds3231.hpp"
 #include "utils/TemperatureManager.hpp"
-
-// Irrigation uses Pump 1 (Shared with Drinks, but managed locally for scheduling)
-constexpr uint8_t PIN_IRRIGATION_PUMP = 0;
-
-struct ScheduledTask {
-    String days;
-    String hour;
-    String minute;
-};
 
 class IrrigationSystem {
 public:
@@ -35,7 +28,7 @@ public:
 
 public:
     AsyncWebServer server;
-    std::vector<ScheduledTask> tasks;
+    std::vector<IScheduledTask> tasks;
     const size_t MAX_TASKS = 20;
 
     const char* daysOfWeek[7] = { "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo" };

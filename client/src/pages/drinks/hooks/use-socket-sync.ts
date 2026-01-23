@@ -2,8 +2,9 @@ import { useState, useEffect, useMemo } from "react";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { directionWebDrinks } from "@/config/api.config";
 import { isSimulationMode } from "@/utils/simulation";
-import { ICocktail } from "@/pages/drinks/models/drinks-model";
+import { ICocktail, IDrinksStateData } from "@/pages/drinks/models/drinks-model";
 import { useConnectivity } from "@/context/connectivity-context";
+import { useTranslation } from "react-i18next";
 
 interface UseSocketSyncProps {
     cocktails: ICocktail[];
@@ -18,6 +19,7 @@ export const useSocketSync = ({
     setSelectedCocktailForConfirm,
     loading
 }: UseSocketSyncProps) => {
+    const { t } = useTranslation();
     const { setConnectionStatus } = useConnectivity();
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [message, setMessage] = useState<string | undefined>(undefined);
@@ -88,7 +90,7 @@ export const useSocketSync = ({
 
     useEffect(() => {
         if (lastJsonMessage) {
-            const data = lastJsonMessage as any;
+            const data = lastJsonMessage as IDrinksStateData;
             if (data.type === "drinks_state") {
                 console.log("WS Recv:", data);
                 setSelectedIndex(data.index);
@@ -106,12 +108,13 @@ export const useSocketSync = ({
                 }
 
                 if (data.serving) {
-                    setMessage(`Sirviendo: ${data.name}`);
+                    const translatedName = t(`drinks.cocktails.${data.name.toLowerCase()}`, { defaultValue: data.name });
+                    setMessage(t('drinks.messages.serving', { name: translatedName }));
                     setShowMessage(true);
                 }
             }
         }
-    }, [lastJsonMessage, cocktails, selectedCocktailForConfirm, setSelectedCocktailForConfirm]);
+    }, [lastJsonMessage, cocktails, selectedCocktailForConfirm, setSelectedCocktailForConfirm, t]);
 
     return {
         selectedIndex,

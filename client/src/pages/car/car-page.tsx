@@ -3,6 +3,7 @@ import { Box, useTheme, useMediaQuery, Theme, Alert } from "@mui/material";
 import "@/pages/car/styles.css";
 import { useRobotControl } from "./hooks/use-robot-control";
 import { SimulationAlert } from "@/components/simulation-alert/simulation-alert";
+import { robotService } from "@/pages/car/services/robot.service";
 
 // Atomic Components
 import { CarHeader } from "./components/car-header";
@@ -21,29 +22,50 @@ export const CarPage: React.FC = () => {
     toggleLED,
     sendWSMessage,
     setOrientation,
-    lastCmd,
     handleDirection,
     connectionError,
-    isMock
+    isMock,
+    // New Actuator Integration
+    outputs,
+    setOutputs,
+    pulseDuration,
+    setPulseDuration,
+    throttle,
+    setThrottle
   } = useRobotControl();
 
-  const [globalPwm, setGlobalPwm] = React.useState(140);
+  const handleActuatorToggle = async (index: number) => {
+    const newOutputs = [...outputs];
+    const target = { ...newOutputs[index] };
+
+    // Toggle state
+    target.state = target.state === 0 ? throttle : 0;
+    newOutputs[index] = target;
+
+    setOutputs(newOutputs);
+    if (!isMock) {
+      try {
+        await robotService.sendDataOutputSelectedToServer(target);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
   const theme = useTheme<Theme>();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
   useEffect(() => {
     document.title = "RobotCore";
   }, []);
 
-  // Centralized Layout Configuration (Bento Grid Config)
+  // Centralized Layout Configuration
   const layoutConfig = {
-    header: { height: '80px' },
+    header: { height: isDesktop ? '80px' : 'auto' },
     grid: { desktopHeight: 'calc(100vh - 120px)' },
-    // Simplified structure for the new specific layout
   };
 
   const panelStyle = {
-    p: 3,
+    p: { xs: 2, md: 3 },
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
@@ -57,7 +79,7 @@ export const CarPage: React.FC = () => {
       width: '100%',
       background: 'var(--bg-deep)',
       overflow: isDesktop ? 'hidden' : 'auto',
-      p: 2,
+      p: { xs: 1, sm: 2 },
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box'
@@ -85,7 +107,6 @@ export const CarPage: React.FC = () => {
       <Box sx={{
         flexGrow: 1,
         display: 'grid',
-        // 70% Left / 30% Right Split
         gridTemplateColumns: isDesktop ? 'minmax(0, 0.7fr) minmax(0, 0.3fr)' : '1fr',
         gap: 2,
         height: isDesktop ? layoutConfig.grid.desktopHeight : 'auto',
@@ -98,33 +119,39 @@ export const CarPage: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
-          height: '100%',
+          height: isDesktop ? '100%' : 'auto',
           minHeight: 0,
           minWidth: 0,
-          overflow: 'hidden'
+          overflow: isDesktop ? 'hidden' : 'visible'
         }}>
 
-          {/* TOP ROW: Telemetry + RGB (45% Height) */}
+          {/* TOP ROW: Telemetry + RGB */}
           <Box sx={{
             display: 'flex',
+            flexDirection: isDesktop ? 'row' : 'column',
             gap: 2,
-            height: '45%',
+            height: isDesktop ? '45%' : 'auto',
             minHeight: 0,
-            overflow: 'hidden'
+            overflow: isDesktop ? 'hidden' : 'visible'
           }}>
-            {/* Telemetry (Flexible Width) */}
-            <Box sx={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+            {/* Telemetry */}
+            <Box sx={{ flex: 1, minWidth: 0, overflow: isDesktop ? 'hidden' : 'visible' }}>
               <TelemetryCard
                 id="card-telemetry"
                 robotStatus={dashboardState.robot}
                 remoteStatus={dashboardState.remote}
                 setOrientation={setOrientation}
                 panelStyle={panelStyle}
+                headlightColor={color}
               />
             </Box>
 
-            {/* RGB (Square, Auto Width) */}
-            <Box sx={{ height: '100%', aspectRatio: '1/1' }}>
+            {/* RGB Picker */}
+            <Box sx={{
+              height: isDesktop ? '100%' : 'auto',
+              aspectRatio: isDesktop ? '1/1' : 'auto',
+              minWidth: isDesktop ? '300px' : '100%'
+            }}>
               <RgbCard
                 id="card-rgb"
                 color={color}
@@ -135,14 +162,16 @@ export const CarPage: React.FC = () => {
             </Box>
           </Box>
 
-          {/* BOTTOM ROW: Actuators (55% Height) */}
-          <Box sx={{ height: '55%', minHeight: 0 }}>
+          {/* BOTTOM ROW: Actuators */}
+          <Box sx={{ height: isDesktop ? '55%' : 'auto', minHeight: 0 }}>
             <ActuatorsCard
               id="card-actuators"
-              globalPwm={globalPwm}
-              setGlobalPwm={setGlobalPwm}
+              globalPwm={throttle}
+              setGlobalPwm={setThrottle}
               panelStyle={panelStyle}
               sx={{ height: '100%' }}
+              outputs={outputs}
+              onToggle={handleActuatorToggle}
             />
           </Box>
 
@@ -153,10 +182,10 @@ export const CarPage: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
-          height: '100%',
+          height: isDesktop ? '100%' : 'auto',
           minHeight: 0,
           minWidth: 0,
-          overflow: 'hidden'
+          overflow: isDesktop ? 'hidden' : 'visible'
         }}>
           <Box sx={{ flex: 1, minHeight: 0 }}>
             <KineticCard
@@ -164,8 +193,11 @@ export const CarPage: React.FC = () => {
               remoteStatus={dashboardState.remote}
               panelStyle={panelStyle}
               sx={{ height: '100%' }}
-              lastCmd={lastCmd}
               onDirection={handleDirection}
+              pulseDuration={pulseDuration}
+              onPulseDurationChange={setPulseDuration}
+              throttle={throttle}
+              onThrottleChange={setThrottle}
             />
           </Box>
         </Box>

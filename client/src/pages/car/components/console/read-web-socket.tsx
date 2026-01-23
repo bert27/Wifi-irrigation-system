@@ -6,9 +6,6 @@ import { directionWebRobot } from "@/config/api.config";
 
 const urlEsp8266 = directionWebRobot.replace(/^http/, 'ws') + '/ws/remote';
 
-interface Message {
-  data: string;
-}
 
 export const ReadWebSocket: React.FC = () => {
   const [socketUrl, setSocketUrl] = useState<string>(urlEsp8266);
@@ -54,7 +51,7 @@ export const ReadWebSocket: React.FC = () => {
           disabled={readyState !== ReadyState.OPEN}
           style={{ background: 'var(--accent)', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', opacity: readyState === ReadyState.OPEN ? 1 : 0.5 }}
         >
-          Send 'Hello'
+          Send &apos;Hello&apos;
         </button>
       </div>
 

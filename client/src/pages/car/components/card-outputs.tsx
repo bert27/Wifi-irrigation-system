@@ -1,6 +1,4 @@
-import { Box, Typography, Grid, Paper, Slider } from "@mui/material";
-import { useState } from "react";
-import { robotService } from "@/pages/car/services/robot.service";
+import { Box, Typography, Grid, Paper } from "@mui/material";
 
 export interface OutputDataInterface {
   name: string;
@@ -9,32 +7,7 @@ export interface OutputDataInterface {
   state: number;
 }
 
-export const CardOutputs = ({ globalPwm, lastCmd }: { globalPwm: number, lastCmd?: string }) => {
-  const [outputs, setOutputs] = useState<OutputDataInterface[]>([
-    { name: "FRONT LEFT", colorLabel: "black", pin: 25, state: 0 },
-    { name: "FRONT RIGHT", colorLabel: "black", pin: 4, state: 0 },
-    { name: "REAR LEFT", colorLabel: "yellow", pin: 14, state: 0 },
-    { name: "REAR RIGHT", colorLabel: "yellow", pin: 19, state: 0 },
-    { name: "FL REVERSE", colorLabel: "blue", pin: 26, state: 0 },
-    { name: "FR REVERSE", colorLabel: "blue", pin: 17, state: 0 },
-    { name: "RL REVERSE", colorLabel: "white", pin: 27, state: 0 },
-    { name: "RR REVERSE", colorLabel: "white", pin: 21, state: 0 },
-  ]);
-
-  const handleToggle = async (index: number) => {
-    const newOutputs = [...outputs];
-    const target = newOutputs[index];
-
-    // Toggle state
-    target.state = target.state === 0 ? globalPwm : 0;
-
-    setOutputs(newOutputs);
-    try {
-      await robotService.sendDataOutputSelectedToServer(target);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+export const CardOutputs = ({ outputs, onToggle }: { outputs: OutputDataInterface[], onToggle: (index: number) => void }) => {
 
   const getColorForLabel = (label: string) => {
     const colorMap: Record<string, string> = {
@@ -134,7 +107,8 @@ export const CardOutputs = ({ globalPwm, lastCmd }: { globalPwm: number, lastCmd
           <Grid size={{ xs: 12, sm: 6, lg: 6 }} key={index}>
             <Paper
               id={`card-output-pin-${item.pin}`}
-              className="glass-card"
+              data-testid={`actuator-pin-${item.pin}`}
+              className="glass-effect"
               sx={{
                 p: 1.5,
                 border: item.state ? `1px solid ${getColorForLabel(item.colorLabel)}` : '1px solid var(--glass-border)',
@@ -169,7 +143,7 @@ export const CardOutputs = ({ globalPwm, lastCmd }: { globalPwm: number, lastCmd
               </Box>
 
               <label className="cyber-switch">
-                <input type="checkbox" checked={item.state > 0} onChange={() => handleToggle(index)} />
+                <input type="checkbox" checked={item.state > 0} onChange={() => onToggle(index)} />
                 <span className="cyber-slider" data-color={item.colorLabel}></span>
               </label>
             </Paper>

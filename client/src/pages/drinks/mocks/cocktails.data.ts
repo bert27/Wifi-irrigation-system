@@ -14,22 +14,27 @@ export const MOCK_COCKTAILS: ICocktail[] = [
         description: "Cóctel afrutado",
         recipe: [
             { liquid: "Vodka", quantity: 50 },
-            { liquid: "Zumo de Naranja", quantity: 150 }
+            { liquid: "Zumo de naranja", quantity: 150 }
         ]
     },
     {
         id: "3",
-        name: "Zumo de naranja",
-        description: "Cítrico fresco",
-        recipe: [{ liquid: "Zumo de Naranja", quantity: 200 }]
+        name: "Sex on the Beach",
+        description: "Cóctel afrutado",
+        recipe: [
+            { liquid: "Vodka", quantity: 50 },
+            { liquid: "Zumo de naranja", quantity: 100 },
+            { liquid: "Granadina", quantity: 20 }
+        ]
     },
     {
         id: "4",
-        name: "Vodka con cocacola",
-        description: "Combinado clásico",
+        name: "Tequila Sunrise",
+        description: "Cóctel afrutado",
         recipe: [
-            { liquid: "Vodka", quantity: 50 },
-            { liquid: "Cocacola", quantity: 150 }
+            { liquid: "Tequila", quantity: 50 },
+            { liquid: "Zumo de naranja", quantity: 150 },
+            { liquid: "Granadina", quantity: 30 }
         ]
     },
     {

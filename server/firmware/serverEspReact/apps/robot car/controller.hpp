@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Arduino.h>
+#include "config.hpp"
+#include "models.hpp"
 #include "utils/gyroscope.hpp"
 #include "../../utils/remote_protocol.h"
 #include "../../utils/RemoteControlHub.hpp"
@@ -100,30 +102,30 @@ public:
 
     void moveForward() {
         digitalWrite(PIN_MOTOR_A_DIR, LOW);
-        analogWrite(PIN_MOTOR_A_SPEED, defaultSpeed);
+        analogWrite(PIN_MOTOR_A_SPEED, DEFAULT_MOTOR_SPEED);
         digitalWrite(PIN_MOTOR_B_DIR, LOW);
-        analogWrite(PIN_MOTOR_B_SPEED, defaultSpeed);
+        analogWrite(PIN_MOTOR_B_SPEED, DEFAULT_MOTOR_SPEED);
     }
 
     void moveBackward() {
         digitalWrite(PIN_MOTOR_A_DIR, HIGH);
-        analogWrite(PIN_MOTOR_A_SPEED, defaultSpeed);
+        analogWrite(PIN_MOTOR_A_SPEED, DEFAULT_MOTOR_SPEED);
         digitalWrite(PIN_MOTOR_B_DIR, HIGH);
-        analogWrite(PIN_MOTOR_B_SPEED, defaultSpeed);
+        analogWrite(PIN_MOTOR_B_SPEED, DEFAULT_MOTOR_SPEED);
     }
 
     void turnLeft() {
         digitalWrite(PIN_MOTOR_A_DIR, HIGH);
-        analogWrite(PIN_MOTOR_A_SPEED, defaultSpeed);
+        analogWrite(PIN_MOTOR_A_SPEED, DEFAULT_MOTOR_SPEED);
         digitalWrite(PIN_MOTOR_B_DIR, LOW);
-        analogWrite(PIN_MOTOR_B_SPEED, defaultSpeed);
+        analogWrite(PIN_MOTOR_B_SPEED, DEFAULT_MOTOR_SPEED);
     }
 
     void turnRight() {
         digitalWrite(PIN_MOTOR_A_DIR, LOW);
-        analogWrite(PIN_MOTOR_A_SPEED, defaultSpeed);
+        analogWrite(PIN_MOTOR_A_SPEED, DEFAULT_MOTOR_SPEED);
         digitalWrite(PIN_MOTOR_B_DIR, HIGH);
-        analogWrite(PIN_MOTOR_B_SPEED, defaultSpeed);
+        analogWrite(PIN_MOTOR_B_SPEED, DEFAULT_MOTOR_SPEED);
     }
 
     void stopMotors() {
@@ -139,18 +141,6 @@ public:
     }
 
 private:
-    // Pin Definitions
-    const uint8_t PIN_MOTOR_A_SPEED = 5; // D1
-    const uint8_t PIN_MOTOR_A_DIR   = 0; // D3
-    const uint8_t PIN_MOTOR_B_SPEED = 4; // D2
-    const uint8_t PIN_MOTOR_B_DIR   = 2; // D4
-
-    const uint8_t PIN_LED_R = 14; // D5
-    const uint8_t PIN_LED_G = 12; // D6
-    const uint8_t PIN_LED_B = 13; // D7
-    const uint8_t PIN_LED_W = 15; // D8
-    
-    uint8_t defaultSpeed = 150;
     String currentDirection;
 
     CarController() {}

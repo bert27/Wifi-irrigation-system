@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IDashboardState } from '@/pages/car/models/model';
 import { robotService } from '@/pages/car/services/robot.service';
 import { directionWebRobot } from "@/config/api.config";
@@ -11,6 +12,21 @@ export const useRobotControl = () => {
 
   // Use Global Remote Context
   const { remoteState, connectedRemote } = useRemoteControl();
+
+  const { t } = useTranslation();
+  const [pulseDuration, setPulseDuration] = useState(1000);
+  const [throttle, setThrottle] = useState(140);
+
+  const [outputs, setOutputs] = useState([
+    { name: t('car.actuators.front_left'), colorLabel: "black", pin: 25, state: 0 },
+    { name: t('car.actuators.front_right'), colorLabel: "black", pin: 4, state: 0 },
+    { name: t('car.actuators.rear_left'), colorLabel: "yellow", pin: 14, state: 0 },
+    { name: t('car.actuators.rear_right'), colorLabel: "yellow", pin: 19, state: 0 },
+    { name: t('car.actuators.fl_reverse'), colorLabel: "blue", pin: 26, state: 0 },
+    { name: t('car.actuators.fr_reverse'), colorLabel: "blue", pin: 17, state: 0 },
+    { name: t('car.actuators.rl_reverse'), colorLabel: "white", pin: 27, state: 0 },
+    { name: t('car.actuators.rr_reverse'), colorLabel: "white", pin: 21, state: 0 },
+  ]);
 
   const [dashboardState, setDashboardState] = useState<IDashboardState>({
     robot: {
@@ -44,7 +60,6 @@ export const useRobotControl = () => {
   const [connectedRobot, setConnectedRobot] = useState(false);
   const [wsRobot, setWsRobot] = useState<WebSocket | null>(null);
   const [color, setColor] = useState("#00d2ff");
-  const [lastCmd, setLastCmd] = useState<string>("");
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [isMock, setIsMock] = useState(isSimulationMode());
 
@@ -107,7 +122,7 @@ export const useRobotControl = () => {
         try {
           const data = JSON.parse(event.data);
           onMessage(data);
-        } catch (e) {
+        } catch {
           console.warn("[WS] Parse error:", event.data);
         }
       };
@@ -142,8 +157,8 @@ export const useRobotControl = () => {
         robot: {
           ...prev.robot,
           robotGyroscopeValues: [
-            Math.sin(time) * 15,
-            Math.cos(time * 0.5) * 10,
+            Math.sin(time * 0.3) * 0.6,
+            Math.cos(time * 0.2) * 0.4,
             0
           ]
         }
@@ -218,14 +233,43 @@ export const useRobotControl = () => {
     }
   }, [wsRobot, isMock]);
 
+  const pulseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const handleDirection = useCallback(async (directionName: string) => {
-    if (isMock) return;
-    try {
-      await robotService.sendOutputRobotUI({ name: directionName });
-    } catch (e) {
-      console.error("Failed to send direction", e);
+    // Pulse Logic
+    const actuatorMapping: Record<string, number[]> = {
+      "Arriba": [25, 4, 14, 19], // All Forward
+      "Abajo": [26, 17, 27, 21], // All Reverse
+      "Izquierda": [4, 19, 26, 27], // Right Forward + Left Reverse (Spin Left)
+      "Derecha": [25, 14, 17, 21], // Left Forward + Right Reverse (Spin Right)
+    };
+
+    const pinsToActivate = actuatorMapping[directionName];
+    if (!pinsToActivate) return;
+
+    // Clear existing pulse timeout
+    if (pulseTimeoutRef.current) clearTimeout(pulseTimeoutRef.current);
+
+    // Activate relevant pins
+    setOutputs(prev => prev.map(out =>
+      pinsToActivate.includes(out.pin) ? { ...out, state: throttle } : out
+    ));
+
+    if (!isMock) {
+      try {
+        await robotService.sendOutputRobotUI({ name: directionName });
+      } catch (e) {
+        console.error("Failed to send direction", e);
+      }
     }
-  }, [isMock]);
+
+    // Deactivate after duration
+    pulseTimeoutRef.current = setTimeout(() => {
+      setOutputs(prev => prev.map(out =>
+        pinsToActivate.includes(out.pin) ? { ...out, state: 0 } : out
+      ));
+      pulseTimeoutRef.current = null;
+    }, pulseDuration);
+  }, [isMock, throttle, pulseDuration]);
 
   const setOrientation = useCallback((pitch: number, roll: number) => {
     setDashboardState(prev => ({
@@ -247,8 +291,14 @@ export const useRobotControl = () => {
     sendWSMessage,
     handleDirection,
     setOrientation,
-    lastCmd,
     connectionError,
-    isMock
+    isMock,
+    // Actuators & Settings
+    outputs,
+    setOutputs,
+    pulseDuration,
+    setPulseDuration,
+    throttle,
+    setThrottle
   };
 };

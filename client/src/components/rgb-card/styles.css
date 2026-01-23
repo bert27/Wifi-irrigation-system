@@ -2,7 +2,6 @@
 .rgb-card-container {
     padding: 16px;
     position: relative;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -35,7 +34,7 @@
     flex: 1;
     position: relative;
     z-index: 10;
-    gap: 8px;
+    gap: 4px;
 }
 
 .hex-display-container {
@@ -64,19 +63,21 @@
 }
 
 .color-picker-container {
-    width: 85%;
+    width: 100%;
     align-self: center;
     flex: 1;
-    min-height: 150px;
+    min-height: 100px;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
     margin-top: 4px;
+    position: relative;
 }
 
 .color-picker-container .react-colorful {
     width: 100%;
-    height: 180px;
+    max-width: 180px;
+    height: 130px;
     border-radius: 8px;
 }
 

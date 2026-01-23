@@ -32,6 +32,7 @@ export const JostickController: React.FC<JostickControllerProps> = ({ recibedMes
             <Paper
                 onClick={() => handleDirection(dir)}
                 className={`glass-card control-btn ${isActive(dir) ? 'active' : ''}`}
+                data-testid={`joystick-${dir.toLowerCase()}`}
             >
                 <Icon sx={{ fontSize: 32 }} />
             </Paper>
@@ -53,6 +54,7 @@ export const JostickController: React.FC<JostickControllerProps> = ({ recibedMes
                     <Box
                         className={`glass-card center-btn ${recibedMessage.buttonJostick === "on" ? 'active' : ''}`}
                         onClick={() => handleDirection("CENTER")}
+                        data-testid="joystick-center"
                     >
                         <AdjustIcon sx={{ fontSize: 40 }} />
                     </Box>

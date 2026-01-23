@@ -81,7 +81,6 @@ export default function ErrorMessage(
           <div style={{ marginLeft: "35px" }}>
             {errorMessages?.map(
               (errorMessage: string | { message: string }, i) => (
-                // eslint-disable-next-line react/no-array-index-key -- index
                 <div data-testid="error-message" key={i}>
                   {typeof errorMessage === "string"
                     ? errorMessage

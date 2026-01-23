@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { irrigationService } from "../services/irrigation.service";
-import { Day } from "../../../components/days/models/day.model";
-import { IScheduledTask, ITemperature } from "../models/irrigation-model";
-import { directionWebIrrigation } from "@/config/api.config";
+import { Day } from "@/components/days/models/day.model";
+import { IScheduledTask } from "../models/irrigation-model";
 
 const getDayLetterWeek = (dayTmp: string): string => {
   const mapping: Record<string, string> = {
@@ -12,7 +11,7 @@ const getDayLetterWeek = (dayTmp: string): string => {
   return mapping[dayTmp] || dayTmp;
 };
 
-const withTimeout = <T,>(promise: Promise<T>, timeoutMs: number = 10000): Promise<T> => {
+const withTimeout = <T,>(promise: Promise<T>, timeoutMs = 10000): Promise<T> => {
   return Promise.race([
     promise,
     new Promise<T>((_, reject) =>
@@ -107,9 +106,9 @@ export const useIrrigationPage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [t]);
 
-  const saveDays = (clickedDay: Day, index: number) => {
+  const saveDays = (index: number) => {
     const newDays = [...days];
     newDays[index] = { ...newDays[index], state: !newDays[index].state };
     setDays(newDays);
@@ -157,7 +156,6 @@ export const useIrrigationPage = () => {
     dataForNewTask,
     isOpenModalConfig,
     setIsOpenModalConfig,
-
     saveDays,
     saveTimeSelect,
     createTask,

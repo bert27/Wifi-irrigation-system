@@ -18,3 +18,6 @@ const int JOY_THRESHOLD_DOWN = 1000;
 
 // Communication Settings
 const char* REMOTE_SSID = WIFI_SSID; // Used for channel scanning
+
+// --- mDNS Configuration ---
+#define MDNS_HOSTNAME "remote-control"

@@ -5,7 +5,7 @@ import { Day } from "./models/day.model";
 
 interface DaySelectorProps {
   day: Day;
-  saveChoose: (day: Day, index: number) => void;
+  saveChoose: (index: number) => void;
   index: number;
 }
 
@@ -14,7 +14,7 @@ export const DaySelector: React.FC<DaySelectorProps> = ({ day, saveChoose, index
 
   const toggleDay = () => {
     setIsActive(!isActive);
-    saveChoose(day, index);
+    saveChoose(index);
   };
 
   return (

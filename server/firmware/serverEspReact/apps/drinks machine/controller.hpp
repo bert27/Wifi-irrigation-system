@@ -9,23 +9,8 @@
 #include "../../utils/remote_protocol.h"
 #include "services/websocket.hpp"
 
-struct Bottle {
-    String name;
-    String id; // pump1, pump2...
-    int gpio;
-    int pwm = 255;
-    int calibration = 1000; // ms per unit
-};
-
-struct LiquidProp {
-    String name;
-    int quantity;
-};
-
-struct Cocktail {
-    String name;
-    std::vector<LiquidProp> ingredients;
-};
+#include "models.hpp"
+#include "config.hpp"
 
 
 // --- Helper Enums & Structs ---
@@ -54,8 +39,8 @@ public:
     int counter = 0;
     bool insideMenuDrink = false;
     int actualScreen = 0;
-    std::vector<Bottle> bottles;
-    std::vector<Cocktail> cocktails;
+    std::vector<IBottle> bottles;
+    std::vector<ICocktail> cocktails;
     
     struct MenuEntry {
         String name;
@@ -71,7 +56,8 @@ public:
             Serial.println("LittleFS Mount Failed");
         } else {
             Serial.println("LittleFS Mounted Successfully");
-            loadCocktails(); // Load saved recipes
+            loadBottles();     // Load saved bottle configs
+            loadCocktails();   // Load saved recipes
         }
 
         Serial.print("IP Address: ");
@@ -258,12 +244,11 @@ public:
         Serial.printf("Action: Update Pump %d | PWM: %d | Time: %ds\n", pumpId, pwm, time);
         
         String liquidName = "Info";
-        String targetPumpId = "pump" + String(pumpId);
         for (auto& b : bottles) {
-            if (b.id == targetPumpId) {
+            if (b.id == pumpId) {
                 b.pwm = pwm;
-                b.calibration = time;
-                liquidName = b.name;
+                b.timeCalibration = time;
+                liquidName = b.liquid;
                 break;
             }
         }
@@ -271,6 +256,7 @@ public:
         extern void SetScreen(String, String, int);
         SetScreen("Bomba " + String(pumpId) + ": " + liquidName, "PWM:" + String(pwm) + " T:" + String(time) + "s", 1);
         
+        saveBottles(); // Persist changes
         broadcastState();
     }
 
@@ -319,7 +305,7 @@ public:
         DrinksInputManager::getInstance().handlePress(pattern);
     }
 
-    void updateCocktail(const String& name, const std::vector<LiquidProp>& ingredients) {
+    void updateCocktail(const String& name, const std::vector<ILiquidProp>& ingredients) {
         bool found = false;
         for (auto& c : cocktails) {
             if (c.name == name) {
@@ -335,18 +321,18 @@ public:
         saveCocktails();
     }
 
+    void resetToDefaults() {
+        LittleFS.remove("/cocktails.json");
+        LittleFS.remove("/bottles.json");
+        cocktails = DEFAULT_COCKTAILS;
+        bottles = DEFAULT_BOTTLES;
+        saveCocktails();
+        saveBottles();
+        refreshMenu();
+        Serial.println("Cocktails and bottles reset to defaults");
+    }
+
 private:
-    // Encoder Pins
-    const int PIN_ENC_BTN = 14; // D5
-    const int PIN_ENC_DT = 12;  // D6
-    const int PIN_ENC_CLK = 13; // D7
-    
-    // Pump Pins
-    static constexpr uint8_t PIN_PUMP_1 = 0;
-    static constexpr uint8_t PIN_PUMP_2 = 2;
-    static constexpr uint8_t PIN_PUMP_3 = 16;
-    static constexpr uint8_t PIN_PUMP_4 = 15;
-    
     // Encoder Vars
     BfButton btn;
     int aLastState;
@@ -357,13 +343,8 @@ private:
     unsigned long lastDebounceTime = 0;
     unsigned long debounceDelay = 200; 
 
-    DrinksInputManager() : btn(BfButton::STANDALONE_DIGITAL, 14, true, LOW) {
-        bottles = {
-            { "Cocacola", "pump1", PIN_PUMP_1 },
-            { "Zumo de naranja", "pump2", PIN_PUMP_2 },
-            { "Vodka", "pump3", PIN_PUMP_3 },
-            { "Granadina", "pump4", PIN_PUMP_4 }
-        };
+    DrinksInputManager() : btn(BfButton::STANDALONE_DIGITAL, PIN_ENC_BTN, true, LOW) {
+        bottles = DEFAULT_BOTTLES;
         refreshMenu();
     }
 
@@ -379,15 +360,7 @@ private:
     void loadCocktails() {
         if (!LittleFS.exists("/cocktails.json")) {
             Serial.println("No cocktails file found, using defaults");
-            // Populate with 6 standard drinks
-            cocktails = {
-                { "Cocacola", {{ "Cocacola", 200 }} },
-                { "Sex on the beach", {{ "Vodka", 50 }, { "Zumo de Naranja", 150 }} },
-                { "Zumo de naranja", {{ "Zumo de Naranja", 200 }} },
-                { "Vodka con cocacola", {{ "Vodka", 50 }, { "Cocacola", 150 }} },
-                { "Granadina", {{ "Granadina", 50 }} },
-                { "Vodka", {{ "Vodka", 50 }} }
-            };
+            cocktails = DEFAULT_COCKTAILS;
             saveCocktails();
             return;
         }
@@ -410,7 +383,7 @@ private:
         cocktails.clear();
         JsonArray array = doc.as<JsonArray>();
         for (JsonObject obj : array) {
-            Cocktail c;
+            ICocktail c;
             c.name = obj["name"].as<String>();
             JsonArray ingArray = obj["ingredients"].as<JsonArray>();
             for (JsonObject ing : ingArray) {
@@ -447,6 +420,69 @@ private:
         }
         file.close();
         Serial.println("Cocktails saved to LittleFS");
+    }
+
+    void loadBottles() {
+        // Always start with defaults to ensure correct size and base values
+        bottles = DEFAULT_BOTTLES;
+
+        if (!LittleFS.exists("/bottles.json")) {
+            Serial.println("No bottles file found, using defaults");
+            saveBottles(); // Save initial config
+            return;
+        }
+
+        File file = LittleFS.open("/bottles.json", "r");
+        if (!file) {
+            Serial.println("Failed to open bottles file");
+            return;
+        }
+
+        JsonDocument doc;
+        DeserializationError error = deserializeJson(doc, file);
+        file.close();
+
+        if (error) {
+            Serial.println("Failed to parse bottles JSON");
+            return;
+        }
+
+        JsonArray array = doc.as<JsonArray>();
+        int idx = 0;
+        for (JsonObject obj : array) {
+            if (idx >= (int)bottles.size()) break;
+            bottles[idx].pwm = obj["pwm"].as<int>();
+            bottles[idx].timeCalibration = obj["timeCalibration"].as<int>();
+            // Optionally load liquid name if you want it to be editable
+            // bottles[idx].liquid = obj["liquid"].as<String>();
+            idx++;
+        }
+        Serial.printf("Loaded %d bottle configurations from LittleFS\n", idx);
+    }
+
+    void saveBottles() {
+        File file = LittleFS.open("/bottles.json", "w");
+        if (!file) {
+            Serial.println("Failed to open bottles file for writing");
+            return;
+        }
+
+        JsonDocument doc;
+        JsonArray array = doc.to<JsonArray>();
+        for (const auto& b : bottles) {
+            JsonObject obj = array.add<JsonObject>();
+            obj["id"] = b.id;
+            obj["title"] = b.title;
+            obj["liquid"] = b.liquid;
+            obj["pwm"] = b.pwm;
+            obj["timeCalibration"] = b.timeCalibration;
+        }
+
+        if (serializeJson(doc, file) == 0) {
+            Serial.println("Failed to write to bottles file");
+        }
+        file.close();
+        Serial.println("Bottles saved to LittleFS");
     }
 
     // --- Setup ---
@@ -608,7 +644,7 @@ private:
                 const auto& recipe = cocktails[entry.index].ingredients;
                 for (const auto& ing : recipe) {
                     for (const auto& b : bottles) {
-                        if (b.name == ing.name) {
+                        if (b.liquid == ing.name) {
                             pinMode(b.gpio, OUTPUT);
                             digitalWrite(b.gpio, 1);
                         }

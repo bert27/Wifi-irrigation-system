@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { IRemoteControlReceiveStatus } from "@/pages/car/models/model";
 import { SliderLineComponent } from "@/pages/car/components/sub-components/slider";
@@ -14,13 +13,21 @@ interface CardControllerProps {
   recibedMessage: IRemoteControlReceiveStatus;
   lastCmd?: string;
   onDirection: (name: string) => void;
+  pulseDuration: number;
+  onPulseDurationChange: (val: number) => void;
+  throttle: number;
+  onThrottleChange: (val: number) => void;
 }
 
-export const CardController = ({ recibedMessage, lastCmd, onDirection }: CardControllerProps) => {
-  const [settings, setSettings] = useState({
-    time: 1000,
-    pwm: 140,
-  });
+export const CardController = ({
+  recibedMessage,
+  lastCmd,
+  onDirection,
+  pulseDuration,
+  onPulseDurationChange,
+  throttle,
+  onThrottleChange
+}: CardControllerProps) => {
 
   return (
     <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -36,8 +43,8 @@ export const CardController = ({ recibedMessage, lastCmd, onDirection }: CardCon
           </Box>
           <Box width="60%">
             <InputNumber
-              value={settings.time}
-              onChange={(v) => setSettings(s => ({ ...s, time: v }))}
+              value={pulseDuration}
+              onChange={onPulseDurationChange}
               label=""
             />
           </Box>
@@ -51,8 +58,8 @@ export const CardController = ({ recibedMessage, lastCmd, onDirection }: CardCon
           </Box>
           <Box width="60%">
             <SliderLineComponent
-              onChangePwmValue={(v) => setSettings(s => ({ ...s, pwm: v }))}
-              valuePwm={settings.pwm}
+              onChangePwmValue={onThrottleChange}
+              valuePwm={throttle}
               label=""
             />
           </Box>

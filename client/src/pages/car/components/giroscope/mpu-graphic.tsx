@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 
@@ -8,10 +9,11 @@ interface MpuGraphicProps {
   pitch: number;
   roll: number;
   type?: 'car' | 'controller';
+  headlightColor?: string;
 }
 
 export const MpuGraphic = (props: MpuGraphicProps) => {
-  const { pitch, roll, type = 'car' } = props;
+  const { pitch, roll, type = 'car', headlightColor } = props;
 
   const rotX = pitch;
   const rotY = roll;
@@ -40,6 +42,7 @@ export const MpuGraphic = (props: MpuGraphicProps) => {
           <CarModel
             rotation={[currentRotationRef.current.x - 0.7, currentRotationRef.current.y - 0.9, currentRotationRef.current.z]}
             isDragging={false}
+            headlightColor={headlightColor}
           />
         ) : (
           <ControllerModel

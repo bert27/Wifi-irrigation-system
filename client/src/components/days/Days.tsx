@@ -3,7 +3,7 @@ import { DaySelector } from "./DaySelector";
 import { Day } from "./models/day.model";
 
 interface DaysProps {
-  saveDays: (day: Day, index: number) => void;
+  saveDays: (index: number) => void;
   days: Day[];
 }
 

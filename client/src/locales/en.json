@@ -15,7 +15,8 @@
         "online": "SYSTEM ONLINE",
         "offline": "SYSTEM OFFLINE",
         "cancel": "CANCEL",
-        "save": "SAVE"
+        "save": "SAVE",
+        "accept": "ACCEPT"
     },
     "car": {
         "title": "RobotCore",
@@ -33,7 +34,15 @@
             "gyroscope": "Gyroscope"
         },
         "actuators": {
-            "title": "ACTUATORS"
+            "title": "ACTUATORS",
+            "front_left": "FRONT LEFT",
+            "front_right": "FRONT RIGHT",
+            "rear_left": "REAR LEFT",
+            "rear_right": "REAR RIGHT",
+            "fl_reverse": "FL REVERSE",
+            "fr_reverse": "FR REVERSE",
+            "rl_reverse": "RL REVERSE",
+            "rr_reverse": "RR REVERSE"
         },
         "kinetic": {
             "title": "KINETIC CONTROL"
@@ -91,7 +100,9 @@
         "tabs": {
             "drinks": "DRINKS",
             "config": "CONFIG COCKTAILS",
-            "manual": "PUMP CONFIG"
+            "config_short": "COCKTAILS",
+            "manual": "PUMP CONFIG",
+            "manual_short": "PUMPS"
         },
         "manual": {
             "title": "MANUAL PUMP CONTROL",
@@ -100,7 +111,27 @@
         "config": {
             "pwm": "PWM",
             "time": "TIME",
-            "set": "SET"
+            "set": "SET",
+            "reset": "RESET TO DEFAULTS",
+            "resetConfirmTitle": "Reset Recipes to Defaults?",
+            "resetConfirmText": "This will delete all custom recipes and restore the original default cocktails from the ESP32. This action cannot be undone."
+        },
+        "liquids": {
+            "cocacola": "Coke",
+            "zumo de naranja": "Orange Juice",
+            "vodka": "Vodka",
+            "granadina": "Grenadine",
+            "tequila": "Tequila"
+        },
+        "cocktails": {
+            "cocacola": "Coke",
+            "zumo de naranja": "Orange Juice",
+            "vodka shot": "Vodka shot",
+            "vodka con cocacola": "Vodka & Coke",
+            "destornillador": "Screwdriver",
+            "sex on the beach": "Sex on the Beach",
+            "tequila sunrise": "Tequila Sunrise",
+            "shirley temple": "Shirley Temple"
         },
         "grid": {
             "tapToMix": "Tap to Mix"
@@ -109,8 +140,13 @@
             "editTitle": "Edit Recipe: {{name}}",
             "helpText": "Adjust the quantities for each ingredient in this cocktail."
         },
+        "confirm": {
+            "question": "Do you want this drink?"
+        },
         "messages": {
             "preparing": "Preparing {{name}}...",
+            "serving": "Serving: {{name}}",
+            "cocktailUpdated": "Cocktail updated successfully",
             "pumpUpdated": "Pump updated successfully",
             "pumpUpdateError": "Error updating pump",
             "activatingPump": "Activating Pump {{id}}"

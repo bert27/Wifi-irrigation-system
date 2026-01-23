@@ -1,9 +1,7 @@
 #pragma once
 
 #include <RTClib.h>
-
-#define pinClock1 1  // OPTIONAL CLOCK PIN 1 IN D7
-#define pinClock2 3  // OPTIONAL CLOCK PIN 2 IN D8
+#include "../config.hpp"
 
 class DS3231Manager {
 public:
@@ -13,6 +11,7 @@ public:
     }
 
     void begin() {
+        // Wire.begin(PIN_RTC_SDA, PIN_RTC_SCL); // Should be called before rtc.begin if non-standard
         if (!rtc.begin()) {
             Serial.println("Couldn't find RTC");
             Serial.flush();

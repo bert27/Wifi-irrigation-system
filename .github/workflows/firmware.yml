@@ -36,11 +36,7 @@ jobs:
       - name: Install Extra Libraries (Using Checkout for reliability)
         run: mkdir -p $HOME/Arduino/libraries
 
-      - name: Checkout BfButton
-        uses: actions/checkout@v4
-        with:
-          repository: m-reilly/BfButton
-          path: BfButton
+      # BfButton is now included locally in server/firmware/libraries/
       
       - name: Checkout ESPAsyncTCP
         uses: actions/checkout@v4
@@ -56,9 +52,12 @@ jobs:
 
       - name: Setup Libraries
         run: |
-          mv BfButton $HOME/Arduino/libraries/
+          cp -r server/firmware/libraries/BfButton $HOME/Arduino/libraries/
           mv ESPAsyncTCP $HOME/Arduino/libraries/
           mv ESPAsyncWebServer $HOME/Arduino/libraries/
+
+      - name: Create secrets.h for compilation
+        run: cp server/firmware/serverEspReact/secrets.h_example server/firmware/serverEspReact/secrets.h
 
       - name: Compile Sketch
         run: |

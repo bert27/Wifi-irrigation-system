@@ -55,7 +55,7 @@ export const PumpConfigCard: React.FC<PumpConfigCardProps> = ({ bottle, onUpdate
                         {bottle.title}
                     </Typography>
                     <Typography sx={{ color: "var(--text-muted)", fontSize: "0.75rem" }}>
-                        {bottle.liquid}
+                        {t(`drinks.liquids.${bottle.liquid.toLowerCase()}`, { defaultValue: bottle.liquid })}
                     </Typography>
                 </Box>
             </Box>
@@ -103,14 +103,15 @@ export const PumpConfigCard: React.FC<PumpConfigCardProps> = ({ bottle, onUpdate
                         {t('drinks.config.time')}
                     </Typography>
                     <Typography sx={{ color: "var(--accent)", fontWeight: 700 }}>
-                        {time}s
+                        {time.toFixed(1)}s
                     </Typography>
                 </Box>
                 <Slider
                     value={time}
                     onChange={handleTimeChange}
                     min={0}
-                    max={20}
+                    max={60}
+                    step={0.1}
                     sx={{
                         height: 6,
                         "& .MuiSlider-thumb": {

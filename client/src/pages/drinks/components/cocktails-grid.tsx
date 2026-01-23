@@ -110,7 +110,7 @@ export const CocktailsGrid: React.FC<CocktailsGridProps> = ({ cocktails, onSelec
                     letterSpacing: "1px",
                   }}
                 >
-                  {cocktail.name.toUpperCase()}
+                  {t(`drinks.cocktails.${cocktail.name.toLowerCase()}`, { defaultValue: cocktail.name }).toUpperCase()}
                 </Typography>
 
                 <Box
