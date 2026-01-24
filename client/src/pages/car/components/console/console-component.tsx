@@ -1,4 +1,4 @@
-import { IDashboardState } from "../../models/model";
+import { IDashboardState } from "@/pages/car/models/model";
 import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
 

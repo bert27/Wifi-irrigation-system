@@ -1,8 +1,6 @@
 import axios from "axios";
-import { IColorData } from "@/pages/car/models/model";
+import { IColorData, IOutputData } from "@/pages/car/models/model";
 import { directionWebRobot } from "@/services/api.service";
-import { OutputDataInterface } from "@/pages/car/components/card-outputs";
-import { ColumnInterface } from "@/pages/car/components/table-outputs";
 import { activateReactiveSimulation, isSimulationMode } from "@/utils/simulation";
 
 const USE_MOCK = isSimulationMode();
@@ -40,16 +38,8 @@ export const robotService = {
     }
   },
 
-  sendDataOutputSelectedToServer: async (outputSelected: OutputDataInterface) => {
+  sendDataOutputSelectedToServer: async (outputSelected: IOutputData) => {
     return await axiosGet(outputSelected, "outputRobot");
-  },
-
-  sendRowTableOutputsMotors: async (rowSelected: ColumnInterface) => {
-    return await axiosGet(rowSelected, "outputsRowTableRobot");
-  },
-
-  sendRowTableOutputsStatusUpdate: async (rowSelected: ColumnInterface) => {
-    return await axiosGet(rowSelected, "outputsRowTableRobotUpdate");
   },
 
   sendOutputRobotUI: async (data: { name: string }) => {

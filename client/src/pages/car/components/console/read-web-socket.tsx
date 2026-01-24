@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ConsoleComponent } from "./console-component";
+import { ConsoleComponent } from "@/pages/car/components/console/console-component";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { Typography } from "@mui/material";
 import { directionWebRobot } from "@/services/api.service";

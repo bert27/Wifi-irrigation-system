@@ -6,11 +6,11 @@ import { SimulationAlert } from "@/components/simulation-alert/simulation-alert"
 import { robotService } from "@/pages/car/services/robot.service";
 
 // Atomic Components
-import { CarHeader } from "./components/car-header";
-import { TelemetryCard } from "./components/kpi-cards/telemetry-card";
-import { ActuatorsCard } from "./components/kpi-cards/actuators-card";
+import { CarHeader } from "@/pages/car/components/car-header/car-header";
+import { TelemetryCard } from "@/pages/car/components/kpi-cards/telemetry-card";
+import { ActuatorsCard } from "@/pages/car/components/kpi-cards/actuators-card/actuators-card";
 import { RgbCard } from "@/pages/car/components/rgb-card/rgb-card";
-import { KineticCard } from "./components/kpi-cards/kinetic-card";
+import { KineticCard } from "@/pages/car/components/kpi-cards/kinetic-card";
 
 export const CarPage: React.FC = () => {
   const {

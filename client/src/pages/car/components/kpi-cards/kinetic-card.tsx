@@ -1,7 +1,7 @@
 import { Box, Paper, Typography, SxProps, Theme } from "@mui/material";
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
-import { CardController } from "../card-image/components/car-controller/car-controller";
-import { IRemoteControlReceiveStatus } from "../../models/model";
+import { CardController } from "@/pages/car/components/car-controller/car-controller";
+import { IRemoteControlReceiveStatus } from "@/pages/car/models/model";
 
 interface KineticCardProps {
   remoteStatus: IRemoteControlReceiveStatus;

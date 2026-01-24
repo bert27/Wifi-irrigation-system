@@ -1,13 +1,7 @@
 import { Box, Paper, Typography, Slider, SxProps, Theme } from "@mui/material";
 import WifiIcon from '@mui/icons-material/Wifi';
-import { CardOutputs } from "../card-outputs";
-
-export interface OutputDataInterface {
-  name: string;
-  colorLabel: string;
-  pin: number;
-  state: number;
-}
+import { CardOutputs } from "./components/card-outputs";
+import { IOutputData } from "@/pages/car/models/model";
 
 interface ActuatorsCardProps {
   globalPwm: number;
@@ -15,7 +9,7 @@ interface ActuatorsCardProps {
   panelStyle: SxProps<Theme>;
   sx?: SxProps<Theme>;
   id?: string;
-  outputs: OutputDataInterface[];
+  outputs: IOutputData[];
   onToggle: (index: number) => void;
 }
 

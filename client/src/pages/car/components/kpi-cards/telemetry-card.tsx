@@ -2,9 +2,9 @@ import { Box, Paper, Typography, Slider, SxProps, Theme, Chip, useTheme, useMedi
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import { MpuGraphic } from "../giroscope/mpu-graphic";
-import { ValuesEchart } from "../giroscope/values-echart";
-import { IRobotSendStatus, IRemoteControlReceiveStatus } from "../../models/model";
+import { MpuGraphic } from "@/pages/car/components/giroscope/mpu-graphic";
+import { ValuesEchart } from "@/pages/car/components/giroscope/values-echart";
+import { IRobotSendStatus, IRemoteControlReceiveStatus } from "@/pages/car/models/model";
 
 interface TelemetryCardProps {
   robotStatus: IRobotSendStatus;

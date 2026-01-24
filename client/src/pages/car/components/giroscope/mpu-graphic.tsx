@@ -2,8 +2,8 @@
 import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 
-import { CarModel } from "./components/car-model";
-import { ControllerModel } from "./components/controller-model";
+import { CarModel } from "@/pages/car/components/giroscope/components/car-model";
+import { ControllerModel } from "@/pages/car/components/giroscope/components/controller-model";
 
 interface MpuGraphicProps {
   pitch: number;

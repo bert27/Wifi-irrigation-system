@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { IRemoteControlReceiveStatus } from "@/pages/car/models/model";
-import { SliderLineComponent } from "@/pages/car/components/sub-components/slider";
-import { InputNumber } from "@/pages/car/components/sub-components/input-number";
+import { SliderLineComponent } from "./components/slider";
+import { InputNumber } from "./components/input-number";
 
 // Icons
 import SpeedIcon from '@mui/icons-material/Speed';

@@ -40,7 +40,7 @@ export const JostickController: React.FC<JostickControllerProps> = ({ recibedMes
     );
 
     return (
-        <Box id={id} className="jostick-container">
+        <Box id={id} className="jostick-container" data-testid="jostick-container">
             {/* Connection Lines Decor */}
             <Box className="connection-lines" />
 

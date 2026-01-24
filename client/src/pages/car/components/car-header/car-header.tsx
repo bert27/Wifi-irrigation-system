@@ -1,6 +1,6 @@
 import { Box, Typography, Button, IconButton } from "@mui/material";
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
-import { ConnectInfo } from "./connect-info";
+import { ConnectInfo } from "./components/connect-info";
 import { useTranslation } from "react-i18next";
 
 interface HeaderProps {

@@ -1,13 +1,7 @@
 import { Box, Typography, Grid, Paper } from "@mui/material";
+import { IOutputData } from "@/pages/car/models/model";
 
-export interface OutputDataInterface {
-  name: string;
-  colorLabel: string;
-  pin: number;
-  state: number;
-}
-
-export const CardOutputs = ({ outputs, onToggle }: { outputs: OutputDataInterface[], onToggle: (index: number) => void }) => {
+export const CardOutputs = ({ outputs, onToggle }: { outputs: IOutputData[], onToggle: (index: number) => void }) => {
 
   const getColorForLabel = (label: string) => {
     const colorMap: Record<string, string> = {
