@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
-import { directionWebRemote } from '../config/api.config';
+import { directionWebRemote } from '@/services/api.service';
 
 interface RemoteState {
     joystickDirection: string;

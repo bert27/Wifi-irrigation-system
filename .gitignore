@@ -24,6 +24,7 @@ server/firmware/serverEspReact/secrets.h
 # Misc
 .DS_Store
 ._*
+.!*
 *.log
 
 .idea/

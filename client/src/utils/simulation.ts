@@ -1,4 +1,4 @@
-import { directionWebDrinks, directionWebRobot, directionWebIrrigation } from "@/config/api.config";
+import { directionWebDrinks, directionWebIrrigation, directionWebRobot } from "@/services/api.service";
 
 /**
  * Unified logic to detect if the application should run in Simulation (Mock) mode.

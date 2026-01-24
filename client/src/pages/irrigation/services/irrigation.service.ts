@@ -1,6 +1,6 @@
 import { IWaterPumpStatus, ITemperature, IAddTask, IIrrigationConfig, IIrrigationData } from "@/pages/irrigation/models/irrigation-model";
 import axios from "axios";
-import { directionWebIrrigation, handleResponse } from "@/config/api.config";
+import { directionWebIrrigation, handleResponse } from "@/services/api.service";
 import { activateReactiveSimulation, isSimulationMode } from "@/utils/simulation";
 
 const USE_MOCK = isSimulationMode();

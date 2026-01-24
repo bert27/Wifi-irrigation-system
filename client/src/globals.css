@@ -135,3 +135,24 @@ body {
 .status-pulse {
   animation: pulse-glow 2s infinite ease-in-out;
 }
+
+/* App Layout */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+}
+
+@media (min-width: 900px) {
+  .app-layout {
+    flex-direction: row;
+  }
+}
+
+.main-content {
+  flex-grow: 1;
+  overflow-x: hidden;
+}
+
+

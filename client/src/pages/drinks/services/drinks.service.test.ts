@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
 import { drinksService } from './drinks.service';
-import { directionWebDrinks } from '@/config/api.config';
+import { directionWebDrinks } from "@/services/api.service";
 
 vi.mock('axios');
 const mockedAxios = axios as any;

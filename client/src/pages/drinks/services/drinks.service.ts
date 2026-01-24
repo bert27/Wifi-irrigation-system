@@ -1,8 +1,5 @@
 import axios from "axios";
-import {
-    directionWebDrinks,
-    handleResponse,
-} from "@/config/api.config";
+import { directionWebDrinks, handleResponse } from "@/services/api.service";
 import { isSimulationMode, activateReactiveSimulation, withTimeout } from "@/utils/simulation";
 import { MOCK_COCKTAILS } from "@/pages/drinks/mocks/cocktails.data";
 import { MOCK_BOTTLES } from "@/pages/drinks/mocks/bottles.data";

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IDashboardState } from '@/pages/car/models/model';
 import { robotService } from '@/pages/car/services/robot.service';
-import { directionWebRobot } from "@/config/api.config";
+import { directionWebRobot } from "@/services/api.service";
 import { useRemoteControl } from '@/context/remote-control-context';
 import { isSimulationMode } from '@/utils/simulation';
 

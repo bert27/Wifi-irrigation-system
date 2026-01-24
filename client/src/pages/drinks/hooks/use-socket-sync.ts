@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
-import { directionWebDrinks } from "@/config/api.config";
+import { directionWebDrinks } from "@/services/api.service";
 import { isSimulationMode } from "@/utils/simulation";
 import { ICocktail, IDrinksStateData } from "@/pages/drinks/models/drinks-model";
 import { useConnectivity } from "@/context/connectivity-context";
