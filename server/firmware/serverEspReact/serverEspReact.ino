@@ -27,8 +27,7 @@
 
 #ifdef ENABLE_DRINKS_MACHINE
     #include "apps/drinks machine/services/API.hpp"
-    #include "apps/drinks machine/utils/display.hpp"
-    #include "apps/drinks machine/controller.hpp"
+    #include "apps/drinks machine/DrinksMachine.hpp"
     #include "apps/drinks machine/services/websocket.hpp"
     #include "apps/drinks machine/config.hpp"
 #endif
@@ -120,7 +119,6 @@ void setup() {
   
   #ifdef ENABLE_DRINKS_MACHINE
       Serial.println("System: Drinks Machine Enabled");
-      StartDisplay();
       setupController(); // Drinks Controller
       setupDrinksAPI(*globalServer);
       setupDrinksWebSocket(*globalServer);

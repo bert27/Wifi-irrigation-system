@@ -25,7 +25,7 @@ export const usePumpManager = () => {
             setBottles(prev => prev.map(p =>
                 p.id === id ? { ...p, pwm: data.pwm, timeCalibration: data.timeCalibration } : p
             ));
-            await drinksService.sendControlCommand(`pump:${id}:${data.pwm}:${data.timeCalibration * 1000}`);
+            await drinksService.sendControlCommand(`pump:${id}:${data.pwm}:${data.timeCalibration}`);
 
             setMessage("Pump updated successfully");
             setShowMessage(true);

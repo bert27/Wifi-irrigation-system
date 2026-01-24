@@ -1,7 +1,8 @@
 #pragma once
 
 #include <ESPAsyncWebServer.h>
-#include "../controller.hpp"
+#include "../DrinksMachine.hpp"
+#include "MenuService.hpp"  // Direct access to data services
 
 void controlCocktail(AsyncWebServerRequest *request) {
     String direction = "No direction sent";
@@ -9,27 +10,27 @@ void controlCocktail(AsyncWebServerRequest *request) {
         direction = request->getParam("direction")->value();
         
         if (direction == "next" || direction == "down") {
-            DrinksInputManager::getInstance().enqueueCommand("next");
+            DrinksMachine::getInstance().enqueueCommand("next");
         } else if (direction == "up") {
-            DrinksInputManager::getInstance().enqueueCommand("prev");
+            DrinksMachine::getInstance().enqueueCommand("prev");
         } else if (direction == "accept") {
-            DrinksInputManager::getInstance().enqueueCommand("select");
+            DrinksMachine::getInstance().enqueueCommand("select");
         } else if (direction == "back") {
-            DrinksInputManager::getInstance().enqueueCommand("back");
+            DrinksMachine::getInstance().enqueueCommand("back");
         } else if (direction == "cancel") {
-            DrinksInputManager::getInstance().enqueueCommand("cancel");
+            DrinksMachine::getInstance().enqueueCommand("cancel");
         } else if (direction.startsWith("goto:")) {
-            DrinksInputManager::getInstance().enqueueCommand(direction);
+            DrinksMachine::getInstance().enqueueCommand(direction);
         } else if (direction.startsWith("pump:")) {
-            DrinksInputManager::getInstance().enqueueCommand(direction);
+            DrinksMachine::getInstance().enqueueCommand(direction);
         } else if (direction == "goto" && request->hasParam("index")) {
             String index = request->getParam("index")->value();
-            DrinksInputManager::getInstance().enqueueCommand("goto:" + index);
+            DrinksMachine::getInstance().enqueueCommand("goto:" + index);
         } else if (direction == "config" && request->hasParam("id") && request->hasParam("pwm") && request->hasParam("time")) {
             String id = request->getParam("id")->value();
             String pwm = request->getParam("pwm")->value();
             String time = request->getParam("time")->value();
-            DrinksInputManager::getInstance().enqueueCommand("pump:" + id + ":" + pwm + ":" + time);
+            DrinksMachine::getInstance().enqueueCommand("pump:" + id + ":" + pwm + ":" + time);
         }
     }
     request->send(200, "text/plain", "Command: " + direction);
@@ -45,7 +46,7 @@ void setupDrinksAPI(AsyncWebServer& server) {
     server.on("/drinks/cocktails", HTTP_GET, [](AsyncWebServerRequest *request) {
         JsonDocument doc;
         JsonArray array = doc.to<JsonArray>();
-        auto& cocktails = DrinksInputManager::getInstance().cocktails;
+        auto& cocktails = MenuService::getInstance().cocktails;
         
         for (const auto& c : cocktails) {
             JsonObject obj = array.add<JsonObject>();
@@ -66,7 +67,7 @@ void setupDrinksAPI(AsyncWebServer& server) {
     server.on("/drinks/bottles", HTTP_GET, [](AsyncWebServerRequest *request) {
         JsonDocument doc;
         JsonArray array = doc.to<JsonArray>();
-        auto& bottles = DrinksInputManager::getInstance().bottles;
+        auto& bottles = MenuService::getInstance().bottles;
         
         for (const auto& b : bottles) {
             JsonObject obj = array.add<JsonObject>();
@@ -100,7 +101,7 @@ void setupDrinksAPI(AsyncWebServer& server) {
                 for (JsonObject ing : ings) {
                     ingredients.push_back({ ing["name"].as<String>(), ing["quantity"].as<int>() });
                 }
-                DrinksInputManager::getInstance().updateCocktail(name, ingredients);
+                MenuService::getInstance().updateCocktail(name, ingredients);
                 request->send(200, "text/plain", "Cocktail saved");
             } else {
                 request->send(400, "text/plain", "Invalid JSON");
@@ -110,7 +111,7 @@ void setupDrinksAPI(AsyncWebServer& server) {
     });
 
     server.on("/drinks/reset-recipes", HTTP_POST, [](AsyncWebServerRequest *request) {
-        DrinksInputManager::getInstance().resetToDefaults();
+        MenuService::getInstance().resetToDefaults();
         request->send(200, "text/plain", "Recipes reset to defaults successfully");
     });
 }

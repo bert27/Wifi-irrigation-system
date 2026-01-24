@@ -24,7 +24,8 @@ export interface IColorData {
 }
 
 export interface IOutputData {
-  name: string;
+  name?: string;
+  nameKey?: string; // For i18n
   colorLabel: string;
   pin: number;
   state: number;

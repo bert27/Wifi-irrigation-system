@@ -2,6 +2,7 @@ import { Box, Typography, Button, IconButton } from "@mui/material";
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { ConnectInfo } from "./components/connect-info";
 import { useTranslation } from "react-i18next";
+import "./car-header.css";
 
 interface HeaderProps {
   connectedRobot: boolean;

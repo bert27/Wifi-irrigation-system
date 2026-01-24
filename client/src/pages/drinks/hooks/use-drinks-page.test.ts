@@ -10,9 +10,10 @@ vi.mock('@/pages/drinks/services/drinks.service');
 const mockedDrinksService = drinksService as Mocked<typeof drinksService>;
 
 // Mock react-router-dom
+const mockNavigate = vi.fn();
 vi.mock('react-router-dom', () => ({
-    useParams: () => ({ tabRouter: 'drinks' }),
-    useNavigate: () => vi.fn(),
+    useParams: vi.fn(() => ({ tabId: 'drinks' })),
+    useNavigate: () => mockNavigate,
 }));
 
 // Mock connectivity context
@@ -62,12 +63,12 @@ describe('useDrinksPage hook', () => {
         act(() => {
             result.current.handleTabChange('config');
         });
-        expect(result.current.activeTab).toBe('config');
+        expect(mockNavigate).toHaveBeenCalledWith('/drinks/cocktails-config');
 
         act(() => {
             result.current.handleTabChange('manual');
         });
-        expect(result.current.activeTab).toBe('manual');
+        expect(mockNavigate).toHaveBeenCalledWith('/drinks/pumps-config');
     });
 
     it('should handle drink selection', async () => {

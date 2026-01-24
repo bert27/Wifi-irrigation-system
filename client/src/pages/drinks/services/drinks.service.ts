@@ -81,11 +81,7 @@ export const drinksService = {
                 6000  // Increased timeout for bottles fetch
             );
             const bottles = handleResponse(response);
-            // Convert timeCalibration from milliseconds (backend) to seconds (frontend)
-            return bottles.map((bottle: IBottle) => ({
-                ...bottle,
-                timeCalibration: bottle.timeCalibration / 1000
-            }));
+            return bottles;
         } catch (error) {
             console.error("Failed to fetch bottles:", error);
             throw error;

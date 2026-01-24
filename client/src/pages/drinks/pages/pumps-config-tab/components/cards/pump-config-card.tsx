@@ -52,7 +52,7 @@ export const PumpConfigCard: React.FC<PumpConfigCardProps> = ({ bottle, onUpdate
                 <WaterDropIcon sx={{ color: "var(--accent)" }} />
                 <Box>
                     <Typography className="tech-text" sx={{ color: "var(--accent)", fontWeight: 700, fontSize: "0.9rem" }}>
-                        {bottle.title}
+                        {t(`drinks.pumps.${bottle.title.toLowerCase().replace(" ", "_")}`, { defaultValue: bottle.title })}
                     </Typography>
                     <Typography sx={{ color: "var(--text-muted)", fontSize: "0.75rem" }}>
                         {t(`drinks.liquids.${bottle.liquid.toLowerCase()}`, { defaultValue: bottle.liquid })}
@@ -100,7 +100,7 @@ export const PumpConfigCard: React.FC<PumpConfigCardProps> = ({ bottle, onUpdate
             <Box>
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
                     <Typography className="tech-text" sx={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                        {t('drinks.config.time')}
+                        {t('drinks.config.time')} (Sec / 20ml)
                     </Typography>
                     <Typography sx={{ color: "var(--accent)", fontWeight: 700 }}>
                         {time.toFixed(1)}s

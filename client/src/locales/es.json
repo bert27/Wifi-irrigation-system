@@ -118,17 +118,17 @@
         },
         "liquids": {
             "cocacola": "Cocacola",
-            "zumo de naranja": "Zumo de naranja",
+            "orange juice": "Zumo de naranja",
             "vodka": "Vodka",
-            "granadina": "Granadina",
+            "grenadine": "Granadina",
             "tequila": "Tequila"
         },
         "cocktails": {
             "cocacola": "Cocacola",
-            "zumo de naranja": "Zumo de naranja",
+            "orange juice": "Zumo de naranja",
             "vodka shot": "Chupito de Vodka",
-            "vodka con cocacola": "Vodka con Cocacola",
-            "destornillador": "Destornillador",
+            "vodka with cocacola": "Vodka con Cocacola",
+            "screwdriver": "Destornillador",
             "sex on the beach": "Sex on the Beach",
             "tequila sunrise": "Tequila Sunrise",
             "shirley temple": "Shirley Temple"

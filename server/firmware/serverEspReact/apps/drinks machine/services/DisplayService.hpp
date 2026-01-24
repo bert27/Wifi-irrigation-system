@@ -75,10 +75,10 @@ namespace DisplayAssets {
     };
 }
 
-class DisplayManager {
+class DisplayService {
 public:
-    static DisplayManager& getInstance() {
-        static DisplayManager instance;
+    static DisplayService& getInstance() {
+        static DisplayService instance;
         return instance;
     }
 
@@ -102,7 +102,6 @@ public:
         display.setCursor(10, 40);
         display.println(second.c_str());
         display.display();
-        delay(50);
     }
 
     void drawProgress(const String& label, int progress) {
@@ -113,9 +112,7 @@ public:
         display.setCursor(10, 5);
         display.println(label);
         
-        // Progress bar background
         display.drawRect(5, 45, 118, 15, SSD1306_WHITE);
-        // Progress fill
         int fillWidth = map(progress, 0, 100, 0, 114);
         display.fillRect(7, 47, fillWidth, 11, SSD1306_WHITE);
         
@@ -129,52 +126,6 @@ public:
             (display.height() - LOGO_HEIGHT) / 2,
             DisplayAssets::epd_bitmap_cocktail, LOGO_WIDTH, LOGO_HEIGHT, 1);
         display.display();
-        delay(50);
-    }
-
-
-
-    void loop() {
-        if (positionTmp == 500) {
-            setImage();   
-            positionTmp = 0;
-        }
-        else if (positionTmp == 1) {
-            setScreen("Agua", "", 2);
-            positionTmp += stop;
-        }
-        else if (positionTmp == 2) {
-            setScreen("Cocacola", "", 2);
-            positionTmp += stop;
-        }
-        else if (positionTmp == 3) {
-            positionTmp = 1;
-        }
-    }
-
-    void control(const String& direction) {
-        if (direction == "back") {
-             Serial.println("Has apretado back");
-        }
-        else if (direction == "up") {
-             Serial.println("Has apretado arriba");
-        }
-        else if (direction == "next") {
-             Serial.println("Has apretado siguiente: " + String(positionTmp));
-             if (positionTmp != 0) {
-                 positionTmp -= stop;
-             }
-             positionTmp++;
-        }
-        else if (direction == "down") {
-             Serial.println("Has apretado abajo");
-             if (positionTmp != 0) {
-                 positionTmp = 500;
-             }
-        }
-        else if (direction == "accept") {
-             Serial.println("Has apretado aceptar");
-        }
     }
 
 private:
@@ -187,51 +138,5 @@ private:
 
     Adafruit_SSD1306 display;
 
-    int positionTmp = 0;
-    const int stop = 500;
-
-    DisplayManager() : display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET) {}
-
-    void printDebug(String direction) {
-        if (direction == "back") {
-             Serial.println("Has apretado back");
-        }
-        else if (direction == "up") {
-             Serial.println("Has apretado arriba");
-        }
-        else if (direction == "next") {
-             Serial.println("Has apretado siguiente: " + String(positionTmp));
-             if (positionTmp != 0) {
-                 positionTmp -= stop;
-             }
-             positionTmp++;
-        }
-        else if (direction == "down") {
-             Serial.println("Has apretado abajo");
-             if (positionTmp != 0) {
-                 positionTmp = 500;
-             }
-        }
-        else if (direction == "accept") {
-             Serial.println("Has apretado aceptar");
-        }
-    }
+    DisplayService() : display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET) {}
 };
-
-inline void SetScreen(String first, String second, int size) {
-    DisplayManager::getInstance().setScreen(first, second, size);
-}
-
-inline void StartDisplay() {
-    DisplayManager::getInstance().begin();
-}
-
-
-
-inline void SetProgress(String label, int progress) {
-    DisplayManager::getInstance().drawProgress(label, progress);
-}
-
-inline void loopDisplay() {
-    DisplayManager::getInstance().loop();
-}

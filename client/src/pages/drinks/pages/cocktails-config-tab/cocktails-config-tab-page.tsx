@@ -76,7 +76,7 @@ export const CocktailsConfigTabPage: React.FC<ICocktailsConfigTabPageProps> = ({
             <Dialog open={isResetDialogOpen} onClose={() => setIsResetDialogOpen(false)}>
                 <DialogTitle>{t('drinks.config.resetConfirmTitle')}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
+                    <DialogContentText sx={{ color: "var(--text-main)" }}>
                         {t('drinks.config.resetConfirmText')}
                     </DialogContentText>
                 </DialogContent>

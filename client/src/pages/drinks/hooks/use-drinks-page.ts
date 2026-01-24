@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ICocktail, TabType } from "@/pages/drinks/models/drinks-model";
 import { drinksService } from "@/pages/drinks/services/drinks.service";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Sub-hooks
 import { useCocktails } from "./use-cocktails";
@@ -10,7 +11,19 @@ import { useSocketSync } from "./use-socket-sync";
 import { isSimulationMode } from "@/utils/simulation";
 
 export const useDrinksPage = () => {
-  const [activeTab, setActiveTab] = useState<TabType>("drinks");
+  const navigate = useNavigate();
+  const { tabId } = useParams<{ tabId: string }>();
+
+  // Map URL param to TabType (defaults to 'drinks')
+  const getTabFromUrl = (): TabType => {
+    switch (tabId) {
+      case 'cocktails-config': return 'config';
+      case 'pumps-config': return 'manual';
+      default: return 'drinks';
+    }
+  };
+
+  const activeTab = getTabFromUrl();
   const [selectedCocktailForConfirm, setSelectedCocktailForConfirm] = useState<ICocktail | null>(null);
 
   // Simulation Mode Detection
@@ -65,7 +78,16 @@ export const useDrinksPage = () => {
   }, [isMock]);
 
   const handleTabChange = (tab: TabType) => {
-    setActiveTab(tab);
+    switch (tab) {
+      case 'config':
+        navigate('/drinks/cocktails-config');
+        break;
+      case 'manual':
+        navigate('/drinks/pumps-config');
+        break;
+      default:
+        navigate('/drinks');
+    }
   };
 
   const sendCommand = async (direction: string) => {

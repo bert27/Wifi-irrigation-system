@@ -5,48 +5,48 @@ export const MOCK_COCKTAILS: ICocktail[] = [
     {
         id: "1",
         name: "Cocacola",
-        description: "Refresco clásico",
+        description: "Classic soft drink",
         recipe: [{ liquid: "Cocacola", quantity: 200 }]
     },
     {
         id: "2",
         name: "Sex on the beach",
-        description: "Cóctel afrutado",
+        description: "Fruity cocktail",
         recipe: [
             { liquid: "Vodka", quantity: 50 },
-            { liquid: "Zumo de naranja", quantity: 150 }
+            { liquid: "Orange Juice", quantity: 150 }
         ]
     },
     {
         id: "3",
         name: "Sex on the Beach",
-        description: "Cóctel afrutado",
+        description: "Fruity cocktail",
         recipe: [
             { liquid: "Vodka", quantity: 50 },
-            { liquid: "Zumo de naranja", quantity: 100 },
-            { liquid: "Granadina", quantity: 20 }
+            { liquid: "Orange Juice", quantity: 100 },
+            { liquid: "Grenadine", quantity: 20 }
         ]
     },
     {
         id: "4",
         name: "Tequila Sunrise",
-        description: "Cóctel afrutado",
+        description: "Fruity cocktail",
         recipe: [
             { liquid: "Tequila", quantity: 50 },
-            { liquid: "Zumo de naranja", quantity: 150 },
-            { liquid: "Granadina", quantity: 30 }
+            { liquid: "Orange Juice", quantity: 150 },
+            { liquid: "Grenadine", quantity: 30 }
         ]
     },
     {
         id: "5",
-        name: "Granadina",
-        description: "Sirope dulce",
-        recipe: [{ liquid: "Granadina", quantity: 50 }]
+        name: "Grenadine",
+        description: "Sweet syrup",
+        recipe: [{ liquid: "Grenadine", quantity: 50 }]
     },
     {
         id: "6",
         name: "Vodka",
-        description: "Bebida espirituosa",
+        description: "Spirit",
         recipe: [{ liquid: "Vodka", quantity: 50 }]
     }
 ];

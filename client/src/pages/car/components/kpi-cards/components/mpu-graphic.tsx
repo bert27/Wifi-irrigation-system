@@ -1,9 +1,8 @@
-/* eslint-disable react/no-unknown-property */
 import { useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 
-import { CarModel } from "@/pages/car/components/giroscope/components/car-model";
-import { ControllerModel } from "@/pages/car/components/giroscope/components/controller-model";
+import { CarModel } from "./models-3d/car-model";
+import { ControllerModel } from "./models-3d/controller-model";
 
 interface MpuGraphicProps {
   pitch: number;

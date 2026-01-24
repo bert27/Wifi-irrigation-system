@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import "./connect-info.css";
 
 interface ConnectInfoProps {
   connectedRobot: boolean;

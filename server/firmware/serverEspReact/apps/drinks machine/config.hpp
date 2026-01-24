@@ -18,29 +18,32 @@ static constexpr uint8_t PIN_ENC_CLK = 13; // D7
 static constexpr const char* MDNS_HOSTNAME = "drinks-machine";
 
 /**
- * @brief Configuración inicial de las botellas/bombas.
+ * @brief Default pump and bottle configurations.
  */
-static std::vector<IBottle> DEFAULT_BOTTLES = {
-    { 1, "Bomba 1", "Cocacola", 255, 5000, PIN_PUMP_1 },
-    { 2, "Bomba 2", "Zumo de naranja", 255, 5000, PIN_PUMP_2 },
-    { 3, "Bomba 3", "Vodka", 255, 5000, PIN_PUMP_3 },
-    { 4, "Bomba 4", "Granadina", 255, 5000, PIN_PUMP_4 }
-};
+inline std::vector<IBottle> getDefaultBottles() {
+    return {
+        { 1, "Pump 1", "Cocacola", 255, 5.0f, PIN_PUMP_1 },
+        { 2, "Pump 2", "Orange Juice", 255, 5.0f, PIN_PUMP_2 },
+        { 3, "Pump 3", "Vodka", 255, 5.0f, PIN_PUMP_3 },
+        { 4, "Pump 4", "Grenadine", 255, 5.0f, PIN_PUMP_4 }
+    };
+}
 
 /**
- * @brief Cócteles por defecto del sistema.
- * Cantidades en ml, proporciones realistas de coctelería.
+ * @brief Default system cocktails.
  */
-static std::vector<ICocktail> DEFAULT_COCKTAILS = {
-    // Bebidas simples (200ml)
-    { "Cocacola", {{ "Cocacola", 200 }} },
-    { "Zumo de naranja", {{ "Zumo de naranja", 200 }} },
-    { "Vodka shot", {{ "Vodka", 50 }} },
-    
-    // Cócteles clásicos
-    { "Vodka con cocacola", {{ "Vodka", 50 }, { "Cocacola", 150 }} },  // Cubata clásico
-    { "Destornillador", {{ "Vodka", 50 }, { "Zumo de naranja", 150 }} },  // Screwdriver
-    { "Sex on the beach", {{ "Vodka", 40 }, { "Zumo de naranja", 120 }, { "Granadina", 40 }} },
-    { "Tequila sunrise", {{ "Zumo de naranja", 150 }, { "Granadina", 50 }} },  // Sin tequila, versión mocktail
-    { "Shirley Temple", {{ "Cocacola", 150 }, { "Granadina", 50 }} }  // Mocktail clásico
-};
+inline std::vector<ICocktail> getDefaultCocktails() {
+    return {
+        // Simple drinks (200ml)
+        { "Cocacola", {{ "Cocacola", 200 }} },
+        { "Orange Juice", {{ "Orange Juice", 200 }} },
+        { "Vodka shot", {{ "Vodka", 50 }} },
+        
+        // Classic Cocktails
+        { "Vodka with Cocacola", {{ "Vodka", 50 }, { "Cocacola", 150 }} },
+        { "Screwdriver", {{ "Vodka", 50 }, { "Orange Juice", 150 }} },
+        { "Sex on the beach", {{ "Vodka", 40 }, { "Orange Juice", 120 }, { "Grenadine", 40 }} },
+        { "Tequila sunrise", {{ "Orange Juice", 150 }, { "Grenadine", 50 }} },
+        { "Shirley Temple", {{ "Cocacola", 150 }, { "Grenadine", 50 }} }
+    };
+}

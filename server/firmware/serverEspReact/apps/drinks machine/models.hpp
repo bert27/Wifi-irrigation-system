@@ -11,7 +11,7 @@ struct IBottle {
     String title;           // Título visual (ej: "Bomba 1")
     String liquid;          // Nombre del líquido contenido
     int pwm = 255;          // Velocidad de la bomba
-    int timeCalibration = 1000; // Calibración de tiempo
+    float timeCalibration = 1.0f; // Calibración de tiempo (Seconds per Unit/ML)
     int gpio;               // Pin físico al que está conectada
 };
 

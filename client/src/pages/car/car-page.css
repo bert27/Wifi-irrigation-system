@@ -1,0 +1,141 @@
+.dashboard-container {
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.premium-card {
+    background: var(--bg-card) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 20px !important;
+    box-shadow: var(--shadow-premium) !important;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: var(--text-main) !important;
+}
+
+.premium-card:hover {
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Existing animations/utility classes remain above */
+
+.car-page-container {
+    min-height: 100vh;
+    width: 100%;
+    background: var(--bg-deep);
+    padding: 8px; /* Mobile padding */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.car-page-grid {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: 1fr; /* Mobile: Single column */
+    gap: 1rem;
+    min-height: 0; /* Fix flex/grid overflow issues */
+}
+
+/* Layout Columns/Rows */
+.left-column, .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.top-row {
+    display: flex;
+    flex-direction: column; /* Mobile: Stacked */
+    gap: 1rem;
+    min-height: 0;
+}
+
+.telemetry-wrapper {
+    flex: 1;
+    min-width: 0;
+}
+
+.rgb-wrapper {
+    min-width: 100%;
+    aspect-ratio: auto;
+}
+
+.actuators-wrapper {
+    min-height: 0;
+}
+
+.kinetic-wrapper {
+    flex: 1;
+    min-height: 0;
+}
+
+/* Shared styling for inner panels/cards */
+.dashboard-panel {
+    padding: 16px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* --- DESKTOP LAYOUT (md breakpoint approx 900px) --- */
+@media (min-width: 900px) {
+    .car-page-container {
+        height: 100vh;
+        overflow: hidden; /* No scroll on desktop */
+        padding: 16px; /* Desktop padding */
+    }
+
+    .car-page-grid {
+        grid-template-columns: minmax(0, 0.7fr) minmax(0, 0.3fr);
+        height: calc(100vh - 120px); /* Adjust based on header height */
+        overflow: hidden;
+    }
+
+    .left-column, .right-column {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .top-row {
+        flex-direction: row; /* Side by side */
+        height: 45%;
+        overflow: hidden;
+    }
+
+    .telemetry-wrapper {
+        overflow: hidden;
+    }
+
+    .rgb-wrapper {
+        height: 100%;
+        min-width: 300px;
+        aspect-ratio: 1/1;
+    }
+
+    .actuators-wrapper {
+        height: 55%;
+    }
+
+    .right-column {
+        height: 100%;
+    }
+    
+    .dashboard-panel {
+        padding: 24px; /* Larger padding on desktop */
+    }
+}
+
