@@ -3,11 +3,13 @@
 ## 📋 Descripción General
 El módulo **Máquina de Bebidas** gestiona la selección y el dispensado de bebidas y cócteles. Proporciona una interfaz de usuario física utilizando una **pantalla OLED** y un **encoder rotativo**, permitiendo el funcionamiento autónomo sin necesidad de un smartphone.
 
-## 🛠 Detalles de Implementación
-- **📍 Ubicación**: `server/firmware/apps/drinks machine/`
-- **🧠 Controlador Principal**: `controller.hpp` (Clase: `EncoderManager`)
-- **📺 IU/Pantalla**: `utils/display.hpp` (Clase: `DisplayManager`)
-- **🖼 Activos (Assets)**: `utils/display.hpp` (Espacio de nombres: `DisplayAssets`)
+## 🛠 Implementation Details (Modular Services)
+- **📍 Location**: `server/firmware/apps/drinks machine/services/`
+- **📂 Menu Logic**: [MenuService.hpp](./services/MenuService.hpp)
+- **⚙️ Pump Control**: [PumpsService.hpp](./services/PumpsService.hpp)
+- **📺 UI/Display**: [DisplayService.hpp](./services/DisplayService.hpp)
+- **🕹️ Input**: [InputService.hpp](./services/InputService.hpp)
+- **🚀 Main Core**: [DrinksMachine.hpp](./DrinksMachine.hpp)
 
 ## 🛠 Configuración del Entorno (Arduino IDE)
 Para poder cargar el código en el NodeMCU, necesitas instalar las definiciones de la placa y algunas librerías específicas:
@@ -127,11 +129,16 @@ El proyecto se alimenta mediante una fuente de **12V DC**, dividiendo la potenci
 ### 1. 📟 Interfaz Autónoma
 El sistema utiliza la **pantalla OLED** para mostrar un menú de líquidos (Agua, CocaCola, Vodka, Naranja) y cócteles predefinidos (Sex on The Beach, etc.).
 
-### 2. 🔄 Máquina de Estados de Navegación
+### 3. 🚿 Sistema de Boquilla Única (Single Nozzle)
+La máquina está diseñada para verter todos los líquidos a través de una **única boquilla de salida**. 
+- **Lógica Secuencial**: Para evitar desbordamientos o salpicaduras en la boquilla, el sistema activa las bombas una por una.
+- **Mezcla Dinámica**: Los ingredientes se añaden consecutivamente siguiendo la receta, permitiendo capas o una mezcla homogénea dependiendo de la densidad de los líquidos.
+
+### 4. 🔄 Máquina de Estados de Navegación
 El botón del encoder permite navegar a través de diferentes pantallas:
 - **🏠 Index Server**: Menú principal de selección de bebidas.
 - **❓ Pantalla de Confirmación**: Pregunta "Aceptar?" antes de servir.
-- **⏳ Pantalla de Servicio**: Muestra el estado mientras las bombas están activas.
+- **⏳ Pantalla de Servicio**: Muestra el estado mientras la secuencia de bombas está activa.
 - **✅ Pantalla Final**: Confirmación de bebida servida.
 
 ### 4. ↩️ Navegación Inteligente (Context-Aware)
