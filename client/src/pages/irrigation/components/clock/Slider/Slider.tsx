@@ -2,7 +2,18 @@ import React, { useCallback } from "react";
 import Slider from "rc-slider";
 import "./Slider.css";
 import "rc-slider/assets/index.css";
-import { SliderProps } from "./models/slider.model";
+
+export interface SliderProps {
+  value: number;
+  onChange: (value: number | number[]) => void;
+  enabled: boolean;
+  WarningMessage?: () => void;
+  max?: number;
+  min?: number;
+  size?: string;
+  step?: number;
+}
+
 
 export const SliderC: React.FC<SliderProps> = ({
   value,

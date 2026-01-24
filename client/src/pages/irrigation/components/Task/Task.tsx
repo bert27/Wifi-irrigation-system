@@ -1,5 +1,5 @@
 import "./task.css";
-import { Day as IDay } from "../days/models/day.model";
+import { Day as IDay } from "@/pages/irrigation/models/day.model";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton, Tooltip } from "@mui/material";
 

@@ -11,7 +11,7 @@ vi.mock("./components/chart-temperature", () => ({
   ChartTemperature: () => <div>MockChart</div>
 }));
 
-vi.mock("@/components/clock/clock", () => ({
+vi.mock("@/pages/irrigation/components/clock/clock", () => ({
   Clock: () => <div>MockClock</div>
 }));
 

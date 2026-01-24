@@ -1,4 +1,4 @@
-import { Day } from "../../../components/days/models/day.model";
+import { Day } from "@/pages/irrigation/models/day.model";
 
 export interface IScheduledTask {
   days: Day[];

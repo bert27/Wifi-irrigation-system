@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Box, useTheme, useMediaQuery, Theme, Alert } from "@mui/material";
-import "@/pages/car/styles.css";
+import "@/pages/car/car-styles.css";
 import { useRobotControl } from "./hooks/use-robot-control";
 import { SimulationAlert } from "@/components/simulation-alert/simulation-alert";
 import { robotService } from "@/pages/car/services/robot.service";
@@ -9,7 +9,7 @@ import { robotService } from "@/pages/car/services/robot.service";
 import { CarHeader } from "./components/car-header";
 import { TelemetryCard } from "./components/kpi-cards/telemetry-card";
 import { ActuatorsCard } from "./components/kpi-cards/actuators-card";
-import { RgbCard } from "@/components/rgb-card/rgb-card";
+import { RgbCard } from "@/pages/car/components/rgb-card/rgb-card";
 import { KineticCard } from "./components/kpi-cards/kinetic-card";
 
 export const CarPage: React.FC = () => {

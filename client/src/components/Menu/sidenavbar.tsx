@@ -6,11 +6,15 @@ import SmartToyIcon from "@mui/icons-material/SmartToy";
 import "./sidenavbar.css";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-
-import { NavItem } from "./models/navigation-model";
 import { useConnectivity } from "@/context/connectivity-context";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { isSimulationMode } from "@/utils/simulation";
+
+export interface NavItem {
+  name: string;
+  linkTo: string;
+  icon: React.ReactElement;
+}
 
 const iconsPages = [
   { name: "menu.robot", linkTo: "/", icon: <SmartToyIcon /> },

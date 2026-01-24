@@ -1,6 +1,6 @@
 import React from "react";
 import { DaySelector } from "./DaySelector";
-import { Day } from "./models/day.model";
+import { Day } from "@/pages/irrigation/models/day.model";
 
 interface DaysProps {
   saveDays: (index: number) => void;

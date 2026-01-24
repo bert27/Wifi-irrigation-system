@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Paper, Tooltip } from "@mui/material";
 import { IRemoteControlReceiveStatus } from "@/pages/car/models/model";
 
-import "./styles.css";
+import "./jostick-styles.css";
 
 // Icons
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';

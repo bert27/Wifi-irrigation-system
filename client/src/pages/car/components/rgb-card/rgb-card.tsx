@@ -2,7 +2,7 @@ import { Box, Paper, Typography, SxProps, Theme } from "@mui/material";
 import PaletteIcon from '@mui/icons-material/Palette';
 import { HexColorPicker } from "react-colorful";
 import { useTranslation } from "react-i18next";
-import "./styles.css";
+import "./rgb-card-styles.css";
 
 interface RgbCardProps {
   color: string;

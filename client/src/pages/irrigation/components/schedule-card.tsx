@@ -1,15 +1,14 @@
 import React from "react";
 import { Typography } from "@mui/material";
-import { Task } from "../../../components/Task/Task";
-import { IScheduledTask } from "../models/irrigation-model";
+import { Task } from "@/pages/irrigation/components/Task/Task";
+import { IScheduledTask } from "@/pages/irrigation/models/irrigation-model";
+import { useTranslation } from "react-i18next";
 import "./../irrigation.css";
 
 interface ScheduleCardProps {
   listTasks: IScheduledTask[];
   eliminateTask: (index: number) => void;
 }
-
-import { useTranslation } from "react-i18next";
 
 export const ScheduleCard: React.FC<ScheduleCardProps> = ({ listTasks, eliminateTask }) => {
   const { t } = useTranslation();

@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { SliderC } from "./Slider/Slider";
-import { ClockProps } from "./models/clock.model";
 import "./clock.css";
+
+export interface ClockProps {
+  saveTimeSelect: (hour: string, minutes: string) => void;
+  hour: string;
+  minutes: string;
+}
+
 
 export const Clock: React.FC<ClockProps> = ({ saveTimeSelect, hour, minutes }) => {
   const maxHours = 23;

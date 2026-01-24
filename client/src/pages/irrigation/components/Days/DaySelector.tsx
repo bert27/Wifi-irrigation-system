@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./days.css";
 import CheckIcon from "@mui/icons-material/Check";
-import { Day } from "./models/day.model";
+import { Day } from "@/pages/irrigation/models/day.model";
 
 interface DaySelectorProps {
   day: Day;

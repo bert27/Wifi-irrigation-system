@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { irrigationService } from "../services/irrigation.service";
-import { Day } from "@/components/days/models/day.model";
-import { IScheduledTask } from "../models/irrigation-model";
+import { irrigationService } from "@/pages/irrigation/services/irrigation.service";
+import { Day } from "@/pages/irrigation/models/day.model";
+import { IScheduledTask } from "@/pages/irrigation/models/irrigation-model";
 
 const getDayLetterWeek = (dayTmp: string): string => {
   const mapping: Record<string, string> = {

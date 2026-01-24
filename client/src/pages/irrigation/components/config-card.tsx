@@ -1,10 +1,10 @@
 import React from "react";
 import { Box, Typography, Button } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Days } from "../../../components/days/Days";
-import { Clock } from "../../../components/clock/clock";
-import { Day } from "../../../components/days/models/day.model";
-import { IScheduledTask } from "../models/irrigation-model";
+import { Days } from "@/pages/irrigation/components/Days/Days";
+import { Clock } from "@/pages/irrigation/components/clock/clock";
+import { Day } from "@/pages/irrigation/models/day.model";
+import { IScheduledTask } from "@/pages/irrigation/models/irrigation-model";
 import "./../irrigation.css";
 
 interface ConfigCardProps {
