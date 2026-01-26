@@ -2,6 +2,8 @@
 
 🇺🇸 **[Read in English](README.md)** | 🇪🇸 **[Leer en Español](README_es.md)**
 
+[![Firmware Pantalla](https://img.shields.io/badge/Descargar_Firmware_Pantalla-Robot_Core_Display-orange?style=flat&logo=espressif)](https://github.com/Albert-Benavent-Cabrera/Robot-Core-Display)
+
 ## 🌟 Descripción del Proyecto
 
 Este proyecto es un **ecosistema multi-aplicación** que integra hardware y software para el control unificado de dispositivos IoT mediante una interfaz web moderna en **React**.
