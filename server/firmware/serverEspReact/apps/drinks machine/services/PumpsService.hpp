@@ -1,6 +1,6 @@
 #pragma once
 #include <Arduino.h>
-#include "MenuService.hpp"
+#include "../models/models.hpp"
 #include "../config.hpp"
 
 class PumpsService {
@@ -18,7 +18,7 @@ public:
         int pins[] = {PIN_PUMP_1, PIN_PUMP_2, PIN_PUMP_3, PIN_PUMP_4};
         for(int p : pins) {
             pinMode(p, OUTPUT);
-            analogWrite(p, 0); 
+            digitalWrite(p, LOW);
         }
     }
 

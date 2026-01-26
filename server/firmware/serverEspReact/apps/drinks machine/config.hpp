@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include <vector>
-#include "models.hpp"
+#include "models/models.hpp"
 
 // --- Pump Pin Definitions ---
 static constexpr uint8_t PIN_PUMP_1 = 0;

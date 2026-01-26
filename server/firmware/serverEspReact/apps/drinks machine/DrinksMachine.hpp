@@ -3,10 +3,10 @@
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include "../../utils/RemoteControlHub.hpp"
-#include "../../utils/remote_protocol.h"
+#include "../../common/remote/RemoteControlHub.hpp"
+#include "../../common/remote/remote_protocol.hpp"
 #include "services/websocket.hpp"
-#include "models.hpp"
+#include "models/models.hpp"
 #include "config.hpp"
 
 // New Services
@@ -30,18 +30,15 @@ public:
     void begin() {
         Serial.println("Welcome to Drink Machine");
         
+        PumpsService::getInstance().begin(); // Priority 1: Safe Outputs
         DisplayService::getInstance().begin();
         MenuService::getInstance().begin();
-        PumpsService::getInstance().begin();
         InputService::getInstance().begin(pressHandlerStub);
 
         Serial.print("IP Address: ");
         Serial.println(WiFi.localIP());
 
-        // Subscribe to Remote Control
-        RemoteControlHub::getInstance().subscribe([this](const struct_message& msg) {
-            this->handleRemoteCommand(msg);
-        });
+
 
         // WebSocket Callback
         DrinksWebSocketHandler::getInstance().setOnConnectCallback([this](AsyncWebSocketClient* client) {
@@ -119,6 +116,26 @@ public:
      
     }
 
+    void startServing(int foundIndex) {
+        auto& menu = MenuService::getInstance().menu;
+        if (foundIndex >= 0 && foundIndex < (int)menu.size()) {
+            // Set State
+            counter = foundIndex + 1;
+            insideMenuDrink = true;
+            actualScreen = 2;
+            
+            // Calculate Duration
+            currentServingDuration = PumpsService::getInstance().calculateServingDuration(menu[foundIndex]);
+            servingStartTime = millis(); 
+            
+            // Update UI
+            DisplayService::getInstance().setScreen("Sirviendo...", menu[foundIndex].name, 2);
+            broadcastState();
+            
+            printf("[DrinksMachine] Started serving: %s\n", menu[foundIndex].name.c_str());
+        }
+    }
+
     void handleBroadcast() {
         if (needsBroadcast && (millis() - lastBroadcastTime > BROADCAST_INTERVAL)) {
             needsBroadcast = false;
@@ -171,7 +188,8 @@ private:
         if (counter != 0 && counter <= (int)menu.size()) {
             DisplayService::getInstance().setScreen(menu[counter - 1].name, "", 2);
         } else {
-             DisplayService::getInstance().setScreen("Elige", "bebida", 2);
+             // Home screen with icon
+             DisplayService::getInstance().setImage();
         }
     }
 
@@ -256,18 +274,6 @@ private:
         broadcastState();
     }
 
-    void handleRemoteCommand(const struct_message& msg) {
-        if (msg.id == 99) {
-            DisplayService::getInstance().setScreen("Sirviendo", msg.choose, 2);
-            return;
-        }
-        String joyDir = String(msg.joystickValues.direction);
-        if (joyDir == "Arriba") enqueueCommand("prev");
-        else if (joyDir == "Abajo") enqueueCommand("next");
-        else if (joyDir == "Izquierda") enqueueCommand("back");
-        if (String(msg.joystickValues.buttonState) == "on") enqueueCommand("select");
-    }
-
     void broadcastState() {
         needsBroadcast = true;
     }
@@ -313,14 +319,15 @@ if (!insideMenuDrink) {
         PumpsService::getInstance().processPumps(true, entry, elapsed);
         } else {
             if (wasServing) {
-                DisplayService::getInstance().setScreen("Sirvete", entry.name, 2);
                 wasServing = false;
                 
                 if (actualScreen == 2) {
                     actualScreen = 0;
                     insideMenuDrink = false;
+                    counter = 0; // Return to idle state
                 }
                 
+                updateScreen(); // This will show the icon now
                 PumpsService::getInstance().processPumps(false, entry, 0); 
                 broadcastState();
             }

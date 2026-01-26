@@ -3,7 +3,7 @@
 #include <vector>
 #include <LittleFS.h>
 #include <ArduinoJson.h>
-#include "../models.hpp"
+#include "../models/models.hpp"
 #include "../config.hpp"
 
 struct MenuEntry {

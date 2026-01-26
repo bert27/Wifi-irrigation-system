@@ -44,3 +44,6 @@ server/firmware/serverEspReact/secrets.h
 Robot-Core2026/
 .vscode/
 **/secrets.h
+
+# Design
+*.psd

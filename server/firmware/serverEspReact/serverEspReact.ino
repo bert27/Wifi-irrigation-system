@@ -15,7 +15,7 @@
 #include "configNetwork.h"
 #include "AppConfig.h" // Modular Configuration
 #include "utils/wifi-start.hpp"
-#include "utils/RemoteControlHub.hpp"
+#include "common/remote/RemoteControlHub.hpp"
 
 // --- Modules ---
 
@@ -29,6 +29,7 @@
     #include "apps/drinks machine/services/API.hpp"
     #include "apps/drinks machine/DrinksMachine.hpp"
     #include "apps/drinks machine/services/websocket.hpp"
+    #include "apps/drinks machine/services/RemoteActions.hpp"
     #include "apps/drinks machine/config.hpp"
 #endif
 
@@ -51,40 +52,33 @@ void setup() {
   Serial.begin(115200);
   Serial.println("\n\n--- System Boot ---");
 
-  // 1. WiFi & Network
-  ConnectWiFi_STA();
-  setupRemoteHub(); 
-
-  // 2. mDNS Setup (depends on which app is enabled)
-  #ifdef ENABLE_IRRIGATION_SYSTEM
-    if (MDNS.begin(MDNS_HOSTNAME)) {
-      MDNS.addService("http", "tcp", 80);
-      Serial.print("MDNS started: ");
-      Serial.print(MDNS_HOSTNAME);
-      Serial.println(".local");
-    }
-  #elif defined(ENABLE_DRINKS_MACHINE)
-    if (MDNS.begin(MDNS_HOSTNAME)) {
-      MDNS.addService("http", "tcp", 80);
-      Serial.print("MDNS started: ");
-      Serial.print(MDNS_HOSTNAME);
-      Serial.println(".local");
-    }
-  #elif defined(ENABLE_ROBOT_CAR)
-    if (MDNS.begin(MDNS_HOSTNAME)) {
-      MDNS.addService("http", "tcp", 80);
-      Serial.print("MDNS started: ");
-      Serial.print(MDNS_HOSTNAME);
-      Serial.println(".local");
-    }
+  // 1. Hardware & Outputs Initialization (PRIORITY: SAFE STATES)
+  #ifdef ENABLE_DRINKS_MACHINE
+      Serial.println("System: Drinks Machine Enabled");
+      setupController(); // Drinks Controller (Inits pumps SAFE)
   #endif
 
-  // 3. Server Initialization
   #ifdef ENABLE_IRRIGATION_SYSTEM
       Serial.println("System: Irrigation Enabled");
       setupPlantController();
+  #endif
+
+  #ifdef ENABLE_ROBOT_CAR
+      Serial.println("System: Robot Car Enabled");
+      setupGyroscope();
+      CarController::getInstance().begin();
+      // NO API/Socket init here yet
+  #endif
+
+  // 2. WiFi & Network (Takes time, but outputs are safe now)
+  ConnectWiFi_STA();
+  setupRemoteHub(); 
+
+  // 3. Server Initialization (Initialize Pointer BEFORE using it)
+  #ifdef ENABLE_IRRIGATION_SYSTEM
+      // Irrigation initializes its own server controller, but we need the pointer valid
+      // The controller was already inited in Step 1, so the server instance exists.
       globalServer = &IrrigationSystem::getInstance().server;
-      setupPlantAPI(*globalServer);
   #else
       Serial.println("System: Standalone Server Mode");
       globalServer = &standaloneServer;
@@ -111,36 +105,64 @@ void setup() {
           request->send(404, "text/plain", "Not Found");
         }
       });
-
-      standaloneServer.begin();
   #endif
 
-  // 3. Module Initialization
-  
+  // 4. Networked Services (Now globalServer is VALID)
   #ifdef ENABLE_DRINKS_MACHINE
-      Serial.println("System: Drinks Machine Enabled");
-      setupController(); // Drinks Controller
-      setupDrinksAPI(*globalServer);
-      setupDrinksWebSocket(*globalServer);
+      if (globalServer) {
+        setupDrinksAPI(*globalServer);
+        setupDrinksWebSocket(*globalServer);
+      }
+      setupRemoteActions(); 
+  #endif
+
+  #ifdef ENABLE_IRRIGATION_SYSTEM
+     // API already setup in step 1? No, wait.
+     // Irrigation "setupPlantAPI" takes server reference.
+     setupPlantAPI(*globalServer);
   #endif
 
   #ifdef ENABLE_ROBOT_CAR
-      Serial.println("System: Robot Car Enabled");
-      setupGyroscope();
-      CarController::getInstance().begin();
-      setupCarAPI(*globalServer);
-      setupCarWebSocket(*globalServer);
+      if (globalServer) {
+        setupCarAPI(*globalServer);
+        setupCarWebSocket(*globalServer);
+      }
+  #endif 
+  
+  // 5. Start Server
+  #ifndef ENABLE_IRRIGATION_SYSTEM
+      standaloneServer.begin();
   #endif
+
+  // 6. mDNS Setup
+  #ifdef ENABLE_IRRIGATION_SYSTEM
+    if (MDNS.begin(MDNS_HOSTNAME)) {
+      MDNS.addService("http", "tcp", 80);
+    }
+  #elif defined(ENABLE_DRINKS_MACHINE)
+    if (MDNS.begin(MDNS_HOSTNAME)) {
+      MDNS.addService("http", "tcp", 80);
+    }
+  #elif defined(ENABLE_ROBOT_CAR)
+    if (MDNS.begin(MDNS_HOSTNAME)) {
+      MDNS.addService("http", "tcp", 80);
+    }
+  #endif
+  
+  Serial.print("MDNS started: ");
+  Serial.print(MDNS_HOSTNAME);
+  Serial.println(".local");
 
   Serial.println("--- Boot Complete ---\n");
 }
 
 void loop() {
   // RemoteControlHub::getInstance().loop(); // Removed: Class does not have loop()
-
+  
   #ifdef ENABLE_DRINKS_MACHINE
       loopController(); // Drinks Loop
   #endif
+
 
   #ifdef ENABLE_ROBOT_CAR
       CarController::getInstance().loop();

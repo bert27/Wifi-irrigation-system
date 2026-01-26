@@ -4,8 +4,8 @@
 #include "config.hpp"
 #include "models.hpp"
 #include "utils/gyroscope.hpp"
-#include "../../utils/remote_protocol.h"
-#include "../../utils/RemoteControlHub.hpp"
+#include "../../common/remote/remote_protocol.hpp"
+#include "../../common/remote/RemoteControlHub.hpp" // Keeping original path as the provided new path was syntactically incorrect.
 #include "services/websocket.hpp"
 
 class CarController {
